@@ -37,7 +37,7 @@ struct SettingsSwitch: View {
     @Binding var isOn: Bool
 
     var body: some View {
-        Toggle(title, isOn: $isOn)
+        Toggle(NSLocalizedString(title, comment: "Settings switch"), isOn: $isOn)
             .labelsHidden()
             .toggleStyle(.switch)
     }
@@ -50,10 +50,10 @@ struct SettingsRowLabel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Settings row title"))
                 .font(titleFont)
             if !description.isEmpty {
-                Text(description)
+                Text(NSLocalizedString(description, comment: "Settings row description"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -142,7 +142,7 @@ struct IconToggleRow: View {
         HStack(spacing: 15) {
             SettingsIconBadge(systemImage: systemImage, color: color)
 
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Settings toggle title"))
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white)
 
@@ -311,9 +311,9 @@ struct LiveActivityRowView: View {
     private func optionToggle(_ title: String, detail: String, isOn: Binding<Bool>) -> some View {
         Toggle(isOn: isOn) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(NSLocalizedString(title, comment: "Live activity option"))
                     .font(.system(size: 12, weight: .semibold))
-                Text(detail)
+                Text(NSLocalizedString(detail, comment: "Live activity option detail"))
                     .font(.system(size: 10))
                     .foregroundStyle(.secondary)
             }
@@ -527,7 +527,7 @@ struct AppTogglesListView: View {
     @ViewBuilder
     private func appSection(_ title: String, apps: [SystemApp]) -> some View {
         if !apps.isEmpty {
-            Text(title).font(.caption).foregroundStyle(.secondary).padding(.vertical, 5)
+            Text(NSLocalizedString(title, comment: "Application group title")).font(.caption).foregroundStyle(.secondary).padding(.vertical, 5)
             ForEach(apps) { app in
                 SystemAppRowView(app: app, isEnabled: isEnabled(app))
                 if app.id != apps.last?.id {
@@ -854,7 +854,7 @@ struct StatusCapsuleLabel: View {
         HStack(spacing: 5) {
             Image(systemName: icon)
                 .font(.system(size: 10, weight: .bold))
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Settings status"))
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
         }
         .foregroundStyle(color)
@@ -875,7 +875,7 @@ struct SettingsDetailRow<Content: View>: View {
 
     var body: some View {
         HStack {
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Settings detail title"))
             Spacer()
             HStack { content }
                 .foregroundStyle(.secondary)
@@ -893,7 +893,7 @@ struct SettingsMultiSelectList<Option: Identifiable & Equatable>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Settings list title"))
                 .font(.caption.weight(.medium))
                 .foregroundColor(.secondary)
                 .padding(.top, 8)

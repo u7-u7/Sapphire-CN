@@ -26,29 +26,32 @@ enum SapphireStandardMenu {
         let appMenu = NSMenu()
         appMenuItem.submenu = appMenu
         appMenu.addItem(
-            withTitle: "Quit Sapphire",
+            withTitle: NSLocalizedString("Quit Sapphire", comment: "Application menu action"),
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )
 
-        let editMenuItem = NSMenuItem(title: "Edit", action: nil, keyEquivalent: "")
+        let editTitle = NSLocalizedString("Edit", comment: "Edit menu title")
+        let editMenuItem = NSMenuItem(title: editTitle, action: nil, keyEquivalent: "")
         mainMenu.addItem(editMenuItem)
-        let editMenu = NSMenu(title: "Edit")
+        let editMenu = NSMenu(title: editTitle)
         editMenuItem.submenu = editMenu
 
-        editMenu.addItem(withTitle: "Undo", action: Selector("undo:"), keyEquivalent: "z")
-        editMenu.addItem(withTitle: "Redo", action: Selector("redo:"), keyEquivalent: "Z")
+        editMenu.addItem(withTitle: NSLocalizedString("Undo", comment: "Edit menu action"), action: Selector("undo:"), keyEquivalent: "z")
+        editMenu.addItem(withTitle: NSLocalizedString("Redo", comment: "Edit menu action"), action: Selector("redo:"), keyEquivalent: "Z")
         editMenu.addItem(.separator())
-        editMenu.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
-        editMenu.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
-        editMenu.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
-        editMenu.addItem(withTitle: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        editMenu.addItem(withTitle: NSLocalizedString("Cut", comment: "Edit menu action"), action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        editMenu.addItem(withTitle: NSLocalizedString("Copy", comment: "Edit menu action"), action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        editMenu.addItem(withTitle: NSLocalizedString("Paste", comment: "Edit menu action"), action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        editMenu.addItem(withTitle: NSLocalizedString("Select All", comment: "Edit menu action"), action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
 
         NSApp.mainMenu = mainMenu
     }
 
     private static var hasEditMenu: Bool {
-        NSApp.mainMenu?.items.contains { $0.title == "Edit" } == true
+        NSApp.mainMenu?.items.contains {
+            $0.title == "Edit" || $0.title == NSLocalizedString("Edit", comment: "Edit menu title")
+        } == true
     }
 }
 

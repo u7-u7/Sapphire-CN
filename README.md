@@ -22,6 +22,8 @@
 
 <br>
 
+[简体中文说明与本地构建指引](README.zh-CN.md)
+
 Sapphire is a sleek notch app that displays current activities neatly around the notch on newer MacBooks. It also includes a suite of convenient features, from nearby share compatibility for easy file transfers to a versatile window snapping system.
 
 ## Installation

@@ -317,10 +317,10 @@ struct FileProgressLiveActivityView {
             fileName = transferTask.fileName
             let verb: String
             switch transferTask.sourceType {
-            case .finder: verb = "Copying..."
-            case .archiveExtraction: verb = "Extracting..."
-            case .dmgInstall: verb = "Installing..."
-            case .browserDownload, .manual: verb = "Downloading..."
+            case .finder: verb = NSLocalizedString("Copying...", comment: "File transfer status")
+            case .archiveExtraction: verb = NSLocalizedString("Extracting...", comment: "File transfer status")
+            case .dmgInstall: verb = NSLocalizedString("Installing...", comment: "File transfer status")
+            case .browserDownload, .manual: verb = NSLocalizedString("Downloading...", comment: "File transfer status")
             }
             if transferTask.sourceType == .finder {
                 statusText = transferTask.speed > 0 ? TransferMetricsFormatter.speed(transferTask.speed) : verb
@@ -333,19 +333,19 @@ struct FileProgressLiveActivityView {
         case .airDrop(let airDropTask):
             progress = airDropTask.progress
             fileName = airDropTask.fileName
-            statusText = airDropTask.isComplete ? "Complete" : "Receiving..."
+            statusText = airDropTask.isComplete ? NSLocalizedString("Complete", comment: "File transfer status") : NSLocalizedString("Receiving...", comment: "File transfer status")
         case .incomingTransfer(let info):
             progress = info.progress
             fileName = info.fileDescription
-            statusText = "Receiving..."
+            statusText = NSLocalizedString("Receiving...", comment: "File transfer status")
         case .fileConversion(let task):
             progress = task.progress
             fileName = task.fileName
-            statusText = "Converting..."
+            statusText = NSLocalizedString("Converting...", comment: "File transfer status")
         case .local(let item):
             progress = 1.0
             fileName = item.fileName
-            statusText = "Ready"
+            statusText = NSLocalizedString("Ready", comment: "File transfer status")
         }
 
         return HStack(spacing: 8) {

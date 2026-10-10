@@ -29,10 +29,10 @@ struct BatteryDetailView: View {
         return "battery.100percent"
     }
     private var statusText: String {
-        if statusIsPaused { return "Paused" }
-        if stats.isCharging { return "Charging" }
-        if stats.powerAdapterInfo != nil { return "Plugged in" }
-        return "Battery"
+        if statusIsPaused { return NSLocalizedString("Paused", comment: "Battery status") }
+        if stats.isCharging { return NSLocalizedString("Charging", comment: "Battery status") }
+        if stats.powerAdapterInfo != nil { return NSLocalizedString("Plugged in", comment: "Battery status") }
+        return NSLocalizedString("Battery", comment: "Battery status")
     }
     private var statusColor: Color {
         if statusIsPaused { return .orange }

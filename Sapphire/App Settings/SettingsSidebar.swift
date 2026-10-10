@@ -37,7 +37,8 @@ struct SettingsSidebarView: View {
 
         return SettingsSection.sidebarGroups.compactMap { group in
             let matches = group.sections.filter { section in
-                let haystacks = [section.label, section.shortDescription] + section.searchTokens
+                // 切换中文显示后仍允许按英文名称和说明搜索。
+                let haystacks = [section.label, section.shortDescription, section.englishLabel, section.englishShortDescription] + section.searchTokens
                 return haystacks.contains { $0.localizedCaseInsensitiveContains(query) }
             }
             return matches.isEmpty ? nil : SettingsSidebarGroup(title: group.title, sections: matches)
@@ -100,7 +101,7 @@ struct SettingsSidebarView: View {
                             .tag(section)
                         }
                     } header: {
-                        Text(group.title)
+                        Text(NSLocalizedString(group.title, comment: "Settings sidebar group"))
                             .font(.system(size: 11, weight: .semibold))
                             .foregroundStyle(.secondary)
                     }
@@ -119,7 +120,7 @@ struct SettingsSidebarView: View {
             }
 
             if !searchText.isEmpty && filteredGroups.isEmpty {
-                Text("No settings matched \"\(searchText)\".")
+                Text(String(format: NSLocalizedString("No settings matched \"%@\".", comment: "Settings search empty state"), searchText))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 16)

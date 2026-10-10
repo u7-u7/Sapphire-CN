@@ -86,7 +86,7 @@ struct NotchExpandedChrome: View {
                 )
 
                 if let title = currentViewTitle {
-                    Text(title)
+                    Text(NSLocalizedString(title, comment: "Expanded notch navigation title"))
                         .font(.system(size: config.navHeaderTitleFontSize, weight: .bold))
                         .lineLimit(1)
                         .truncationMode(.middle)

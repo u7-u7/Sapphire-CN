@@ -218,11 +218,11 @@ struct FocusSessionDetailView: View {
     private var statusText: String {
         switch focusManager.phase {
         case .idle, .finished:
-            return focusManager.phase == .finished ? "Session finished" : "Ready"
+            return focusManager.phase == .finished ? NSLocalizedString("Session finished", comment: "Focus session status") : NSLocalizedString("Ready", comment: "Focus session status")
         case .focusing:
-            return focusManager.isPaused ? "Paused" : "Block \(focusManager.currentBlockIndex + 1)"
+            return focusManager.isPaused ? NSLocalizedString("Paused", comment: "Focus session status") : String(format: NSLocalizedString("Block %d", comment: "Focus block number"), focusManager.currentBlockIndex + 1)
         case .onBreak:
-            return focusManager.isPaused ? "Paused" : "Rest & recharge"
+            return focusManager.isPaused ? NSLocalizedString("Paused", comment: "Focus session status") : NSLocalizedString("Rest & recharge", comment: "Focus session status")
         }
     }
 

@@ -33,7 +33,7 @@ struct NotesWidgetView: View {
     private static func suggestionLabel(for note: QuickNote) -> String {
         let title = note.title.trimmingCharacters(in: .whitespacesAndNewlines)
         let body = note.body.trimmingCharacters(in: .whitespacesAndNewlines)
-        return title.isEmpty ? (body.isEmpty ? "Untitled" : body) : title
+        return title.isEmpty ? (body.isEmpty ? NSLocalizedString("Untitled", comment: "Note without a title") : body) : title
     }
 }
 
@@ -90,7 +90,7 @@ struct NotesPlayerView: View {
     private var listView: some View {
         NotchSwipeListPanel(
             title: "Notes",
-            subtitle: "\(notesManager.notes.count) saved",
+            subtitle: String(format: NSLocalizedString("%d saved", comment: "Saved note count"), notesManager.notes.count),
             accent: .yellow,
             searchPlaceholder: "Search notes",
             searchText: $searchText,
@@ -134,7 +134,7 @@ struct NotesPlayerView: View {
                     .frame(width: 3, height: 40)
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
-                        Text(note.title.isEmpty ? "Untitled" : note.title)
+                        Text(note.title.isEmpty ? NSLocalizedString("Untitled", comment: "Note without a title") : note.title)
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(note.isDone ? .secondary : .primary)
                             .strikethrough(note.isDone, color: .secondary)
@@ -145,7 +145,7 @@ struct NotesPlayerView: View {
                                 .foregroundStyle(.green.opacity(0.9))
                         }
                     }
-                    Text(note.body.isEmpty ? "Empty note" : note.body)
+                    Text(note.body.isEmpty ? NSLocalizedString("Empty note", comment: "Note without content") : note.body)
                         .font(.system(size: 11))
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
@@ -162,7 +162,7 @@ struct NotesPlayerView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            Button(note.isDone ? "Mark Undone" : "Mark Done") {
+            Button(note.isDone ? NSLocalizedString("Mark Undone", comment: "Note action") : NSLocalizedString("Mark Done", comment: "Note action")) {
                 notesManager.toggleNoteDone(id: note.id)
             }
             Button("Edit") { editorGate.editingNoteID = note.id }

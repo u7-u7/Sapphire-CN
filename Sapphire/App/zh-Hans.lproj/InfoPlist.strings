@@ -1,0 +1,20 @@
+// 主应用的 macOS 权限说明。
+"NSAppleEventsUsageDescription" = "Sapphire 需要控制“音乐”和 Spotify 的播放，并读取曲目信息。";
+"NSAppleMusicUsageDescription" = "Sapphire 需要访问 Apple Music，以显示即将播放的歌曲和播放列表。";
+"NSAudioCaptureUsageDescription" = "Sapphire 会在这台 Mac 上获取音乐应用的音频，以便逐字同步歌词。音频不会离开您的 Mac。";
+"NSBluetoothAlwaysUsageDescription" = "Sapphire 使用蓝牙发现并连接已配对的 Android 设备，并显示设备连接和低电量提醒。";
+"NSCalendarsFullAccessUsageDescription" = "Sapphire 需要访问日历，以显示即将开始的日程。";
+"NSCalendarsUsageDescription" = "Blip 会根据您的日历安排了解日程习惯，以便提供更贴合您需求的协助。";
+"NSCameraUsageDescription" = "Sapphire 使用摄像头提供镜子小组件，让您可以在刘海屏中查看实时画面。";
+"NSContactsUsageDescription" = "Sapphire 需要访问通讯录，以便在回复通知时找到正确的电话号码或电子邮箱。";
+"NSFocusStatusUsageDescription" = "Sapphire 需要访问专注模式状态，以显示实时的专注状态更新。";
+"NSLocalNetworkUsageDescription" = "Sapphire 使用本地网络，在您的 Mac 与已配对的 Android 设备之间传输文件、图片和屏幕内容。";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Sapphire 需要访问您的位置，以提供实时天气信息。";
+"NSLocationUsageDescription" = "Sapphire 需要访问您的位置，以提供当地天气信息。";
+"NSLocationWhenInUseUsageDescription" = "Blip 使用您的位置提供当地天气、附近地点和与位置相关的服务。";
+"NSMicrophoneUsageDescription" = "Sapphire 使用麦克风进行 Gemini Live 语音对话。";
+"NSNetworkVolumesUsageDescription" = "Sapphire 需要访问网络卷，以支持附近共享功能。";
+"NSRemindersFullAccessUsageDescription" = "Sapphire 需要访问提醒事项，以显示即将到来的提醒。";
+"NSRemindersUsageDescription" = "Sapphire 需要访问提醒事项，以显示您的提醒。";
+"NSScreenCaptureUsageDescription" = "Sapphire 使用屏幕录制功能，以便在 Gemini Live 中分享屏幕内容。";
+"NSSystemExtensionUsageDescription" = "Sapphire 需要安装系统扩展，以创建虚拟多输出音频设备。";

@@ -18,8 +18,8 @@ struct FocusWidgetView: View {
     }
 
     private var phaseLabel: String {
-        if focusManager.isPaused { return "PAUSED" }
-        return focusManager.isFocusBlock ? "FOCUS" : "BREAK"
+        if focusManager.isPaused { return NSLocalizedString("PAUSED", comment: "Focus phase") }
+        return focusManager.isFocusBlock ? NSLocalizedString("FOCUS", comment: "Focus phase") : NSLocalizedString("BREAK", comment: "Focus phase")
     }
 
     private var blockedCount: Int {
@@ -85,13 +85,11 @@ struct FocusWidgetView: View {
                 .lineLimit(1)
                 .animation(.easeInOut(duration: 0.4), value: focusManager.isSessionActive)
 
-                Text(focusManager.isSessionActive ? phaseLabel : "Ready to focus")
+                Text(focusManager.isSessionActive ? phaseLabel : NSLocalizedString("Ready to focus", comment: "Focus widget status"))
                     .font(.headline).fontWeight(.medium).lineLimit(1).minimumScaleFactor(0.7)
                     .foregroundColor(focusManager.isSessionActive ? accent : .secondary)
 
-                Text(focusManager.isSessionActive
-                     ? (blockedCount > 0 ? "Blocking \(blockedCount) distraction\(blockedCount == 1 ? "" : "s")" : "No distractions blocked")
-                     : "\(Int(settings.settings.focusSessionDuration / 60))m · \(FocusSessionManager.format(focusManager.completedToday)) today")
+                Text(focusSummary)
                     .font(.subheadline).opacity(0.8).lineLimit(1).minimumScaleFactor(0.7)
             }
         }
@@ -106,8 +104,8 @@ struct FocusWidgetView: View {
             CompactInfoRow(
                 iconName: focusManager.isSessionActive ? "square.stack.3d.up.fill" : "checkmark.seal.fill",
                 value: focusManager.isSessionActive
-                    ? "\(focusManager.blocksCompletedThisSession) blocks"
-                    : "\(focusManager.history.count) sessions"
+                    ? String(format: NSLocalizedString("%d blocks", comment: "Completed focus blocks"), focusManager.blocksCompletedThisSession)
+                    : String(format: NSLocalizedString("%d sessions", comment: "Completed focus sessions"), focusManager.history.count)
             )
         }
         .animation(.easeInOut(duration: 0.4), value: focusManager.isSessionActive)
@@ -131,7 +129,18 @@ struct FocusWidgetView: View {
 
     private var streakText: String {
         let s = focusManager.currentStreak
-        return s == 1 ? "1 day streak" : "\(s) day streak"
+        return String(format: NSLocalizedString("%d day streak", comment: "Consecutive focus days"), s)
+    }
+
+    private var focusSummary: String {
+        if focusManager.isSessionActive {
+            guard blockedCount > 0 else { return NSLocalizedString("No distractions blocked", comment: "Focus blocking status") }
+            let key = blockedCount == 1 ? "Blocking %d distraction" : "Blocking %d distractions"
+            return String(format: NSLocalizedString(key, comment: "Focus blocking status"), blockedCount)
+        }
+        return String(format: NSLocalizedString("%dm · %@ today", comment: "Focus duration and today's total"),
+                      Int(settings.settings.focusSessionDuration / 60),
+                      FocusSessionManager.format(focusManager.completedToday))
     }
 }
 

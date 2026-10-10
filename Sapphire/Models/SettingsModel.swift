@@ -2610,7 +2610,8 @@ enum WidgetType: String, Codable, CaseIterable, Identifiable, Equatable {
 enum LiveActivityType: String, Codable, CaseIterable, Identifiable, Equatable {
     case fileShelf, eyeBreak, focus, desktop, battery, timers, calendar, reminders, weather, music, fileProgress, stats, microphone, devActivity, sports, finance
     var id: String { self.rawValue }
-    var displayName: String {
+    var displayName: String { NSLocalizedString(englishDisplayName, comment: "Live activity name") }
+    private var englishDisplayName: String {
         switch self {
         case .music: "Music"; case .weather: "Weather"; case .calendar: "Calendar"; case .reminders: "Reminders"; case .timers: "Timers"; case .battery: "Battery"; case .eyeBreak: "Eye Break"; case .desktop: "Desktop"; case .focus: "Focus"; case .fileShelf: "File Shelf"; case .fileProgress: "File Progress"; case .stats: "Stats"; case .microphone: "Microphone"; case .devActivity: "Dev Activity"; case .sports: "Sports"; case .finance: "Finance"
         }
@@ -2861,7 +2862,8 @@ enum NotchButtonType: String, Codable, Identifiable, Equatable {
         .focusSession, .caffeine, .spacer, .multiAudio, .battery, .pin,
     ]
 
-    var displayName: String {
+    var displayName: String { NSLocalizedString(englishDisplayName, comment: "Notch button name") }
+    private var englishDisplayName: String {
         switch self {
         case .settings: "Settings"; case .fileShelf: "File Shelf"; case .notes: "Notes"; case .clipboard: "Clipboard"
         case .intelligence: "Blip"; case .intelligenceLive: "Gemini";
@@ -3059,6 +3061,10 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 
     var shortDescription: String {
+        NSLocalizedString(englishShortDescription, comment: "Settings section summary")
+    }
+
+    var englishShortDescription: String {
         switch self {
         case .general: "Core app behavior, launch options, animations, and notch controls."
         case .systemEnhance: "Window previews, app switching, dock controls, and display behavior."
@@ -3171,6 +3177,10 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 
     var label: String {
+        NSLocalizedString(englishLabel, comment: "Settings section name")
+    }
+
+    var englishLabel: String {
         switch self {
         case .general: "General"; case .systemEnhance: "System Enhance"; case .apps: "Apps"; case .storage: "Storage"; case .widgets: "Widgets"; case .liveActivities: "Live Activities"; case .appearance: "Appearance"; case .lockScreen: "Lock Screen"; case .bluetoothUnlock: "Authentication"; case .shortcuts: "Shortcuts"; case .keyboardShortcuts: "Keyboard Shortcuts"; case .snapZones: "Snap Zones"; case .audio: "Audio"; case .battery: "Battery"; case .bluetooth: "Bluetooth"; case .hud: "HUD"; case .notifications: "Notifications"; case .neardrop: "Nearby Share"; case .continuity: "Android Continuity"; case .fileShelf: "File Shelf"; case .notes: "Notes";        case .clipboard: "Clipboard"; case .emoji: "Emoji"; case .mouse: "Mouse"; case .monitoring: "Monitoring"; case .devActivity: "Dev Activity"; case .archives: "Archives & DMG"; case .mirror: "Mirror"; case .caffeine: "Caffeinate"; case .music: "Music"; case .weather: "Weather";        case .calendar: "Calendar"; case .eyeBreak: "Eye Break"; case .focusSession: "Focus Sessions"; case .appLock: "App Lock"; case .intelligence: "Blip"; case .sports: "Sports"; case .finance: "Finance"; case .dockLayouts: "Dock"; case .mediaOptimizer: "Media Optimizer"; case .about: "About"
         }

@@ -22,7 +22,7 @@ struct NotchMiniListWidget<Item: Identifiable, Row: View>: View {
             header
 
             if items.isEmpty {
-                Text(emptyText)
+                Text(NSLocalizedString(emptyText, comment: "Empty notch widget message"))
                     .font(.system(size: 10, weight: .medium, design: .rounded))
                     .foregroundStyle(MaterialChartPalette.onSurfaceVariant)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -48,7 +48,7 @@ struct NotchMiniListWidget<Item: Identifiable, Row: View>: View {
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(tint)
             }
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Notch widget title"))
                 .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundStyle(.primary)
             Spacer(minLength: 0)
@@ -102,7 +102,7 @@ struct NotchSwipeListPanel<Item: Identifiable, Toolbar: View, Row: View, EmptySt
         VStack(spacing: 0) {
             HStack(spacing: 10) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(title)
+                    Text(NSLocalizedString(title, comment: "Notch panel title"))
                         .font(.system(size: 15, weight: .bold, design: .rounded))
                     Text(subtitle)
                         .font(.caption2)
@@ -167,9 +167,9 @@ struct NotchListEmptyState: View {
             Image(systemName: systemImage)
                 .font(.system(size: 28, weight: .light))
                 .foregroundStyle(tint.opacity(0.8))
-            Text(title)
+            Text(NSLocalizedString(title, comment: "Empty notch panel title"))
                 .font(.headline)
-            Text(message)
+            Text(NSLocalizedString(message, comment: "Empty notch panel message"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

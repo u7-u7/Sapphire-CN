@@ -1248,9 +1248,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                     accessibilityDescription: "Sapphire Launchpad"
                 )
                 let menu = NSMenu()
-                menu.addItem(NSMenuItem(title: "Show Launchpad", action: #selector(showLaunchpadAction), keyEquivalent: ""))
+                menu.addItem(NSMenuItem(title: NSLocalizedString("Show Launchpad", comment: "Status menu action"), action: #selector(showLaunchpadAction), keyEquivalent: ""))
                 menu.addItem(.separator())
-                menu.addItem(NSMenuItem(title: "Quit Sapphire", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+                menu.addItem(NSMenuItem(title: NSLocalizedString("Quit Sapphire", comment: "Status menu action"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
                 for item in menu.items { item.target = self }
                 statusItem?.menu = menu
             }

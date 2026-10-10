@@ -103,7 +103,7 @@ struct LockedSettingsSectionView: View {
                 .font(.system(size: 34, weight: .semibold))
                 .foregroundStyle(.secondary)
 
-            Text("\(section.label) requires Sapphire \(requiredTierName)")
+            Text(String(format: NSLocalizedString("%@ requires Sapphire %@", comment: "Premium settings requirement"), section.label, requiredTierName))
                 .font(.title2.bold())
                 .multilineTextAlignment(.center)
 
@@ -182,8 +182,8 @@ struct PermissionStatusRowView: View {
         HStack(spacing: 15) {
             Image(systemName: permission.iconName).font(.system(size: 18, weight: .medium)).foregroundColor(permission.iconColor).frame(width: 36, height: 36).background(permission.iconColor.opacity(0.15)).clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             VStack(alignment: .leading, spacing: 2) {
-                Text(permission.title).font(.system(size: 14, weight: .medium))
-                Text(permission.description).font(.caption).foregroundColor(.secondary)
+                Text(NSLocalizedString(permission.title, comment: "Permission name")).font(.system(size: 14, weight: .medium))
+                Text(NSLocalizedString(permission.description, comment: "Permission purpose")).font(.caption).foregroundColor(.secondary)
             }
             Spacer()
             let status = permissionsManager.status(for: permission.type)
@@ -226,7 +226,7 @@ struct PermissionFeatureInfoPopover: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Label {
-                Text(permission.title)
+                Text(NSLocalizedString(permission.title, comment: "Permission name"))
             } icon: {
                 Image(systemName: permission.iconName)
                     .foregroundStyle(permission.iconColor)
@@ -236,7 +236,7 @@ struct PermissionFeatureInfoPopover: View {
             Divider()
 
             if features.isEmpty {
-                Text(permission.description)
+                Text(NSLocalizedString(permission.description, comment: "Permission purpose"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -269,7 +269,7 @@ struct NotchAppearanceEditorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if !title.isEmpty {
-                Text(title).font(.headline).padding([.top, .horizontal])
+                Text(NSLocalizedString(title, comment: "Settings title")).font(.headline).padding([.top, .horizontal])
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
@@ -989,7 +989,7 @@ private struct AppsMetricCard: View {
                 .frame(width: 24, height: 24)
                 .background(tint.opacity(0.12), in: RoundedRectangle(cornerRadius: 7))
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.caption).foregroundStyle(.secondary)
+                Text(NSLocalizedString(title, comment: "Settings title")).font(.caption).foregroundStyle(.secondary)
                 Text(value).font(.subheadline.weight(.semibold)).lineLimit(1)
                 Text(detail).font(.caption2).foregroundStyle(.tertiary).lineLimit(1)
             }
@@ -1491,7 +1491,7 @@ private struct IndexingPill: View {
             ProgressView(value: progress)
                 .progressViewStyle(.linear)
                 .frame(width: 130)
-            Text(label).font(.caption.weight(.medium)).lineLimit(1)
+            Text(NSLocalizedString(label, comment: "Settings label")).font(.caption.weight(.medium)).lineLimit(1)
             Text("\(Int(progress * 100))%")
                 .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
         }
@@ -1517,7 +1517,7 @@ private struct StoragePieSlice: View {
                 let angle = (start + end) / 2 * 2 * .pi - .pi / 2
                 let radius = min(geometry.size.width, geometry.size.height) * 0.36
                 if fraction >= 0.035 {
-                    Text(label)
+                    Text(NSLocalizedString(label, comment: "Settings label"))
                         .font(.system(size: fraction < 0.06 ? 8 : 10, weight: .semibold))
                         .lineLimit(1)
                         .truncationMode(.middle)
@@ -1869,9 +1869,9 @@ fileprivate struct AnimationSliderRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(title)
+                        Text(NSLocalizedString(title, comment: "Settings title"))
                         if !description.isEmpty {
-                            Text(description)
+                            Text(NSLocalizedString(description, comment: "Settings description"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -3065,7 +3065,7 @@ struct StatThresholdRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Toggle(isOn: $threshold.isEnabled) {
-                Text(label)
+                Text(NSLocalizedString(label, comment: "Settings label"))
             }
             .toggleStyle(.switch)
 
@@ -6666,7 +6666,7 @@ fileprivate struct PickerButton: View {
     let action: () -> Void
 
     var body: some View {
-        Text(label)
+        Text(NSLocalizedString(label, comment: "Settings label"))
             .font(.subheadline.weight(.bold))
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
@@ -6743,7 +6743,7 @@ struct HeroMetricsView: View {
                 MaterialStatChip(label: "Temperature", value: String(format: "%.1f°C", viewModel.temperature), color: MaterialChartPalette.error, icon: "thermometer.medium")
                 MaterialStatChip(label: "Power", value: String(format: "%.1f W", abs(viewModel.powerConsumption)), color: MaterialChartPalette.warning, icon: "bolt.fill")
                 MaterialStatChip(label: "Voltage", value: String(format: "%.2f V", viewModel.voltage / 1000.0), color: MaterialChartPalette.tertiary, icon: "wave.3.right")
-                MaterialStatChip(label: "Current", value: String(format: "%.2f A", Double(abs(viewModel.amperage)) / 1000.0), color: MaterialChartPalette.primary, icon: "arrow.left.arrow.right")
+                MaterialStatChip(label: String(localized: "battery.current"), value: String(format: "%.2f A", Double(abs(viewModel.amperage)) / 1000.0), color: MaterialChartPalette.primary, icon: "arrow.left.arrow.right")
                 MaterialStatChip(label: "Condition", value: viewModel.health, color: .pink, icon: "heart.text.square")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -6760,7 +6760,7 @@ struct SpecRow: View {
     }
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Text(value)
@@ -6965,7 +6965,7 @@ struct PowerShareRow: View {
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(color)
                     .frame(width: 18)
-                Text(title)
+                Text(NSLocalizedString(title, comment: "Settings title"))
                     .font(.system(size: 13, weight: .semibold, design: .rounded))
                     .foregroundStyle(.primary)
                 Spacer()
@@ -7081,7 +7081,7 @@ struct BatterySpecsCard: View {
                 Text("Battery Specs").font(.system(size: 15, weight: .semibold, design: .rounded))
             }
             Spacer()
-            SpecRow(label: "Current", value: String(format: "%.1f A", Double(abs(viewModel.amperage)) / 1000.0))
+            SpecRow(label: String(localized: "battery.current"), value: String(format: "%.1f A", Double(abs(viewModel.amperage)) / 1000.0))
             SpecRow(label: "Voltage", value: String(format: "%.1f V", viewModel.voltage / 1000.0))
             SpecRow(label: "Power", value: String(format: "%.0f W", abs(viewModel.powerConsumption)))
             SpecRow(label: "System Load", value: String(format: "%.2f W", systemLoad))
@@ -7147,7 +7147,7 @@ private struct BatteryMetricGraphCard<Value: Plottable & Comparable>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text(title).font(.system(size: 15, weight: .semibold, design: .rounded))
+                Text(NSLocalizedString(title, comment: "Settings title")).font(.system(size: 15, weight: .semibold, design: .rounded))
                 Spacer()
                 Text(currentValue)
                     .font(.system(size: 13, weight: .bold, design: .rounded))
@@ -7485,7 +7485,7 @@ struct BatteryHistoryView: View {
             Capsule()
                 .fill(color)
                 .frame(width: 14, height: 3)
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .font(.system(size: 11, weight: .medium, design: .rounded))
                 .foregroundStyle(MaterialChartPalette.onSurfaceVariant)
                 .lineLimit(1)
@@ -7631,7 +7631,7 @@ struct StatPill: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .font(.caption2)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
@@ -7825,7 +7825,7 @@ private struct BatteryAlignedDetailRow: View {
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(color)
                 .frame(width: 18, alignment: .center)
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(MaterialChartPalette.onSurfaceVariant)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -7878,7 +7878,7 @@ struct PowerAdapterSpecsCard: View {
             if let info = viewModel.powerAdapterInfo, info.maxPower > 0 {
                 if info.current > 0 || info.maxCurrent > 0 {
                     PowerAdapterSpecRow(
-                        label: "Current",
+                        label: String(localized: "battery.current"),
                         currentValue: info.current > 0 ? "\(Double(info.current) / 1000.0, default: "%.2f") A" : "0.0 A",
                         maxValue: info.maxCurrent > 0 ? "\(Double(info.maxCurrent) / 1000.0, default: "%.1f") A" : "N/A"
                     )
@@ -7929,7 +7929,7 @@ fileprivate struct PowerAdapterSpecRow: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .font(.system(size: 12, design: .rounded))
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -7993,7 +7993,7 @@ struct HealthStatRow: View {
     let label: String, value: String, percentage: Int
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(label).font(.caption).foregroundColor(.secondary)
+            Text(NSLocalizedString(label, comment: "Settings label")).font(.caption).foregroundColor(.secondary)
             Spacer()
             Text(value).font(.caption.weight(.semibold)).multilineTextAlignment(.trailing)
             Text("\(percentage)%").font(.caption.weight(.semibold)).frame(width: 35, alignment: .trailing)
@@ -8004,7 +8004,7 @@ struct SimpleHealthStatRow: View {
     let label: String, value: String
     var body: some View {
         HStack {
-            Text(label).font(.caption).foregroundColor(.secondary)
+            Text(NSLocalizedString(label, comment: "Settings label")).font(.caption).foregroundColor(.secondary)
             Spacer()
             Text(value).font(.caption.weight(.semibold))
         }
@@ -8015,7 +8015,7 @@ struct PowerRow: View {
     let label: String, value: String, color: Color?
     var body: some View {
         HStack {
-            Text(label).font(.caption).foregroundColor(.secondary)
+            Text(NSLocalizedString(label, comment: "Settings label")).font(.caption).foregroundColor(.secondary)
             Spacer()
             Text(value).font(.caption.weight(.semibold)).foregroundColor(color ?? .primary)
         }
@@ -9018,7 +9018,7 @@ VStack(alignment: .leading, spacing: 8) {
                             let offset = settings.settings.lyricOffset
                             let label = offset == 0 ? "On time" : String(format: "%+.1fs", offset)
                             if #available(macOS 13.0, *) {
-                                Text(label).font(.caption).foregroundColor(.secondary)
+                                Text(NSLocalizedString(label, comment: "Settings label")).font(.caption).foregroundColor(.secondary)
                                 Stepper("", value: $settings.settings.lyricOffset, in: -5.0...5.0, step: 0.1)
                                     .labelsHidden()
                             } else {
@@ -9410,9 +9410,9 @@ struct EyeBreakRecommendationsView: View {
                 .clipShape(Circle())
 
             VStack(alignment: .leading, spacing: 5) {
-                Text(title)
+                Text(NSLocalizedString(title, comment: "Settings title"))
                     .font(.headline)
-                Text(description)
+                Text(NSLocalizedString(description, comment: "Settings description"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -9903,7 +9903,7 @@ struct MetricCardView: View {
             HStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.system(size: 10))
-                Text(title)
+                Text(NSLocalizedString(title, comment: "Settings title"))
                     .font(.system(size: 10))
             }
             .foregroundColor(.secondary)
@@ -11109,7 +11109,7 @@ struct PerDisplayNotchSettingsView: View {
 
     private func sizeControl(label: String, value: Binding<Double>, range: ClosedRange<Double>, hasOverride: Bool) -> some View {
         HStack(spacing: 6) {
-            Text(label)
+            Text(NSLocalizedString(label, comment: "Settings label"))
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: true, vertical: false)
                 .lineLimit(1)
@@ -13036,7 +13036,7 @@ struct FocusSessionSettingsView: View {
                 Image(systemName: icon)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundColor(color)
-                Text(title)
+                Text(NSLocalizedString(title, comment: "Settings title"))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.secondary)
             }
@@ -13052,7 +13052,7 @@ struct FocusSessionSettingsView: View {
     }
 
     private func sectionLabel(_ title: String) -> some View {
-        Text(title)
+        Text(NSLocalizedString(title, comment: "Settings title"))
             .font(.system(size: 14, weight: .semibold))
             .padding(.top, 12).padding(.horizontal, 16).padding(.bottom, 6)
             .frame(maxWidth: .infinity, alignment: .leading)

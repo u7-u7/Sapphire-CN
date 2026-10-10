@@ -16,7 +16,7 @@ struct NotchSearchField: View {
     @FocusState private var isFocused: Bool
 
     var body: some View {
-        TextField(placeholder, text: $text)
+        TextField(NSLocalizedString(placeholder, comment: "Notch search placeholder"), text: $text)
             .textFieldStyle(.plain)
             .focused($isFocused)
             .onSubmit { onSubmit?() }
