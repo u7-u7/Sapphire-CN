@@ -1501,6 +1501,10 @@
 			shellPath = /bin/sh;
 			shellScript = (
 				"set -e",
+				"if [ \"${CONFIGURATION}\" != \"Release\" ] || [ \"${CODE_SIGNING_ALLOWED}\" != \"YES\" ]; then",
+				"  touch \"${SCRIPT_OUTPUT_FILE_0}\"",
+				"  exit 0",
+				"fi",
 				"\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"",
 				"touch \"${SCRIPT_OUTPUT_FILE_0}\"",
 				"",
@@ -2073,7 +2077,7 @@
 				ENABLE_RESOURCE_ACCESS_CONTACTS = YES;
 				ENABLE_RESOURCE_ACCESS_LOCATION = YES;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
-				EXCLUDED_SOURCE_FILE_NAMES = "*/Sapphire/Stubs/*";
+				EXCLUDED_SOURCE_FILE_NAMES = "*/Sapphire/Stubs/GeminiLiveManagerStub.swift";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Sapphire/Services/Music";
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/PrivateHeaders";
@@ -2156,7 +2160,7 @@
 				ENABLE_RESOURCE_ACCESS_CONTACTS = YES;
 				ENABLE_RESOURCE_ACCESS_LOCATION = YES;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = YES;
-				EXCLUDED_SOURCE_FILE_NAMES = "*/Sapphire/Stubs/*";
+				EXCLUDED_SOURCE_FILE_NAMES = "*/Sapphire/Stubs/GeminiLiveManagerStub.swift";
 				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Sapphire/Services/Music";
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/PrivateHeaders";

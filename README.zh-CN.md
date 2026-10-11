@@ -2,11 +2,22 @@
 
 这是 [Sapphire](https://github.com/cshariq/Sapphire) 的简体中文本地化版本。保留上游英文作为默认语言；macOS 为 Sapphire 选择简体中文时，应用会读取 `zh-Hans` 翻译。
 
+## 终端构建
+
+安装 Xcode 工具链后，无需打开 Xcode 窗口即可编译：
+
+```sh
+xcodebuild -project Sapphire.xcodeproj -scheme Sapphire -configuration Debug \
+  -destination 'platform=macOS' -derivedDataPath /tmp/SapphireDerivedData \
+  CODE_SIGNING_ALLOWED=NO build
+```
+
+这条命令生成未签名的调试应用，适合检查代码和中文资源。需要实际使用系统扩展、权限等功能时，仍须按项目要求完成签名。
+
 ## 本地运行
 
-1. 用 Xcode 打开 `Sapphire.xcodeproj`，选择 `Sapphire` scheme。
-2. 按项目原有签名与权限配置构建、运行。首次启动按引导授予所需权限。
-3. 在 macOS「系统设置 → 通用 → 语言与地区 → 应用程序」为 Sapphire 选择「简体中文」，重新启动应用。
+1. 按项目原有签名与权限配置构建、运行。首次启动按引导授予所需权限。
+2. 在 macOS「系统设置 → 通用 → 语言与地区 → 应用程序」为 Sapphire 选择「简体中文」，重新启动应用。
 
 当前翻译覆盖设置导航、首次启动、权限说明、主要设置页、主界面与常见功能页的 1,674 条文案；其他功能页面中尚未翻译的文字会回退为英文。
 

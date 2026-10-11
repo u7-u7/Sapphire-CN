@@ -213,6 +213,7 @@ final class ContinuityManager: ObservableObject {
 
     func startIfEnabled() {}
     func stop() {}
+    func openWidgets() {}
     func sendMediaCommand(_ action: ContinuityMediaAction, seekMs: Int? = nil) {}
     func sendFiles(_ urls: [URL], toPeerID peerID: String) {}
     func dismissNotificationOnPhone(peerID: String, key: String) {}

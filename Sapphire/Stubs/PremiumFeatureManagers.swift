@@ -113,6 +113,7 @@ final class CleanURLManager {
     private init() {}
     func start() {}
     func stopPolling() {}
+    func stopMonitoring() { stopPolling() }
 }
 
 final class FinderCutPasteManager {
