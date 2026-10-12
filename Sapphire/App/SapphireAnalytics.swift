@@ -33,6 +33,7 @@ enum SapphireAnalytics {
         if !FirebaseBootstrap.isConfigured {
             bootstrap()
         }
+        guard FirebaseBootstrap.isConfigured else { return }
         Analytics.logEvent(name, parameters: parameters)
     }
 }

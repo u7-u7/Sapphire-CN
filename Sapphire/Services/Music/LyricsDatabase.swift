@@ -26,6 +26,7 @@ final class LyricsDatabase {
         if let cached = cache[cacheKey] { return cached }
 
         FirebaseBootstrap.configureIfNeeded()
+        guard FirebaseBootstrap.isConfigured else { return nil }
         let started = Date()
         switch await Self.lookup(keys: keys) {
         case .found(let lines, let source, let keyType):

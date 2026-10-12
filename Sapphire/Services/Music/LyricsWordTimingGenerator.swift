@@ -206,6 +206,8 @@ final class LyricsWordTimingGenerator {
             onGenerated(alignment.lines)
         }
 
+        guard FirebaseBootstrap.isConfigured else { return }
+
         guard let key = request.spotifyTrackID.map(LyricsDatabaseKeys.spotifyKey)
                 ?? LyricsDatabaseKeys.metadataKey(title: request.title, artist: request.artist) else {
             return
