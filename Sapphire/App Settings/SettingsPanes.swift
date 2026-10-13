@@ -2823,15 +2823,31 @@ struct WidgetsSettingsView: View {
                     Text("Enable, disable, and reorder the widgets that appear in the notch. Space is limited by your display width.")
                         .font(.caption).foregroundColor(.secondary).padding(.horizontal).padding(.bottom, 5)
                     ReorderableVStack(items: $settings.settings.widgetOrder) { widget in
-                        if widget != .agent {
-                            WidgetRowView(
-                                widgetType: widget,
-                                enabledWidgetCount: enabledWidgetCount,
-                                isPremiumLocked: lockedWidgetTypes.contains(widget)
-                            )
-                        }
+                        WidgetRowView(
+                            widgetType: widget,
+                            enabledWidgetCount: enabledWidgetCount,
+                            isPremiumLocked: lockedWidgetTypes.contains(widget)
+                        )
                     }
                     .modifier(SettingsContainerModifier())
+                }
+                if settings.settings.aiUsageWidgetEnabled {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("AI Usage").font(.headline)
+                        Text("Shows official subscription quota or third-party balances from the configured provider.")
+                            .font(.caption).foregroundStyle(.secondary)
+                        Picker("Automatic Refresh", selection: $settings.settings.aiUsageRefreshMinutes) {
+                            Text("Every 5 minutes").tag(5)
+                            Text("Every 15 minutes").tag(15)
+                            Text("Every 30 minutes").tag(30)
+                        }
+                        Text("Quota reset times come from each provider. Manual refresh also respects the minimum request interval and rate-limit cooldown.")
+                            .font(.caption2).foregroundStyle(.secondary)
+                    }
+                    .padding(20)
+                    .modifier(SettingsContainerModifier())
+                    ThirdPartyUsageSettingsView(configuration: $settings.settings.codexUsageQuery, provider: .codex)
+                    ThirdPartyUsageSettingsView(configuration: $settings.settings.claudeUsageQuery, provider: .claude)
                 }
             }
             .padding(25)

@@ -90,3 +90,16 @@ Sapphire.xcodeproj/xcuserdata/Shariq.xcuserdatad/xcschemes/xcschememanagement.pl
 /SapphireTests/AppStorageModelsTests.swift
 /SapphireTests/ClipboardPickerPositioningTests.swift
 /SapphireTests/ContinuityStatusProtocolTests.swift
+
+# Local verification records contain account readings and machine paths
+/docs/plans/*-verification.json
+# Xcode user state and temporary library copies
+**/xcuserdata/
+/libimobiledevice/lib/.!*
+# Local credentials and build output
+.env
+.env.*
+!.env.example
+*.xcresult/
+/DerivedData/
+/build/

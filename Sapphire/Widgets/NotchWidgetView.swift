@@ -49,7 +49,16 @@ private struct IsCalendarHoveredKey: EnvironmentKey {
     static let defaultValue: Binding<Bool> = .constant(false)
 }
 
+struct NotchPopoverPresentationKey: EnvironmentKey {
+    static let defaultValue: (UUID, Bool) -> Void = { _, _ in }
+}
+
 extension EnvironmentValues {
+    var onNotchPopoverPresentationChange: (UUID, Bool) -> Void {
+        get { self[NotchPopoverPresentationKey.self] }
+        set { self[NotchPopoverPresentationKey.self] = newValue }
+    }
+
     var navigationStack: Binding<[NotchWidgetMode]> {
         get { self[NavigationStackKey.self] }
         set { self[NavigationStackKey.self] = newValue }
@@ -330,7 +339,7 @@ private struct NotchDefaultWidgetsView: View {
             case .storage:
                 return settings.settings.storageWidgetEnabled
             case .agent:
-                return false
+                return settings.settings.aiUsageWidgetEnabled
             case .focusSession:
                 return settings.settings.focusSessionWidgetEnabled
             }
@@ -472,7 +481,7 @@ private struct NotchDefaultWidgetsView: View {
                     }
                 }
         case .agent:
-            EmptyView()
+            AIUsageWidgetView()
         }
     }
 }

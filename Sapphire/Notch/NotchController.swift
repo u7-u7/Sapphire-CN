@@ -76,6 +76,7 @@ struct NotchController: View {
     @State private var widgetSwitchProtectionGeneration: UInt64 = 0
     @State private var clickExpandedOpenedAt: Date = .distantPast
     @State private var isPinned = false
+    @State private var popoverPresentation = NotchPopoverPresentationState()
     @State private var animatedWidth: CGFloat = 0
     @State private var animatedHeight: CGFloat = 0
     @State private var animatedCornerRadius: CGFloat = 0
@@ -772,6 +773,7 @@ struct NotchController: View {
                 .environment(\.navigationStack, $navigationStack)
                 .environment(\.activeDropZone, $activeDropZone)
                 .environment(\.isCalendarHovered, $isCalendarHovered)
+                .environment(\.onNotchPopoverPresentationChange, handlePopoverPresentation)
                 .environment(\.onActiveSnapZoneChange, { activeSnapZone = $0 })
                 .environment(\.onDropZoneFramesChange, handleDropZoneFramesChange)
                 .environment(\.onSnapZoneHitRegionsChange, { snapZoneHitRegions = $0 })
@@ -880,6 +882,7 @@ struct NotchController: View {
     }
 
     private func teardownMonitors() {
+        popoverPresentation.reset()
         if let runtimeStateSource {
             NotchRuntimeState.shared.unregister(source: runtimeStateSource)
         }
@@ -2358,8 +2361,27 @@ struct NotchController: View {
         (NSApp.delegate as? AppDelegate)?.updateNotchHostWindowHeight(requiredContentHeight: contentHeight)
     }
 
+    private func handlePopoverPresentation(owner: UUID, isPresented: Bool) {
+        let wasHolding = popoverPresentation.holdsExpansion
+        popoverPresentation.setPresented(isPresented, owner: owner)
+        if isPresented {
+            collapseTask?.cancel()
+            collapseTask = nil
+            isCollapseTimerActive = false
+        } else if wasHolding && !popoverPresentation.holdsExpansion {
+            refreshNotchInteractionState()
+            // 弹窗打开时已记录 hover=false，关闭时不会再出现一次离开事件。
+            // 即使鼠标还在宽缓冲区内，也恢复 clickExpanded 的正常离开行为。
+            if notchState == .clickExpanded && !isHovered {
+                scheduleCollapse(after: 0)
+            } else {
+                evaluateCollapseIfCursorOutsideHoverZone()
+            }
+        }
+    }
+
     private func handleClickExpandedHoverOut(config: ResolvedNotchConfiguration) {
-        guard !isPinned else { return }
+        guard !isPinned, !popoverPresentation.holdsExpansion else { return }
         guard widgetSwitchProtectionTask == nil else { return }
         scheduleCollapse(after: 0)
     }
@@ -2412,7 +2434,8 @@ struct NotchController: View {
     }
 
     private func evaluateCollapseIfCursorOutsideHoverZone() {
-        guard let window = notchWindow, let config = config, !isPinned else { return }
+        guard let window = notchWindow, let config = config, !isPinned,
+              !popoverPresentation.holdsExpansion else { return }
         let mouseLocation = window.mouseLocationOutsideOfEventStream
         let interactiveBounds = interactiveFrame(for: window, config: config)
         let hoverBounds = notchState == .initial
@@ -2427,6 +2450,7 @@ struct NotchController: View {
         collapseTask?.cancel()
         collapseTask = nil
         guard !isPinned,
+              !popoverPresentation.holdsExpansion,
               !isFileDropTargeted,
               !isFileDragSessionInProgress,
               !awaitingDropCompletion else {
@@ -2438,7 +2462,8 @@ struct NotchController: View {
             do {
                 try await Task.sleep(for: .milliseconds(Int(delay * 1000)))
                 guard !Task.isCancelled else { return }
-                if !self.isHovered
+                if !self.popoverPresentation.holdsExpansion
+                    && !self.isHovered
                     && !self.dragManager.isDraggingInActivationZone
                     && !self.windowDrag.isDragging
                     && !self.isFileDropTargeted

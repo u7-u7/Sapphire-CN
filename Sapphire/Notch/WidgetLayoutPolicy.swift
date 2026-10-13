@@ -25,7 +25,7 @@ enum WidgetLayoutPolicy {
         case .mirror: return 140
         case .battery: return 210
         case .timer: return 150
-        case .agent: return 0
+        case .agent: return 260
         case .focusSession: return 190
         case .storage: return 210
         }
@@ -61,13 +61,13 @@ enum WidgetLayoutPolicy {
         bypassSpaceLimit: Bool = false
     ) -> [WidgetType] {
         if bypassSpaceLimit {
-            return ordered.filter { $0 != .agent }
+            return ordered
         }
 
         var used: CGFloat = 0
         var result: [WidgetType] = []
 
-        for widget in ordered where widget != .agent {
+        for widget in ordered {
             let width = capacityWidth(for: widget)
 
             let spacing: CGFloat
@@ -93,9 +93,8 @@ enum WidgetLayoutPolicy {
         showDividers: Bool,
         bypassSpaceLimit: Bool = false
     ) -> Bool {
-        guard widget != .agent else { return false }
         if bypassSpaceLimit { return true }
-        var candidates = orderedEnabled.filter { $0 != .agent }
+        var candidates = orderedEnabled
         if !candidates.contains(widget) {
             candidates.append(widget)
         }

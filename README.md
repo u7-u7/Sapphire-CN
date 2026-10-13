@@ -1,3 +1,15 @@
+# Sapphire-CN
+
+[Sapphire](https://github.com/cshariq/Sapphire) 的简体中文版本，加入 **AI 额度**组件，可查看 Codex / Claude 的额度、第三方平台余额和服务端提供的重置时间。
+
+- Codex / Claude 官方订阅额度查询，以及 DeepSeek API 余额。
+- 分别配置 Codex / Claude 第三方查询地址，提供 DeepSeek、Sub2API、NewAPI 和自定义 JSON 模板、测试按钮。
+- AI 额度详情打开时保持刘海展开，鼠标移到刷新按钮或滚动区域可正常操作。
+
+构建、配置与使用方法见 [简体中文说明](README.zh-CN.md)。本仓库保留上游许可证和来源声明；以下为上游项目介绍。
+
+---
+
 <div align="center">
 <img width="220" height="220" alt="Group 31" src="https://github.com/user-attachments/assets/1e3ef88f-9849-4896-88d2-5294841a0062" />
 

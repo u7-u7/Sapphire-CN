@@ -195,7 +195,7 @@ struct WidgetRowView: View {
         case .timer: return $settings.settings.timerWidgetEnabled
         case .focusSession: return $settings.settings.focusSessionWidgetEnabled
         case .storage: return $settings.settings.storageWidgetEnabled
-        case .agent: return .constant(false)
+        case .agent: return $settings.settings.aiUsageWidgetEnabled
         }
     }
 
@@ -204,9 +204,7 @@ struct WidgetRowView: View {
     }
 
     var body: some View {
-        if widgetType == .agent {
-            EmptyView()
-        } else {
+        Group {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(widgetType.displayName)

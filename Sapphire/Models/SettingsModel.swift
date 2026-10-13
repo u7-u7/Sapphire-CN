@@ -490,7 +490,7 @@ extension Settings {
             case .timer: return timerWidgetEnabled
             case .focusSession: return focusSessionWidgetEnabled
             case .storage: return storageWidgetEnabled
-            case .agent: return false
+            case .agent: return aiUsageWidgetEnabled
             }
         }
     }
@@ -1051,6 +1051,10 @@ struct Settings: Codable, Equatable {
     var sportsWidgetEnabled: Bool = false
     var financeWidgetEnabled: Bool = false
     var shopifyWidgetEnabled: Bool = false
+    var aiUsageWidgetEnabled: Bool = false
+    var aiUsageRefreshMinutes: Int = 5
+    var codexUsageQuery: ThirdPartyUsageConfiguration = .init()
+    var claudeUsageQuery: ThirdPartyUsageConfiguration = .init()
     var calendarWidgetEnabled: Bool = true
     var shortcutsWidgetEnabled: Bool = false
     var notesWidgetEnabled: Bool = false
@@ -1284,6 +1288,9 @@ struct Settings: Codable, Equatable {
     }
 
     mutating func normalizeCollectionOrders() {
+        if ![5, 15, 30].contains(aiUsageRefreshMinutes) {
+            aiUsageRefreshMinutes = 5
+        }
         let availableLayouts = LayoutTemplate.allTemplates + customSnapLayouts
         let validLayoutIDs = Set(availableLayouts.map(\.id))
         var seenTargets = Set<String>()
@@ -2602,7 +2609,7 @@ enum WidgetType: String, Codable, CaseIterable, Identifiable, Equatable {
         case .timer: return "Timer"
         case .focusSession: return "Focus"
         case .storage: return "Storage"
-        case .agent: return "Agent"
+        case .agent: return NSLocalizedString("AI Usage", comment: "AI quota widget name")
         }
     }
 }

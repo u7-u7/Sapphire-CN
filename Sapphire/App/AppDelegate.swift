@@ -185,6 +185,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     private lazy var caffeineManager = CaffeineManager.shared
 
     private var cancellables = Set<AnyCancellable>()
+    private var aiUsageSettingsCancellable: AnyCancellable?
 
     var isScreenLocked = false
     private var isAuthenticating = false
@@ -486,6 +487,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         liveActivityStartTask = nil
         liveActivityManager.stop()
         DevActivityMonitor.shared.stop()
+        aiUsageSettingsCancellable?.cancel()
+        aiUsageSettingsCancellable = nil
+        AIUsageService.shared.stop()
         LiveWallpaperManager.shared.shutdown()
 
         NotificationCenter.default.removeObserver(
@@ -661,6 +665,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         menuBarReadoutsManager.start()
         systemAlertsManager.start()
         DevActivityMonitor.shared.start()
+        // Polling follows the setting rather than notch visibility, preserving
+        // the minimum request interval when the panel is opened repeatedly.
+        observeAIUsageSettings()
         LiveWallpaperManager.shared.start()
         _ = archiveExtractor
         _ = keyboardShortcutManager
@@ -1137,6 +1144,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
+        aiUsageSettingsCancellable?.cancel()
+        aiUsageSettingsCancellable = nil
+        AIUsageService.shared.stop()
         mouseControlManager.restoreSystemSettings()
         settingsModel.flushPendingSave()
         NearbyConnectionManager.shared.becomeInvisible()
@@ -1224,6 +1234,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     }
 
     // MARK: - Status Bar Item (Launchpad / Main Toggle)
+
+    private func observeAIUsageSettings() {
+        let configuration = settingsModel.$settings
+            .map { settings -> AIUsageRuntimeConfiguration in
+                AIUsageRuntimeConfiguration(enabled: settings.aiUsageWidgetEnabled,
+                    refreshMinutes: settings.aiUsageRefreshMinutes,
+                    codex: settings.codexUsageQuery, claude: settings.claudeUsageQuery)
+            }
+            .eraseToAnyPublisher()
+        aiUsageSettingsCancellable = configuration
+            .removeDuplicates()
+            .sink { [weak self] (configuration: AIUsageRuntimeConfiguration) in
+                guard let self, self.isMainAppRunning else { return }
+                AIUsageService.shared.configure(enabled: configuration.enabled, refreshMinutes: configuration.refreshMinutes,
+                    codex: configuration.codex, claude: configuration.claude)
+            }
+    }
 
     private func statusItemPreferredPositionKey(for autosaveName: String) -> String {
         "NSStatusItem Preferred Position \(autosaveName)"

@@ -1,6 +1,946 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Third-party Usage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第三方额度"
+          }
+        }
+      }
+    },
+    "Use third-party usage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用第三方额度"
+          }
+        }
+      }
+    },
+    "Configure a read-only balance endpoint for the current provider. Missing values and reset times remain unknown.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为当前供应商配置只读额度查询接口。缺失数据和重置时间显示为未知。"
+          }
+        }
+      }
+    },
+    "Platform name": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平台名称"
+          }
+        }
+      }
+    },
+    "Current provider API address": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前供应商 API 地址"
+          }
+        }
+      }
+    },
+    "For CLI credentials, this address must match the active CLI provider. An unrelated API Key will not be sent.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此地址须与当前 CLI 供应商一致，以免查到其他平台的额度。"
+          }
+        }
+      }
+    },
+    "Usage template": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询模板"
+          }
+        }
+      }
+    },
+    "Apply template": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应用模板"
+          }
+        }
+      }
+    },
+    "Usage query address": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "额度查询地址"
+          }
+        }
+      }
+    },
+    "Template fills the query address and JSON fields. Check your platform documentation before testing.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模板会填入查询地址及 JSON 字段。测试前请核对平台文档。"
+          }
+        }
+      }
+    },
+    "Query credentials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询凭据"
+          }
+        }
+      }
+    },
+    "NewAPI User ID (optional)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NewAPI 用户 ID（可选）"
+          }
+        }
+      }
+    },
+    "NewAPI requires an account Access Token and User ID, rather than a model API Key.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NewAPI 需要账户 Access Token 与用户 ID。"
+          }
+        }
+      }
+    },
+    "Query Key or Access Token": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询 Key 或 Access Token"
+          }
+        }
+      }
+    },
+    "Save query key": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存查询密钥"
+          }
+        }
+      }
+    },
+    "Remove saved key": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除已保存密钥"
+          }
+        }
+      }
+    },
+    "Query key saved in Keychain": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询密钥已存入钥匙串"
+          }
+        }
+      }
+    },
+    "Testing uses the entered key without saving it. Leave the field blank to use the saved query key.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测试使用输入的密钥，不自动保存。留空则使用此查询地址已保存的密钥。"
+          }
+        }
+      }
+    },
+    "JSON fields and reset time": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JSON 字段与重置时间"
+          }
+        }
+      }
+    },
+    "Use dotted JSON paths, including array indices: data.balance or balance_infos.0.total_balance. Empty fields stay unknown.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用点号分隔 JSON 路径，数组序号也用点号，例如 data.balance 或 balance_infos.0.total_balance。空字段显示为未知。"
+          }
+        }
+      }
+    },
+    "Remaining field": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余额度字段"
+          }
+        }
+      }
+    },
+    "Used field (optional)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用额度字段（可选）"
+          }
+        }
+      }
+    },
+    "Total field (optional)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总额度字段（可选）"
+          }
+        }
+      }
+    },
+    "Currency field (optional)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "货币字段（可选）"
+          }
+        }
+      }
+    },
+    "Fallback unit": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认单位"
+          }
+        }
+      }
+    },
+    "Divide raw value by": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原始数值除以"
+          }
+        }
+      }
+    },
+    "NewAPI starts at 500000 quota per USD. Adjust this divisor to match your platform's conversion rule.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NewAPI 模板默认每美元对应 500000 quota，请按平台实际换算规则调整除数。"
+          }
+        }
+      }
+    },
+    "Reset field (optional)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间字段（可选）"
+          }
+        }
+      }
+    },
+    "Reset format": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间格式"
+          }
+        }
+      }
+    },
+    "Test usage query": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测试额度查询"
+          }
+        }
+      }
+    },
+    "Testing only sends a GET balance request. It shares the widget's refresh interval and rate-limit cooldown.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测试仅发送只读 GET 额度请求，与组件共享刷新间隔及限流冷却。"
+          }
+        }
+      }
+    },
+    "Remaining": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余"
+          }
+        }
+      }
+    },
+    "Used": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总额"
+          }
+        }
+      }
+    },
+    "Reset time": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间"
+          }
+        }
+      }
+    },
+    "Last checked": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查询时间"
+          }
+        }
+      }
+    },
+    "Not configured": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未配置"
+          }
+        }
+      }
+    },
+    "Read-only GET destination: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只读 GET 请求目标：%@"
+          }
+        }
+      }
+    },
+    "Read-only GET destination: %@. Query credentials are sent to this host.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只读 GET 请求目标：%@。查询凭据将发往此主机。"
+          }
+        }
+      }
+    },
+    "Could not save query key to Keychain": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法将查询密钥保存到钥匙串"
+          }
+        }
+      }
+    },
+    "Saved query key removed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已删除查询密钥"
+          }
+        }
+      }
+    },
+    "Could not remove query key from Keychain": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法从钥匙串删除查询密钥"
+          }
+        }
+      }
+    },
+    "Save query settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存查询设置"
+          }
+        }
+      }
+    },
+    "Changes take effect after saving. Testing uses the draft without saving it.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "修改在保存后生效，测试使用草稿且不保存。"
+          }
+        }
+      }
+    },
+    "Save query settings before saving a key for this destination.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先保存查询设置，再保存此地址的密钥。"
+          }
+        }
+      }
+    },
+    "Available balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用余额"
+          }
+        }
+      }
+    },
+    "Remaining quota": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余额度"
+          }
+        }
+      }
+    },
+    "Used quota": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用额度"
+          }
+        }
+      }
+    },
+    "Total quota": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总额度"
+          }
+        }
+      }
+    },
+    "Configure the provider's usage URL and credentials in AI Usage settings. Refresh only checks usage.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 AI 额度设置中配置供应商查询地址及凭据。刷新仅查询额度。"
+          }
+        }
+      }
+    },
+    "Unable to save the query key in Keychain.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法将查询密钥保存到钥匙串。"
+          }
+        }
+      }
+    },
+    "Shows official subscription quota or third-party balances from the configured provider.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示官方订阅额度或已配置供应商的余额与额度。"
+          }
+        }
+      }
+    },
+    "Reset time not provided": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间未提供"
+          }
+        }
+      }
+    },
+    "DeepSeek API balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DeepSeek API 余额"
+          }
+        }
+      }
+    },
+    "No balance reported": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未返回余额数据"
+          }
+        }
+      }
+    },
+    "Reads the existing DeepSeek configuration from Claude CLI. Refresh only checks the balance.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Claude CLI 现有 DeepSeek 配置读取；刷新仅查询余额。"
+          }
+        }
+      }
+    },
+    "Total available balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总可用余额"
+          }
+        }
+      }
+    },
+    "Granted balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赠金余额"
+          }
+        }
+      }
+    },
+    "Topped-up balance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "充值余额"
+          }
+        }
+      }
+    },
+    "Show usage windows and reset times": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看额度窗口与重置时间"
+          }
+        }
+      }
+    },
+    "Never synced": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未同步"
+          }
+        }
+      }
+    },
+    "Last sync %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次同步 %@"
+          }
+        }
+      }
+    },
+    "Refreshing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新中"
+          }
+        }
+      }
+    },
+    "Needs refresh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要刷新"
+          }
+        }
+      }
+    },
+    "Not connected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未连接"
+          }
+        }
+      }
+    },
+    "Usage unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "额度暂不可用"
+          }
+        }
+      }
+    },
+    "Synced": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已同步"
+          }
+        }
+      }
+    },
+    "Account usage and reset times": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账号额度与重置时间"
+          }
+        }
+      }
+    },
+    "Refresh now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即刷新"
+          }
+        }
+      }
+    },
+    "Next data refresh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下次数据拉取"
+          }
+        }
+      }
+    },
+    "Reset times come from the provider. Data refresh only checks usage; it does not send a prompt.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间由服务商返回；数据拉取只查询额度，不发送模型请求。"
+          }
+        }
+      }
+    },
+    "No usage reported": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂无额度数据"
+          }
+        }
+      }
+    },
+    "Showing previous data": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在显示上次的数据"
+          }
+        }
+      }
+    },
+    "Last successful sync": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次成功同步"
+          }
+        }
+      }
+    },
+    "Sign in with the CLI in Terminal, then refresh here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在终端中使用 CLI 登录，再回到这里刷新。"
+          }
+        }
+      }
+    },
+    "Copy command": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制命令"
+          }
+        }
+      }
+    },
+    "Used %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用 %@"
+          }
+        }
+      }
+    },
+    "Resets at": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间"
+          }
+        }
+      }
+    },
+    "%@ left": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余 %@"
+          }
+        }
+      }
+    },
+    "Reset unknown": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置时间未知"
+          }
+        }
+      }
+    },
+    "Awaiting new window": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等待新窗口"
+          }
+        }
+      }
+    },
+    "%dd %dh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d天 %d小时"
+          }
+        }
+      }
+    },
+    "%dh %dm": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d小时 %d分钟"
+          }
+        }
+      }
+    },
+    "%dm": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d分钟"
+          }
+        }
+      }
+    },
+    "Reset in %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@后重置"
+          }
+        }
+      }
+    },
+    "5-hour window": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 小时"
+          }
+        }
+      }
+    },
+    "Weekly window": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每周"
+          }
+        }
+      }
+    },
+    "AI Usage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AI 额度"
+          }
+        }
+      }
+    },
+    "Automatic Refresh": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动刷新"
+          }
+        }
+      }
+    },
+    "Every 5 minutes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每 5 分钟"
+          }
+        }
+      }
+    },
+    "Every 15 minutes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每 15 分钟"
+          }
+        }
+      }
+    },
+    "Every 30 minutes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每 30 分钟"
+          }
+        }
+      }
+    },
+    "Shows Codex and Claude subscription quota from their existing CLI sign-ins. Credentials stay on this Mac.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 Codex 和 Claude 命令行工具的现有登录读取订阅额度，凭据保留在本机。"
+          }
+        }
+      }
+    },
+    "Quota reset times come from each provider. Manual refresh also respects the minimum request interval and rate-limit cooldown.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "额度重置时间由平台提供。手动刷新同样遵守最短请求间隔和限流冷却时间。"
+          }
+        }
+      }
+    },
     "%@ requires Sapphire %@": {
       "localizations": {
         "zh-Hans": {
