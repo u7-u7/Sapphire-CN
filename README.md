@@ -2,13 +2,16 @@
 
 Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主要界面的简体中文翻译，并增加 Codex、Claude 官方订阅额度和第三方平台余额查询。
 
-**当前安装方式：源码构建。** 截至 2026 年 10 月 14 日，[本仓库发布页](https://github.com/u7-u7/Sapphire-CN/releases)尚未提供中文安装包。上游发布页提供的是原版，不包含本分支新增的 AI 额度和 Helper 冷启动修复；下载源码压缩包也不能直接安装。
+**已有 Apple 芯片开发预览安装包：** [Sapphire-CN 3.0-cn.1-preview](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)。提供 DMG、ZIP 和 SHA-256 校验文件，包含本分支的中文界面、AI 额度与 Helper 冷启动修复。
 
-如果你已经取得维护者提供的已签名 `Sapphire.app`，可以直接从[安装到应用程序](#安装到应用程序)开始。尚未取得安装包、也不熟悉 Xcode 的用户，可以等待本仓库提供已签名安装包。
+**本包使用 Apple Development 开发签名，未完成 Apple 公证。** macOS 默认安全检查可能阻止首次打开，不能当作已公证正式发行版。安装前请阅读[安装包安装](#安装包安装)中的签名限制；需要自行编译或使用自己的签名身份时，阅读[源码安装](#源码安装)。
+
+上游发布页提供的是原版，不包含本分支新增功能。本分支安装包以本仓库 Releases 为准。
 
 ## 教程目录
 
 - [安装前准备](#安装前准备)
+- [安装包安装](#安装包安装)
 - [源码安装](#源码安装)
 - [首次启动与授权](#首次启动与授权)
 - [基础使用](#基础使用)
@@ -46,6 +49,48 @@ Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主�
 4. **网络连接**：首次构建需要下载 Swift 包依赖；自动签名可能需要访问 Apple 的服务。
 
 没有有效签名身份时，可以先做编译检查，但不能把未签名或 ad-hoc 临时签名应用当成 Helper 功能完整的安装版本。
+
+## 安装包安装
+
+### 下载安装包
+
+打开[本分支开发预览发布页](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)，在附件中选择：
+
+| 文件 | 用途 |
+| --- | --- |
+| [DMG 安装镜像](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.dmg) | 推荐，打开后拖动应用到“应用程序” |
+| [ZIP 应用压缩包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.zip) | 备用方式，解压后复制完整应用 |
+| [SHA-256 校验文件](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/SHA256SUMS.txt) | 核对下载文件是否与发布包一致 |
+
+发布页自动提供的源码压缩包用于开发；安装应用请选择上表中的 DMG 或应用 ZIP。安装包只面向 Apple 芯片，不提供 Intel 构建。
+
+### 拖动安装
+
+1. 退出已经运行的 Sapphire，并备份旧 `Sapphire.app`。
+2. 双击 DMG，在打开的窗口中把 `Sapphire.app` 拖到 `Applications` 图标。使用 ZIP 时，解压后将完整 `Sapphire.app` 复制到「应用程序」。
+3. 从 `/Applications/Sapphire.app` 启动，按照[首次启动与授权](#首次启动与授权)完成设置。
+4. 用系统的应用语言设置选择简体中文，按住 ⌘ 点击刘海打开组件面板。
+5. 在「设置 → 小组件 → 小组件可见性和顺序」启用 AI 额度，然后按下面教程配置自己的账户或查询接口。
+
+该安装方式无需在你的 Mac 上重新编译应用。应用内部版本仍显示 `3.0 (1)`，本仓库发布标签是 `v3.0-cn.1-preview`。
+
+### 开发预览的签名限制
+
+本包已通过严格深度签名验证，主程序与 Helper 使用匹配的 Apple Development 开发签名；本机真实握手已验证，但 Gatekeeper 评估结果为拒绝，尚无 Apple 公证票据。
+
+如果 macOS 阻止首次启动，仅在确认信任本仓库来源后，参考 [Apple 官方打开说明](https://support.apple.com/en-us/102445)，由你本人决定是否允许打开。该流程不保证其他机器一定可以运行；系统仍不允许启动时，可以使用自己的有效签名从源码构建，或等待 Developer ID 签名并公证的正式版本。
+
+无需关闭全局安全保护，也不要把移除签名或改成 ad-hoc 临时签名当作 Helper 的修复方式。项目最低部署版本为 macOS 14.6，其他机器和整机重启后的实际冷启动仍未完成验收。
+
+### 校验下载文件
+
+把下载的安装包和 `SHA256SUMS.txt` 放在同一目录，在该目录的终端中运行：
+
+```sh
+shasum -a 256 -c SHA256SUMS.txt
+```
+
+同时下载 DMG 和 ZIP 时，两项都应显示 `OK`。仅下载其中一项时，已下载文件应显示 `OK`，另一项会提示文件不存在；请核对自己实际下载的那一项。
 
 ## 源码安装
 
@@ -281,9 +326,9 @@ NewAPI 模板的默认数值除数为 `500000`，请按平台实际换算规则�
 
 ## 常见问题
 
-### 为什么找不到中文版安装包？
+### 安装包在哪里，为什么系统可能不让打开？
 
-本仓库暂未提供发布安装包。需要源码构建，或使用维护者提供的已签名应用。上游原版安装包不能作为本分支新功能的安装方式。
+安装包在[本分支发布页](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)。当前是 Apple Development 签名、未公证的开发预览，系统可能阻止启动；处理路径见[签名限制](#开发预览的签名限制)。上游原版安装包不包含本分支的新功能。
 
 ### 构建提示找不到签名身份、描述文件或应用组怎么办？
 
@@ -318,6 +363,10 @@ SAP-H2 对应等待后台批准，SAP-H3 对应辅助服务文件或注册缺失
 - **请求过于频繁**：等待冷却，连续点击刷新不会绕过服务端限流。
 
 ## 更新与卸载
+
+### 更新安装包版本
+
+从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)获取新的中文安装包。先退出应用并备份旧版，按新的发布说明检查架构、签名与校验值，再替换「应用程序」中的旧版；最后确认后台服务和 AI 额度正常。
 
 ### 更新源码安装版
 
