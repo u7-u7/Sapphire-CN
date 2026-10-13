@@ -31,7 +31,7 @@ enum HelperIssue: Equatable {
 
     var title: String {
         switch self {
-        case .spawnFailed: return "Helper cannot start"
+        case .spawnFailed: return "Helper connection unavailable"
         case .needsApproval: return "Login Items approval required"
         case .notFound: return "Helper registration missing"
         }
@@ -40,7 +40,7 @@ enum HelperIssue: Equatable {
     var shortSummary: String {
         switch self {
         case .spawnFailed:
-            return "Permission is granted, but macOS still will not launch the helper."
+            return "Permission is granted, but Sapphire cannot connect to the helper."
         case .needsApproval:
             return "Turn on Sapphire and Sapphire Helper in Login Items."
         case .notFound:
@@ -80,7 +80,7 @@ enum HelperIssue: Equatable {
             return """
             Error code: SAP-H1
 
-            Login Items permission is already granted (status 1), but macOS still will not start the helper. This usually means Sapphire’s own helper registration is stuck.
+            Login Items permission is already granted (status 1), but Sapphire cannot connect to the helper. The helper may still be starting or checking the app’s signature.
 
             Click “Reset Helper” below. Sapphire will unregister the helper and register it again, then relaunch if the helper is still having issues.
             """
@@ -178,6 +178,8 @@ class HelperManager: ObservableObject {
     @Published var isResettingHelper = false
 
     private var isRegistering = false
+    private var isReconcilingHelper = false
+    private var reconciliationGeneration = 0
     private var healthCheckInFlight = false
     private var connectionObservers: [NSObjectProtocol] = []
     private var lastHealthCheck = Date.distantPast
@@ -358,34 +360,54 @@ class HelperManager: ObservableObject {
     }
 
     func checkIfRunning(force: Bool = false) {
-        guard !isRegistering, !healthCheckInFlight else { return }
+        guard !isRegistering, !isReconcilingHelper, !healthCheckInFlight else { return }
         let now = Date()
         guard force || now.timeIntervalSince(lastHealthCheck) >= healthCheckMinimumInterval else { return }
         healthCheckInFlight = true
         lastHealthCheck = now
+        let generation = reconciliationGeneration
 
         Task { @MainActor [weak self] in
             guard let self else { return }
+            guard generation == self.reconciliationGeneration else {
+                self.healthCheckInFlight = false
+                return
+            }
             let running = await XPCClient.shared.ping(timeout: 2)
             self.healthCheckInFlight = false
+            guard generation == self.reconciliationGeneration else { return }
             helperLogger.info("[HelperManager] Ping result: \(running ? "running" : "NOT running"), current status: \(String(describing: self.status))")
             self.applyPingResult(running)
         }
     }
 
     func reactivateHelper() {
-        Task { await registerHelper(userInitiated: true, forceReinstall: true) }
+        guard !isRegistering, !isResettingHelper else { return }
+        invalidateReconciliation()
+        let generation = reconciliationGeneration
+        Task {
+            guard generation == reconciliationGeneration, !isResettingHelper else { return }
+            await registerHelper(userInitiated: true, forceReinstall: true)
+        }
     }
 
     func resetOwnBackgroundActivity() {
-        guard !isResettingHelper else { return }
+        guard !isResettingHelper, !isRegistering else { return }
+        // Reserve the reset synchronously so rapid clicks cannot queue resets.
+        isResettingHelper = true
+        invalidateReconciliation()
         Task { await performOwnBackgroundActivityReset() }
     }
 
     func beginInstallation() {
+        guard !isRegistering, !isResettingHelper else { return }
+        invalidateReconciliation()
+        let generation = reconciliationGeneration
         Task { @MainActor [weak self] in
-            guard let self else { return }
+            guard let self, generation == self.reconciliationGeneration,
+                  !self.isResettingHelper else { return }
             let currentStatus = await self.refreshStatus()
+            guard generation == self.reconciliationGeneration, !self.isResettingHelper else { return }
             helperLogger.info("[HelperManager] beginInstallation status=\(String(describing: currentStatus))")
             _ = await self.registerHelper(userInitiated: true, forceReinstall: false)
         }
@@ -393,54 +415,81 @@ class HelperManager: ObservableObject {
 
     func installIfNeeded() {
         Task { @MainActor [weak self] in
-            guard let self else { return }
+            guard let self, !self.isReconcilingHelper, !self.isRegistering,
+                  !self.isResettingHelper else { return }
+            self.isReconcilingHelper = true
+            self.reconciliationGeneration += 1
+            let generation = self.reconciliationGeneration
+            defer {
+                if generation == self.reconciliationGeneration {
+                    self.isReconcilingHelper = false
+                }
+            }
             let currentStatus = await self.refreshStatus()
+            guard generation == self.reconciliationGeneration else { return }
             helperLogger.info("[HelperManager] installIfNeeded daemon=\(String(describing: currentStatus)) issue=\(self.lastIssue?.code ?? "none")")
 
             switch currentStatus {
             case .notFound:
-                _ = await self.registerHelper(userInitiated: true, forceReinstall: true)
+                _ = await self.registerHelper(userInitiated: false, forceReinstall: true)
             case .notRegistered:
                 _ = await self.registerHelper(userInitiated: false, forceReinstall: false)
             case .enabled:
-                if await self.helperIsRunningAndCurrent() {
-                    self.applyPingResult(true)
-                    return
-                }
-                helperLogger.info("[HelperManager] Helper enabled but down or stale; rebuilding registration")
-                _ = await self.registerHelper(userInitiated: false, forceReinstall: true)
+                await self.reconcileEnabledHelper(generation: generation)
             case .requiresApproval:
-                _ = await self.registerHelper(userInitiated: true, forceReinstall: false)
+                _ = await self.registerHelper(userInitiated: false, forceReinstall: false)
             @unknown default:
                 break
             }
         }
     }
 
-    private func helperIsRunningAndCurrent() async -> Bool {
-        XPCClient.shared.start(force: false)
-        for attempt in 1...4 {
-            if await XPCClient.shared.ping(timeout: 2) {
-                let current = await helperProtocolVersionMatches()
-                helperLogger.info("[HelperManager] Helper ping ok on attempt \(attempt), current=\(current)")
-                return current
-            }
-            try? await Task.sleep(for: .milliseconds(500))
-        }
-        helperLogger.info("[HelperManager] Helper did not respond during startup reconciliation")
-        return false
+    private func invalidateReconciliation() {
+        reconciliationGeneration += 1
+        isReconcilingHelper = false
     }
 
-    private func helperProtocolVersionMatches() async -> Bool {
+    private func reconcileEnabledHelper(generation: Int) async {
+        XPCClient.shared.start(force: false)
+        for attempt in 1...4 {
+            let running = await XPCClient.shared.ping(timeout: 2)
+            guard generation == reconciliationGeneration else { return }
+            if running {
+                applyPingResult(true)
+                BatteryManager.shared.helperDidBecomeReachable()
+                let compatibility = await helperProtocolCompatibility()
+                guard generation == reconciliationGeneration else { return }
+                helperLogger.info("[HelperManager] Helper ping ok on attempt \(attempt), compatibility=\(String(describing: compatibility), privacy: .public)")
+                if compatibility == .outdated {
+                    _ = await registerHelper(userInitiated: false, forceReinstall: true)
+                }
+                return
+            }
+            try? await Task.sleep(for: .milliseconds(500))
+            guard generation == reconciliationGeneration else { return }
+        }
+        helperLogger.info("[HelperManager] Helper did not respond during startup reconciliation")
+        // An enabled service with no reply may still be validating the client.
+        // Keep its connection and show the status banner; a timeout alone is
+        // not evidence that its launchd registration needs to be rebuilt.
+        applyPingResult(false)
+    }
+
+    private enum HelperCompatibility {
+        case current, outdated, unknown
+    }
+
+    private func helperProtocolCompatibility() async -> HelperCompatibility {
         guard let running = await XPCClient.shared.helperProtocolVersion(timeout: 2) else {
-            helperLogger.info("[HelperManager] Helper protocol version query failed")
-            return false
+            helperLogger.info("[HelperManager] Helper protocol version query unavailable; compatibility is unknown")
+            return .unknown
         }
         helperLogger.info("[HelperManager] Helper protocol version: running=\(running) expected=\(SapphireHelperProtocolVersion)")
-        return running == SapphireHelperProtocolVersion
+        return running == SapphireHelperProtocolVersion ? .current : .outdated
     }
 
     func uninstall() {
+        invalidateReconciliation()
         Task { @MainActor [weak self] in
             guard let self else { return }
             XPCClient.shared.stop()
@@ -526,19 +575,24 @@ class HelperManager: ObservableObject {
         }
 
         if await pingUntilRunning() {
-            if await helperProtocolVersionMatches() {
+            let compatibility = await helperProtocolCompatibility()
+            // Only an explicit version mismatch warrants reinstalling. A
+            // timed-out query must not interrupt a healthy, verified helper.
+            if compatibility != .outdated {
                 return true
             }
             helperLogger.info("[HelperManager] Running helper is an old build; reinstalling")
             _ = await reinstallHelper()
-            if await pingUntilRunning(), await helperProtocolVersionMatches() {
+            if await pingUntilRunning(), await helperProtocolCompatibility() != .outdated {
                 return true
             }
         }
 
         refreshIssue()
         if let issue = lastIssue {
-            presentIssue(issue, force: userInitiated || issue == .notFound)
+            if userInitiated || issue != .spawnFailed {
+                presentIssue(issue, force: userInitiated || issue == .notFound)
+            }
         }
         return isRunning
     }
@@ -568,7 +622,7 @@ class HelperManager: ObservableObject {
     }
 
     private func pingUntilRunning() async -> Bool {
-        XPCClient.shared.start(force: true)
+        XPCClient.shared.start()
         try? await Task.sleep(for: .milliseconds(600))
 
         for attempt in 1...5 {
@@ -579,7 +633,6 @@ class HelperManager: ObservableObject {
                 BatteryManager.shared.helperDidBecomeReachable()
                 return true
             }
-            XPCClient.shared.start(force: true)
             try? await Task.sleep(for: .milliseconds(700))
         }
         applyPingResult(false)

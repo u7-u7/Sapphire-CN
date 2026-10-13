@@ -12,13 +12,26 @@ final class XPCClient {
     private let lock = NSLock()
     private var connection: NSXPCConnection?
     private var failureNotificationSent = false
-    private var lastForcedReconnect = Date.distantPast
-    private let forcedReconnectInterval: TimeInterval = 1
-    private let machServiceName = "com.shariq.sapphireHelper"
+    private var firstHandshakeDeadline: TimeInterval?
+    private var hasCompletedHandshake = false
+    private let connectionFactory: () -> NSXPCConnection
+    private let initialHandshakeTimeout: TimeInterval
 
-    private init() {}
+    init(
+        initialHandshakeTimeout: TimeInterval = 30,
+        connectionFactory: @escaping () -> NSXPCConnection = {
+            NSXPCConnection(machServiceName: "com.shariq.sapphireHelper", options: .privileged)
+        }
+    ) {
+        self.initialHandshakeTimeout = initialHandshakeTimeout
+        self.connectionFactory = connectionFactory
+    }
 
     func proxy(onError: ((Error) -> Void)? = nil) -> HelperProtocol? {
+        connectedProxy(onError: onError)?.helper
+    }
+
+    private func connectedProxy(onError: ((Error) -> Void)? = nil) -> (connection: NSXPCConnection, helper: HelperProtocol)? {
         start()
 
         lock.lock()
@@ -26,12 +39,14 @@ final class XPCClient {
         lock.unlock()
         guard let currentConnection else { return nil }
 
-        return currentConnection.remoteObjectProxyWithErrorHandler { [weak self, weak currentConnection] error in
+        let remoteObject = currentConnection.remoteObjectProxyWithErrorHandler { [weak self, weak currentConnection] error in
             if let currentConnection {
                 self?.handleConnectionFailure(currentConnection)
             }
             onError?(error)
-        } as? HelperProtocol
+        }
+        guard let helper = remoteObject as? HelperProtocol else { return nil }
+        return (currentConnection, helper)
     }
 
     var helper: HelperProtocol? {
@@ -53,10 +68,12 @@ final class XPCClient {
         }
 
         if connection == nil {
-            let candidate = NSXPCConnection(machServiceName: machServiceName, options: .privileged)
+            let candidate = connectionFactory()
             candidate.remoteObjectInterface = makeRemoteInterface()
             installHandlers(on: candidate)
             connection = candidate
+            firstHandshakeDeadline = ProcessInfo.processInfo.systemUptime + initialHandshakeTimeout
+            hasCompletedHandshake = false
             newConnection = candidate
         }
         lock.unlock()
@@ -73,6 +90,8 @@ final class XPCClient {
             existing.interruptionHandler = nil
         }
         connection = nil
+        firstHandshakeDeadline = nil
+        hasCompletedHandshake = false
         failureNotificationSent = false
         lock.unlock()
 
@@ -80,11 +99,9 @@ final class XPCClient {
     }
 
     func ping(timeout: TimeInterval = 5) async -> Bool {
-        if await pingOnce(timeout: timeout, forceReconnect: false) {
-            return true
-        }
-        forceReconnectIfAllowed()
-        return await pingOnce(timeout: timeout, forceReconnect: false)
+        // A timeout does not prove the connection is broken: cold code-signing
+        // validation can still be running. Only actual XPC errors detach it.
+        await pingOnce(timeout: timeout)
     }
 
     func helperProtocolVersion(timeout: TimeInterval = 2) async -> Int? {
@@ -103,22 +120,24 @@ final class XPCClient {
                 continuation.resume(returning: value)
             }
 
-            guard let helper = proxy() else {
+            guard let remote = connectedProxy(onError: { _ in resumeOnce(nil) }) else {
                 resumeOnce(nil)
                 return
             }
 
-            helper.getProtocolVersion { version in
-                resumeOnce(version)
+            remote.helper.getProtocolVersion { [weak self] version in
+                let current = self?.noteSuccessfulHandshake(on: remote.connection) == true
+                resumeOnce(current ? version : nil)
             }
 
-            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout) {
+            let responseTimeout = responseTimeout(timeout, on: remote.connection)
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + responseTimeout) {
                 resumeOnce(nil)
             }
         }
     }
 
-    private func pingOnce(timeout: TimeInterval, forceReconnect: Bool) async -> Bool {
+    private func pingOnce(timeout: TimeInterval) async -> Bool {
         await withCheckedContinuation { continuation in
             let stateLock = NSLock()
             var resumed = false
@@ -134,33 +153,32 @@ final class XPCClient {
                 continuation.resume(returning: value)
             }
 
-            start(force: forceReconnect)
-            guard let helper = proxy() else {
+            guard let remote = connectedProxy(onError: { _ in resumeOnce(false) }) else {
                 resumeOnce(false)
                 return
             }
 
-            helper.getVersion { [weak self] _ in
-                self?.noteSuccessfulHandshake()
-                resumeOnce(true)
+            remote.helper.getVersion { [weak self] _ in
+                resumeOnce(self?.noteSuccessfulHandshake(on: remote.connection) == true)
             }
 
-            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout) {
+            let responseTimeout = responseTimeout(timeout, on: remote.connection)
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + responseTimeout) {
                 resumeOnce(false)
             }
         }
     }
 
-    private func forceReconnectIfAllowed() {
+    private func responseTimeout(_ requestedTimeout: TimeInterval, on currentConnection: NSXPCConnection) -> TimeInterval {
         lock.lock()
-        let now = Date()
-        guard now.timeIntervalSince(lastForcedReconnect) >= forcedReconnectInterval else {
-            lock.unlock()
-            return
+        defer { lock.unlock() }
+        guard connection === currentConnection, !hasCompletedHandshake,
+              let firstHandshakeDeadline else {
+            return requestedTimeout
         }
-        lastForcedReconnect = now
-        lock.unlock()
-        start(force: true)
+        // Concurrent health/startup requests share one monotonic deadline, so
+        // repeated probes cannot extend the cold-start wait indefinitely.
+        return max(requestedTimeout, firstHandshakeDeadline - ProcessInfo.processInfo.systemUptime)
     }
 
     private func makeRemoteInterface() -> NSXPCInterface {
@@ -190,19 +208,31 @@ final class XPCClient {
         }
     }
 
-    private func noteSuccessfulHandshake() {
+    @discardableResult
+    private func noteSuccessfulHandshake(on currentConnection: NSXPCConnection) -> Bool {
         var shouldNotify = false
         lock.lock()
-        if failureNotificationSent {
+        guard connection === currentConnection else {
+            lock.unlock()
+            return false
+        }
+        if !hasCompletedHandshake || failureNotificationSent {
+            hasCompletedHandshake = true
             failureNotificationSent = false
             shouldNotify = true
         }
         lock.unlock()
         if shouldNotify {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self, weak currentConnection] in
+                guard let self, let currentConnection else { return }
+                self.lock.lock()
+                let isCurrent = self.connection === currentConnection
+                self.lock.unlock()
+                guard isCurrent else { return }
                 NotificationCenter.default.post(name: .sapphireHelperConnectionRestored, object: nil)
             }
         }
+        return true
     }
 
     private func detach(_ failedConnection: NSXPCConnection, notifyLost: Bool) {
@@ -211,6 +241,8 @@ final class XPCClient {
         lock.lock()
         if connection === failedConnection {
             connection = nil
+            firstHandshakeDeadline = nil
+            hasCompletedHandshake = false
             if notifyLost, !failureNotificationSent {
                 failureNotificationSent = true
                 shouldNotify = true
