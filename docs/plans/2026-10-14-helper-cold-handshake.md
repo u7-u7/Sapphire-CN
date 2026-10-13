@@ -40,5 +40,8 @@ xcrun swiftc -swift-version 5 -parse-as-library \
 - 最终完整应用构建通过：`/tmp/SapphireHelperHandshakeBuild-20261014-final.log`；初次构建结果包为 `/tmp/SapphireHelperHandshakeBuild-20261014.xcresult`。
 - 新主程序 UUID：`1448B3A9-15EB-3D26-9E8A-4E0F12BE590D`。动态依赖与原安装版一致，安装时只替换主程序，保留已有签名 Helper、扩展和资源。
 - 同证书重签后严格深度验证通过，已安装到 `/Applications/Sapphire.app`。原包备份到本机 `SapphireBackups/2026-10-14-helper-cold-handshake-005910/Sapphire-before-cold-handshake.app.backup`。
-- 初次启动进程 PID 16461；Helper 仍为 PID 57683。新版主线程在已有剪贴板密钥的钥匙串读取上等待系统授权，尚未执行 Helper 握手。匿名 XPC 验证不能代替本次真实握手验收。
-- 正在等待用户完成 macOS 钥匙串授权，之后补充真实 ping、协议版本和重启结果；本轮未执行整机重启。
+- 初次启动进程 PID 16461；用户完成钥匙串授权后，主线程恢复事件循环，Helper 日志记录接受该进程的连接；Helper 仍为 PID 57683，未重注册。首次 ping 与协议版本的精确日志未保留，不能据此声明 `11 / 11` 验收通过。
+- 为补齐实时日志，01:19:22 重启应用为 PID 26957，再次等待同一个剪贴板密钥的钥匙串授权；用户明确选择仅允许本次访问，授权方式保持该选择。
+- 01:20:40.265：应用 PID 26957 首次真实 ping 成功，协议版本 `running=11 expected=11`、`compatibility=current`。实时日志保存在 `/tmp/SapphireHelperHandshakeRuntime-20261014.log`。
+- 独立复核主程序 UUID 匹配；Helper 仍为 PID 57683，`runs=1`，BTM UUID 保持不变，未重注册；钥匙串授权进程已退出。当前应用界面未显示 SAP-H1 警告。
+- 应用重启后的真实握手验收通过；整机重启后的实际冷启动仍未执行。单次钥匙串访问可能使后续应用启动再次需要系统授权，不能把钥匙串提示归为 Helper 验签超时复发。
