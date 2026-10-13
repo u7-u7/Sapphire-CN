@@ -1,116 +1,372 @@
-# Sapphire-CN
+# Sapphire-CN：中文刘海屏工具与 AI 额度看板
 
-[Sapphire](https://github.com/cshariq/Sapphire) 的简体中文版本，加入 **AI 额度**组件，可查看 Codex / Claude 的额度、第三方平台余额和服务端提供的重置时间。
+Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主要界面的简体中文翻译，并增加 Codex、Claude 官方订阅额度和第三方平台余额查询。
 
-- Codex / Claude 官方订阅额度查询，以及 DeepSeek API 余额。
-- 分别配置 Codex / Claude 第三方查询地址，提供 DeepSeek、Sub2API、NewAPI 和自定义 JSON 模板、测试按钮。
-- AI 额度详情打开时保持刘海展开，鼠标移到刷新按钮或滚动区域可正常操作。
+**当前安装方式：源码构建。** 截至 2026 年 10 月 14 日，[本仓库发布页](https://github.com/u7-u7/Sapphire-CN/releases)尚未提供中文安装包。上游发布页提供的是原版，不包含本分支新增的 AI 额度和 Helper 冷启动修复；下载源码压缩包也不能直接安装。
 
-构建、配置与使用方法见 [简体中文说明](README.zh-CN.md)。本仓库保留上游许可证和来源声明；以下为上游项目介绍。
+如果你已经取得维护者提供的已签名 `Sapphire.app`，可以直接从[安装到应用程序](#安装到应用程序)开始。尚未取得安装包、也不熟悉 Xcode 的用户，可以等待本仓库提供已签名安装包。
 
----
+## 教程目录
 
-<div align="center">
-<img width="220" height="220" alt="Group 31" src="https://github.com/user-attachments/assets/1e3ef88f-9849-4896-88d2-5294841a0062" />
+- [安装前准备](#安装前准备)
+- [源码安装](#源码安装)
+- [首次启动与授权](#首次启动与授权)
+- [基础使用](#基础使用)
+- [配置 AI 额度](#配置-ai-额度)
+- [常见问题](#常见问题)
+- [更新与卸载](#更新与卸载)
+- [开发与验证](#开发与验证)
+- [来源与许可证](#来源与许可证)
 
-  <h1>Sapphire</h1>
-  <p><b>The all-in-one mac app that redefines the notch</b></p>
-  <a href="https://sapphire-app.tech" style="text-decoration: none; margin-right: 10px;">
-    <div style="background-color: #007aff; color: white; padding: 10px 20px; border-radius: 8px; display: inline-block; font-weight: bold;">
-      Official Website
-    </div>
-  </a>
-  <a href="https://github.com/cshariq/Sapphire/releases/latest" style="text-decoration: none;">
-    <div style="background-color: #007aff; color: white; padding: 10px 20px; border-radius: 8px; display: inline-block; font-weight: bold;">
-      Download Latest Release
-    </div>
-  </a>
-  <a href="https://discord.gg/Ryuea8vM2h" style="text-decoration: none;">
-    <div style="background-color: #007aff; color: white; padding: 10px 20px; border-radius: 8px; display: inline-block; font-weight: bold;">
-      Join Discord
-    </div>
-  </a>
-</div>
+## 能做什么
 
-<br>
+| 功能 | 使用方式 |
+| --- | --- |
+| AI 额度 | 在刘海区域查看 Codex、Claude 的额度窗口、余额、同步状态和服务端返回的重置时间 |
+| 第三方余额查询 | 分别配置 Codex、Claude 的供应商查询接口，支持 DeepSeek、Sub2API、NewAPI 和自定义 JSON 模板 |
+| 刘海小组件 | 在设置里启用、关闭、调整组件顺序，查看播放信息、日历等内容 |
+| 桌面辅助功能 | 按需配置窗口管理、文件托盘、剪贴板、护眼提醒和电池相关功能 |
+| 中文界面 | 主要设置、首次启动和权限说明支持简体中文；少量界面提示仍可能显示英文 |
 
-[简体中文说明与本地构建指引](README.zh-CN.md)
+公开源码包含部分功能占位实现。依赖上游订阅、额外服务配置或系统扩展的功能，以实际配置和界面状态为准，不能仅凭构建成功认定全部功能可用。
 
-Sapphire is a sleek notch app that displays current activities neatly around the notch on newer MacBooks. It also includes a suite of convenient features, from nearby share compatibility for easy file transfers to a versatile window snapping system.
+## 安装前准备
 
-## Installation
+### 运行环境
 
-1.  **Download:** Download the latest package release from the [releases page](https://github.com/cshariq/Sapphire/releases/latest).
-2.  **Install:** Open the downloaded package and follow the installation process.
-3.  **Permissions:** On first launch, you may need to grant accessibility and other permissions in `System Settings` for all features to work correctly.
+- 项目最低部署版本为 **macOS 14.6**。
+- 已完成构建与运行验收的机器为 **Apple 芯片 Mac**；Intel Mac 尚未完成本分支的完整验收。
+- 展示效果以带刘海屏的 MacBook 为主要使用场景，其他屏幕的布局需要自行检查。
 
-## Features
+### 从源码安装需要什么
 
-<div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;">
+1. **完整 Xcode**：近期本机验证使用 Xcode 27.0。仅安装命令行工具不足以构建本工程。
+2. **Git**：用于下载和更新源码。
+3. **有效代码签名证书及相应开发团队权限**：主程序和 Helper 必须具有匹配的签名身份。使用 Xcode 的自动签名时，团队还必须能配置所用扩展、应用组等能力。
+4. **网络连接**：首次构建需要下载 Swift 包依赖；自动签名可能需要访问 Apple 的服务。
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Nearby Share</h3>
-    <p>Allows sharing files, pictures, videos, websites, and more from Android to your mac!</p>
-  </div>
+没有有效签名身份时，可以先做编译检查，但不能把未签名或 ad-hoc 临时签名应用当成 Helper 功能完整的安装版本。
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Now Playing</h3>
-    <p>Displays currently playing media of all types in the notch (works with macOS 15.5 as well), and more.</p>
-  </div>
+## 源码安装
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Advanced Audio Features (Beta)</h3>
-    <p>Adjust individual app volumes, device volumes, app EQs and device EQs right from the notch</p>
-  </div>
-  
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Eye Break</h3>
-    <p>Health should always be your priority. With the sleek notch UI, a reminder is given every 20 minutes to look 20 feet away for 20 seconds, and more.</p>
-  </div>
+### 第一步：安装并初始化 Xcode
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Weather</h3>
-    <p>Current weather is persistently shown in the notch, so you're in the know about your surroundings, and more.</p>
-  </div>
+安装完整 Xcode，至少打开一次，按照向导处理许可和所需组件。
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Gemini</h3>
-    <p>Share your screen and discuss topics conveniently using Gemini Live, and more.</p>
-  </div>
+在终端检查：
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Calendar</h3>
-    <p>See upcoming events and get alerted for ongoing events, and more.</p>
-  </div>
+```sh
+xcode-select -p
+xcodebuild -version
+```
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Lock Screen</h3>
-    <p>See the weather, your music, and upcoming calendar events on your Mac's lockscreen, and more.</p>
-  </div>
+第一条通常应显示 `/Applications/Xcode.app/Contents/Developer`。如果仍指向命令行工具目录，且你的 Xcode 安装在上述位置，可切换：
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">File Shelf</h3>
-    <p>Airdrop and store files conveniently with access to the file shelf, and more.</p>
-  </div>
+```sh
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+```
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Snap Zones</h3>
-    <p>Snapping windows using macOS's built-in snapping tools is limited and leaves a gap between windows. Sapphire provides a versatile and customizable window snapping system, and more.</p>
-  </div>
+### 第二步：下载源码
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Music</h3>
-    <p>View now playing media on the notch with additional information and controls when the now playing media is expanded, and more.</p>
-  </div>
+在你准备保存项目的目录中运行：
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Bluetooth</h3>
-    <p>Get a notice when a Bluetooth device connects to your Mac, and more.</p>
-  </div>
+```sh
+git clone --depth 1 https://github.com/u7-u7/Sapphire-CN.git
+cd Sapphire-CN
+open Sapphire.xcodeproj
+```
 
-  <div style="border: 1px solid #30363d; border-radius: 8px; padding: 16px; width: 300px; background-color: #1c1c1e;">
-    <h3 style="margin-top: 0;">Caffeinate</h3>
-    <p>Caffeinate your Mac with a press of a button, and more.</p>
-  </div>
+已经有本仓库的用户无需重复下载，更新方法见[更新与卸载](#更新与卸载)。
 
-</div>
+### 第三步：配置你自己的签名
+
+这一步用于生成可在本机运行的开发版本，不等于制作已公证、可向所有用户分发的安装包。
+
+1. 在 Xcode 的「设置 → 账户」添加自己的 Apple 账户。
+2. 在账户的证书管理中创建或确认有效的 `Apple Development` 证书。
+3. 选择项目，检查各个会嵌入应用的目标的签名与能力配置，选择自己的开发团队，按团队权限启用自动签名。
+4. 重点确认 `Sapphire` 与 `com.shariq.sapphireHelper` 使用匹配的开发团队与签名身份；其他嵌入的扩展目标也需要有效签名。
+5. 工程保留了上游团队配置，不能直接沿用。遇到应用组、扩展或描述文件错误，需要先解决团队能力及授权文件配置。
+6. 保留 Helper 的空权限声明文件和工程已有重签步骤。不要把主程序的权限声明复制给 root Helper，也不要通过放宽客户端安全校验来绕过签名问题。
+
+可用以下命令检查本机是否存在有效签名身份：
+
+```sh
+security find-identity -v -p codesigning
+```
+
+若结果是 `0 valid identities found`，请先回到 Xcode 完成证书配置。团队编号从 Xcode 或 Apple 开发者账户查看，不要把证书显示名称末尾的编号直接当作团队编号。
+
+### 第四步：构建开发版本
+
+完成签名配置后，可以在 Xcode 选择 `Sapphire` 方案、运行目标选择本机 Mac，使用调试配置构建。
+
+也可以在仓库目录中运行下面的终端命令。先把 `你的团队编号` 替换成自己在上一步确认的编号：
+
+```sh
+SAPPHIRE_TEAM_ID='你的团队编号'
+
+xcodebuild -project Sapphire.xcodeproj -scheme Sapphire \
+  -configuration Debug -destination 'platform=macOS' \
+  -derivedDataPath /tmp/SapphireDerivedData \
+  -allowProvisioningUpdates \
+  DEVELOPMENT_TEAM="$SAPPHIRE_TEAM_ID" \
+  CODE_SIGN_IDENTITY='Apple Development' \
+  CODE_SIGNING_ALLOWED=YES build
+```
+
+看到 `BUILD SUCCEEDED` 才表示构建成功。以上命令的应用产物位于：
+
+```text
+/tmp/SapphireDerivedData/Build/Products/Debug/Sapphire.app
+```
+
+Xcode 图形界面的构建可能使用其他派生数据目录，可以在构建产物上使用「在访达中显示」定位。
+
+如果当前只想检查源码能否编译，使用下列命令即可；它不完成实际安装所需的证书签名：
+
+```sh
+xcodebuild -project Sapphire.xcodeproj -scheme Sapphire \
+  -configuration Debug -destination 'platform=macOS' \
+  -derivedDataPath /tmp/SapphireDerivedData \
+  CODE_SIGNING_ALLOWED=NO build
+```
+
+本地开发优先使用调试配置。发布配置还包含上游 Crashlytics 上传步骤，需要额外配置，不能视作公开源码的一键发布入口。
+
+### 第五步：检查签名
+
+以下命令对应上面终端构建的固定产物路径。其他路径请自行替换：
+
+```sh
+SAPPHIRE_APP='/tmp/SapphireDerivedData/Build/Products/Debug/Sapphire.app'
+
+codesign --verify --deep --strict "$SAPPHIRE_APP"
+codesign -dv --verbose=2 "$SAPPHIRE_APP"
+codesign -dv --verbose=2 "$SAPPHIRE_APP/Contents/MacOS/com.shariq.sapphireHelper"
+```
+
+检查要点：
+
+- 第一条命令成功退出，未报告签名损坏。
+- 主程序与 Helper 都有有效签名身份，团队标识匹配；不能只有临时签名或没有团队标识。
+- 主程序签名标识为 `com.cshariq.sapphire`，Helper 为 `com.shariq.sapphireHelper`。
+- 深度验证通过仅证明签名有效，实际安装后还要确认应用能连接 Helper。
+
+Apple 建议嵌套代码由内向外完成签名。工程已有相应构建步骤，不要把 `codesign --deep` 递归重签当成修复所有权限问题的通用命令。参考 [Apple 签名说明](https://developer.apple.com/documentation/xcode/creating-distribution-signed-code-for-the-mac/)。
+
+### 安装到应用程序
+
+1. 先退出正在运行的 Sapphire。
+2. 如果「应用程序」中已有旧版，先在其他目录备份旧 `Sapphire.app`。
+3. 将已通过签名检查的 `Sapphire.app` 复制到「应用程序」，最终路径为 `/Applications/Sapphire.app`。
+4. 从「应用程序」双击启动，继续完成下面的首次授权。
+
+之后都运行「应用程序」里的这一份，不要同时运行派生数据目录、下载目录和旧备份中的多个版本。
+
+## 首次启动与授权
+
+### 设置简体中文
+
+1. 打开 macOS「系统设置 → 通用 → 语言与地区 → 应用程序」。
+2. 添加或选择 `/Applications/Sapphire.app`。
+3. 将语言设为「简体中文」，退出并重新启动 Sapphire。
+
+### 完成首次引导
+
+跟随欢迎界面操作。当前引导中唯一列为必需的系统权限是 **辅助功能**；其他权限按需要使用的功能授予即可。
+
+| 权限或系统提示 | 用途 | 如何处理 |
+| --- | --- | --- |
+| 辅助功能 | 窗口管理、媒体按键及相关交互 | 在「系统设置 → 隐私与安全 → 辅助功能」允许当前安装的 Sapphire |
+| 允许在后台运行 | 启动 Helper，支持电池管理和部分系统集成 | 在「系统设置 → 通用 → 登录项与扩展」找到对应后台项并允许；旧系统的页面可能叫「登录项」 |
+| 通知、日历、位置、蓝牙 | 对应提醒、日程、天气和设备信息 | 使用对应功能时再授权 |
+| 屏幕录制、自动化、完全磁盘访问 | 对应窗口预览、媒体控制、文件等功能 | 按实际功能的提示授权 |
+| 钥匙串访问 | 读取已有剪贴板加密密钥或账号查询凭据 | 密码只在 macOS 系统提示中输入；可以选择单次「允许」，也可按自己的偏好选择「始终允许」 |
+
+辅助功能、后台项和钥匙串是不同授权。打开其中一项不代表其他项已经完成。
+
+如果只允许本次钥匙串访问，后续启动再次提示属于正常授权行为；不要为了省去提示而清空钥匙串。系统权限已开启但应用仍认为未授权时，确认授权对象是当前 `/Applications/Sapphire.app`，尤其留意替换签名或同时安装多个版本的情况。
+
+### 确认 Helper 状态
+
+1. 按住 ⌘ 点击刘海区域打开组件面板，再点击齿轮打开设置。
+2. 进入「电池 → 配置」，查看顶部辅助服务状态。
+3. 未安装时点击「安装」（首次引导中的对应按钮叫「安装辅助服务」），按 macOS 提示批准后台运行。
+4. 已批准但仍在启动时，先等待首次验签完成；新版首次连接有 30 秒宽限期。
+5. 确认显示辅助服务已运行；某些未译界面可能显示 `Helper Active`。
+
+## 基础使用
+
+1. 按住 ⌘ 点击屏幕顶部刘海区域，打开组件面板；启用悬停展开后，也可以移入鼠标展开。默认配置未开启悬停展开。
+2. 点击齿轮进入设置。
+3. 打开「小组件 → 小组件可见性和顺序」，启用需要的组件并调整排序。
+4. 关闭设置，回到刘海面板查看内容。屏幕空间不足时，可以关闭暂时不用的组件。
+5. 音乐、日历、文件托盘、剪贴板、护眼和电池等功能，在对应设置分类中按需配置。
+
+## 配置 AI 额度
+
+### 先开启组件
+
+1. 打开「设置 → 小组件 → 小组件可见性和顺序」。
+2. 启用「AI 额度」。
+3. 在出现的 AI 额度配置中选择每 5、15 或 30 分钟自动刷新。
+4. 回到刘海面板，点击 AI 额度进入详情，查看读数、同步状态和重置时间。
+5. 点击刷新按钮可主动查询；手动刷新仍遵守最小请求间隔与服务端限流冷却。
+
+额度详情展开后，鼠标移到下方刷新按钮和滚动区域时会保持面板展开。
+
+### Codex 官方订阅
+
+1. 按 [Codex 官方安装教程](https://learn.chatgpt.com/docs/codex/cli)安装命令行工具。
+2. 在终端执行以下命令，使用要查看额度的 ChatGPT 账户登录并确认状态：
+
+```sh
+codex login
+codex login status
+```
+
+3. 回到 Sapphire，保持 Codex 的第三方查询关闭，刷新 AI 额度。
+
+登录方式参考 [OpenAI 官方认证说明](https://learn.chatgpt.com/docs/auth)。本组件通过 Codex 的账号查询读取订阅额度，不创建对话或请求模型。仅使用 API 密钥的账户需要配置对应平台的第三方额度接口。
+
+### Claude 官方订阅
+
+1. 按 [Claude Code 官方安装教程](https://code.claude.com/docs/zh-CN/setup)安装命令行工具。
+2. 使用要查看额度的官方账户登录，确认状态：
+
+```sh
+claude auth login
+claude auth status
+```
+
+3. 确认 Claude Code 当前使用官方服务配置，再回到 Sapphire，保持 Claude 的第三方查询关闭，刷新 AI 额度。关闭 Sapphire 的第三方开关不会改变 Claude Code 的供应商配置。
+4. 如果系统要求允许读取该账户的钥匙串凭据，由你本人在系统提示中处理。
+
+登录过期时需要在 Claude Code 中重新登录。Sapphire 的刷新按钮只查询额度，不替你登录或更新登录凭据。
+
+### DeepSeek 余额
+
+如果 Claude Code 的当前配置已使用 DeepSeek，Sapphire 会识别相应供应商配置并查询 API 余额，不借用另一个 Claude 官方账户的读数。
+
+也可以在 Claude 的第三方额度配置中选择 DeepSeek 模板，填写供应商地址与正确查询凭据，按照下一节完成测试和保存。
+
+DeepSeek 没有返回重置时间时，界面会显示未提供；余额不会被换算成 Claude 官方订阅的百分比。
+
+### 其他第三方平台
+
+Codex 与 Claude 的查询设置相互独立，请填写与你实际使用的平台对应的一组。
+
+1. 在「设置 → 小组件」中启用 AI 额度，找到「Codex · 第三方额度」或「Claude · 第三方额度」。
+2. 打开对应的第三方查询开关，填写平台名称和「当前供应商 API 地址」。
+3. 选择 DeepSeek、Sub2API、NewAPI 或自定义 JSON 模板。使用预设时点击「应用模板」；该操作会重新填写部分认证和字段设置。
+4. 按供应商文档核对「额度查询地址」。它是余额或额度接口的 HTTPS 地址，不是聊天补全接口；模板提供的地址可能需要修改。
+5. 选择认证方式和凭据来源。复用命令行凭据时，供应商地址必须与当前命令行配置一致；使用独立查询凭据时，填写查询密钥或账户访问令牌。
+6. 展开「JSON 字段与重置时间」，核对余额、已用、总额、币种、数值除数和重置时间字段。没有返回的字段留空即可。
+7. 点击「测试额度查询」，核对预览中的读数和单位。测试使用草稿，不自动保存配置或输入的密钥。
+8. 点击「保存查询设置」。
+9. 使用独立密钥时，再点击「保存查询密钥」。该按钮只有在配置已经保存且密钥非空时才可用；独立密钥保存在 macOS 钥匙串中。
+10. 回到刘海详情，按刷新间隔确认新读数。
+
+| 平台 | 需要特别核对的内容 |
+| --- | --- |
+| DeepSeek | 当前 API 地址、可查询余额的密钥；没有重置时间时保持未提供 |
+| Sub2API | 查询接口和认证由供应商部署决定，不能保证所有平台都使用模板地址 |
+| NewAPI | 使用本模板必须填写账户访问令牌和用户编号，不能直接把模型 API 密钥当作账户查询令牌；用户编号输入框虽标为可选，本模板实际必填 |
+| 自定义 JSON | 按真实返回值填写点分路径，例如 `data.balance` 或 `balance_infos.0.total_balance` |
+
+NewAPI 模板的默认数值除数为 `500000`，请按平台实际换算规则修改。服务器没有币种信息时，也需要核对回退单位；填写了美元标签不代表系统已经完成人民币与美元的汇率换算。
+
+修改查询地址、认证方式或用户编号后，可能需要为新配置重新保存独立查询密钥。额度查询密钥与目标配置绑定，不会自动借用另一个平台的密钥。
+
+## 常见问题
+
+### 为什么找不到中文版安装包？
+
+本仓库暂未提供发布安装包。需要源码构建，或使用维护者提供的已签名应用。上游原版安装包不能作为本分支新功能的安装方式。
+
+### 构建提示找不到签名身份、描述文件或应用组怎么办？
+
+检查 Xcode 账户、有效证书、各目标的开发团队与能力配置。工程中的上游团队不能直接替换成任意团队后就保证所有扩展可用。先解决具体的签名错误，再构建安装；`CODE_SIGNING_ALLOWED=NO` 只跳过构建签名，不解决运行时授权。
+
+### 应用已启动，但 Helper 提示 SAP-H1 怎么办？
+
+SAP-H1 表示后台权限已允许，但应用无法连接 Helper，不能据此认定 Helper 进程没有启动。
+
+1. 刚启动时先等待首次验签完成。
+2. 检查后台运行批准是否开启。
+3. 核对主程序与 Helper 的签名身份，确认没有把未签名或临时签名产物当正式安装版运行。
+4. 确实无法恢复时，在「设置 → 电池 → 配置」中手动「重置辅助服务」。
+
+新版会保留等待中的连接，避免因为短超时反复重连；后台启动失败保留状态提示。不要反复点重置，也不要清空整个系统的后台项目数据库。
+
+SAP-H2 对应等待后台批准，SAP-H3 对应辅助服务文件或注册缺失，需按应用中的提示分别处理。
+
+### 为什么一直出现钥匙串提示，或者界面暂时不响应？
+
+应用可能正在等待系统允许读取剪贴板加密密钥或登录凭据。检查 macOS 的钥匙串提示并本人处理。单次「允许」可能使后续启动再次询问；「始终允许」是可选项，不是必需权限。
+
+### AI 额度显示未登录、无法查询或未知怎么办？
+
+- **找不到 Codex 命令行工具**：按官方教程安装后，在终端确认能运行 `codex --version`，再重新启动 Sapphire。
+- **官方账户未登录或已过期**：在对应命令行工具中完成登录，确认是要查看额度的账户。
+- **第三方认证失败**：确认查询接口要求的是模型密钥还是账户访问令牌，并核对用户编号、认证方式与供应商地址。
+- **命令行凭据读取不到**：图形应用可能读取不到只在某个终端会话中设置的环境变量。确认供应商配置已持久保存，或改用独立查询密钥。
+- **测试成功但组件没有更新**：确认已保存查询设置；独立密钥还需单独保存，然后等待刷新间隔或限流冷却结束。
+- **读数或单位不对**：核对 JSON 字段、数值除数与币种。不能把供应商的原始积分直接当货币。
+- **没有重置时间**：服务端没有返回时显示未知或未提供；Sapphire 不推测日期。
+- **请求过于频繁**：等待冷却，连续点击刷新不会绕过服务端限流。
+
+## 更新与卸载
+
+### 更新源码安装版
+
+应用内的 Sapphire 更新检查目前仍指向上游仓库，提示中的安装包属于原版。若改用上游安装包，就不再包含本分支新增功能；不希望自动下载原版时，可以在「关于」页面的更新偏好中关闭自动下载选项。本分支请按下面的源码更新流程维护，不把应用内升级当作 Sapphire-CN 升级。
+
+1. 退出 Sapphire，备份当前已签名应用。
+2. 进入仓库目录，在没有未提交修改的情况下更新：
+
+```sh
+git pull --ff-only
+```
+
+3. 使用相同的签名身份重新构建，完成签名检查，再替换「应用程序」中的旧版。
+4. 重新启动，确认辅助功能、后台服务和 AI 额度状态。
+
+不要用未签名构建产物直接覆盖已签名安装版。签名身份变化后，系统可能需要重新确认权限或钥匙串访问。
+
+### 卸载
+
+先退出 Sapphire，再把「应用程序」中的 `Sapphire.app` 移到废纸篓。需要关闭后台运行时，在系统的登录项与扩展页面处理对应条目。不要为普通卸载清空整个钥匙串或系统后台项目记录。
+
+## 开发与验证
+
+### Helper 连接边界检查
+
+在仓库目录运行：
+
+```sh
+xcrun swiftc -swift-version 5 -parse-as-library \
+  Sapphire/App/XPCClient.swift \
+  com.shariq.sapphireHelper/HelperProtocol.swift \
+  scripts/verify-helper-handshake.swift -o /tmp/verify-helper-handshake
+
+/tmp/verify-helper-handshake --cold-start
+```
+
+该检查用真实匿名 XPC 模拟 15 秒验证延迟，覆盖并发握手、超时、拒绝和连接替换等 14 项边界，不调用本机 root Helper。模拟检查通过不能替代实际签名和整机重启验收。
+
+### 维护中文翻译
+
+- 主界面翻译资源：`Sapphire/App/Localizable.xcstrings`。
+- 系统权限说明：`Sapphire/App/zh-Hans.lproj/InfoPlist.strings`。
+- 新增动态设置标题或说明时，沿用项目现有本地化调用方式。
+- 修改后检查中英文显示、长文本布局、按钮含义和实际交互，不把“资源已翻译”当作“页面已验收”。
+
+相关记录：[签名修复](docs/plans/2026-10-13-helper-signature-repair.md)、[冷启动连接修复与验收](docs/plans/2026-10-14-helper-cold-handshake.md)。
+
+## 来源与许可证
+
+- 上游项目：[cshariq/Sapphire](https://github.com/cshariq/Sapphire)，保留原作者与贡献者署名。
+- 本分支：[u7-u7/Sapphire-CN](https://github.com/u7-u7/Sapphire-CN)。
+- 项目遵循 [AGPL-3.0 许可证](LICENSE)。第三方代码、资源与依赖的许可证以仓库内相应声明为准。
