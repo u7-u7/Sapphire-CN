@@ -2,14 +2,29 @@
 
 Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主要界面的简体中文翻译，并增加 Codex、Claude 官方订阅额度和第三方平台余额查询。
 
-**已有 Apple 芯片开发预览安装包：** [Sapphire-CN 3.0-cn.1-preview](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)。提供 DMG、ZIP 和 SHA-256 校验文件，包含本分支的中文界面、AI 额度与 Helper 冷启动修复。
+**当前版本：`v3.0-cn.1-preview`（开发预览）**。包含中文界面、AI 额度查询和 Helper 冷启动连接修复。
+
+**[下载 DMG 安装包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.dmg)** · [ZIP 备用下载](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)
+
+适用于 **Apple 芯片 Mac（arm64）**，项目最低部署版本为 **macOS 14.6**。使用安装包无需安装 Xcode；当前没有 Intel 安装包。
 
 **本包使用 Apple Development 开发签名，未完成 Apple 公证。** macOS 默认安全检查可能阻止首次打开，不能当作已公证正式发行版。安装前请阅读[安装包安装](#安装包安装)中的签名限制；需要自行编译或使用自己的签名身份时，阅读[源码安装](#源码安装)。
 
 上游发布页提供的是原版，不包含本分支新增功能。本分支安装包以本仓库 Releases 为准。
 
+## 快速安装与上手
+
+1. **下载并安装**：下载上方 DMG，退出旧版 Sapphire，打开镜像，将 `Sapphire.app` 拖到 `Applications`，从「应用程序」启动。旧版替换前请先备份。
+2. **处理首次打开提示**：如被 macOS 拦截，先核对来源和[校验文件](#校验下载文件)，再按[首次打开被系统拦截](#首次打开被系统拦截)中的步骤处理。
+3. **完成授权并切换中文**：跟随引导授予所需权限；在「系统设置 → 通用 → 语言与地区 → 应用程序」为 Sapphire 选择「简体中文」，重新启动。详见[首次启动与授权](#首次启动与授权)。
+4. **打开面板**：按住 **⌘ Command** 点击刘海区域，点击齿轮进入设置。默认未开启鼠标悬停展开。
+5. **开启 AI 额度**：进入「设置 → 小组件 → 小组件可见性和顺序」，启用「AI 额度」，再按[账户与平台配置教程](#配置-ai-额度)完成登录或接口设置。
+
+电池等功能需要 Helper 时，在「设置 → 电池 → 配置」点击「安装」，按系统提示批准后台运行；首次连接可能需要等待 30 秒。钥匙串授权由本人在系统弹窗中处理，选择单次允许后，后续启动可能再次询问。
+
 ## 教程目录
 
+- [快速安装与上手](#快速安装与上手)
 - [安装前准备](#安装前准备)
 - [安装包安装](#安装包安装)
 - [源码安装](#源码安装)
@@ -66,7 +81,7 @@ Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主�
 
 ### 拖动安装
 
-1. 退出已经运行的 Sapphire，并备份旧 `Sapphire.app`。
+1. 在苹果菜单「关于本机」确认使用 Apple 芯片及兼容的 macOS 版本。退出已经运行的 Sapphire，并备份旧 `Sapphire.app`。
 2. 双击 DMG，在打开的窗口中把 `Sapphire.app` 拖到 `Applications` 图标。使用 ZIP 时，解压后将完整 `Sapphire.app` 复制到「应用程序」。
 3. 从 `/Applications/Sapphire.app` 启动，按照[首次启动与授权](#首次启动与授权)完成设置。
 4. 用系统的应用语言设置选择简体中文，按住 ⌘ 点击刘海打开组件面板。
@@ -81,6 +96,16 @@ Sapphire-CN 基于 [Sapphire](https://github.com/cshariq/Sapphire)，提供主�
 如果 macOS 阻止首次启动，仅在确认信任本仓库来源后，参考 [Apple 官方打开说明](https://support.apple.com/en-us/102445)，由你本人决定是否允许打开。该流程不保证其他机器一定可以运行；系统仍不允许启动时，可以使用自己的有效签名从源码构建，或等待 Developer ID 签名并公证的正式版本。
 
 无需关闭全局安全保护，也不要把移除签名或改成 ad-hoc 临时签名当作 Helper 的修复方式。项目最低部署版本为 macOS 14.6，其他机器和整机重启后的实际冷启动仍未完成验收。
+
+### 首次打开被系统拦截
+
+若提示「无法验证开发者」或「Apple 无法检查是否包含恶意软件」，并且你确认安装包来自本仓库、校验值一致，可按 [Apple 中文官方说明](https://support.apple.com/zh-cn/102445)操作：
+
+1. 先尝试打开「应用程序」中的 Sapphire，让系统显示拦截提示。
+2. 打开「系统设置 → 隐私与安全性」，向下找到 Sapphire 对应的提示；决定继续时，点击「仍要打开」。
+3. 按系统要求由本人认证，在再次出现的提示中确认「打开」。
+
+该按钮可能受系统版本或设备管理策略限制；没有对应按钮或仍然无法打开时，请参照 Apple 说明处理。若提示应用损坏或将损坏电脑，请停止打开，按 Apple 对应说明排查。当前开发签名包不能保证在其他 Mac 上成功运行。
 
 ### 校验下载文件
 
@@ -364,13 +389,13 @@ SAP-H2 对应等待后台批准，SAP-H3 对应辅助服务文件或注册缺失
 
 ## 更新与卸载
 
+**安装包用户和源码用户都请注意：应用内的 Sapphire 更新检查目前仍指向上游仓库，提示中的安装包属于原版，安装后将不再包含本分支新增功能。** 不希望自动下载原版时，可以在「关于」页面的更新偏好中关闭自动下载选项。本分支请使用[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)或下面的源码更新流程。
+
 ### 更新安装包版本
 
 从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)获取新的中文安装包。先退出应用并备份旧版，按新的发布说明检查架构、签名与校验值，再替换「应用程序」中的旧版；最后确认后台服务和 AI 额度正常。
 
 ### 更新源码安装版
-
-应用内的 Sapphire 更新检查目前仍指向上游仓库，提示中的安装包属于原版。若改用上游安装包，就不再包含本分支新增功能；不希望自动下载原版时，可以在「关于」页面的更新偏好中关闭自动下载选项。本分支请按下面的源码更新流程维护，不把应用内升级当作 Sapphire-CN 升级。
 
 1. 退出 Sapphire，备份当前已签名应用。
 2. 进入仓库目录，在没有未提交修改的情况下更新：
