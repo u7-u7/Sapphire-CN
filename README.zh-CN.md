@@ -4,7 +4,7 @@
 
 📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.zip) · [发布说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)
 
-Apple 芯片 · 项目最低 macOS 14.6 · 无需 Xcode。⚠️ 开发预览未公证，首次启动可能被拦截。
+Apple 芯片 · 项目最低 macOS 14.6 · DMG 直接安装，无需 Xcode 或 App Store。🔓 当前未公证，首次如被拦截，按[教程](README.md#首次打开被系统拦截)在「隐私与安全性」手动允许。
 
 - 🚀 [安装与首次打开](README.md#安装包安装)
 - 🔐 [系统授权](README.md#首次启动与授权)
