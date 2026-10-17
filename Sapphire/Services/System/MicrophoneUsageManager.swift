@@ -41,6 +41,7 @@ final class MicrophoneUsageManager: ObservableObject {
     private var defaultInputListener: AudioObjectPropertyListenerBlock?
     private var deviceRunningListeners: [AudioDeviceID: AudioObjectPropertyListenerBlock] = [:]
     private var micUsageUpdateTask: Task<Void, Never>?
+    private var micInactivityConfirmationTask: Task<Void, Never>?
     private var processListListener: AudioObjectPropertyListenerBlock?
     private var currentDefaultInputDeviceID: AudioDeviceID = kAudioObjectUnknown
     private var meteringTap: MicrophoneMeteringTap?
@@ -63,6 +64,7 @@ final class MicrophoneUsageManager: ObservableObject {
             _ = AudioObjectRemovePropertyListenerBlock(deviceID, &addr, .main, block)
         }
         meteringTap?.stop()
+        micInactivityConfirmationTask?.cancel()
         meterResetTask?.cancel()
         if let activeBundlesObserver {
             NotificationCenter.default.removeObserver(activeBundlesObserver)
@@ -126,11 +128,22 @@ final class MicrophoneUsageManager: ObservableObject {
         }
     }
 
-    private func updateMicUsageState() {
-        isMicInUse = Self.anyProcessUsingMicrophone()
+    private func updateMicUsageState(confirmingInactivity: Bool = false) {
+        let inUse = Self.anyProcessUsingMicrophone()
+        if inUse {
+            micInactivityConfirmationTask?.cancel()
+            micInactivityConfirmationTask = nil
+            if !isMicInUse { isMicInUse = true }
+        } else if isMicInUse {
+            if confirmingInactivity {
+                isMicInUse = false
+            } else {
+                confirmMicrophoneInactivity()
+            }
+        }
         let muteDeviceID = MultiAudioManager.shared.currentInputDeviceID ?? currentDefaultInputDeviceID
         let muted = MultiAudioManager.shared.areAllInputsMuted || (muteDeviceID != kAudioObjectUnknown && Self.readInputMuteState(of: muteDeviceID))
-        isMuted = muted
+        if isMuted != muted { isMuted = muted }
         if !isMicInUse {
             audioLevel = 0
             peakLevel = 0
@@ -139,11 +152,33 @@ final class MicrophoneUsageManager: ObservableObject {
         updateMeteringTap()
     }
 
+    private func confirmMicrophoneInactivity() {
+        // 进程或设备属性可能短暂不可读；复查确认停用，避免录制期间误停采样。
+        guard micInactivityConfirmationTask == nil else { return }
+        micInactivityConfirmationTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled, let self else { return }
+            self.micInactivityConfirmationTask = nil
+            self.updateMicUsageState(confirmingInactivity: true)
+        }
+    }
+
     private func updateMeteringTap() {
+        guard isMicInUse, currentDefaultInputDeviceID != kAudioObjectUnknown else {
+            meteringTap?.stop()
+            meteringTap = nil
+            return
+        }
+        let gain = amplifierEnabled ? amplifierGain : 1.0
+        // CoreAudio 会为采样启停发送状态通知；配置未变时复用，避免反馈循环反复刷新系统隐私提示。
+        if let meteringTap,
+           meteringTap.deviceID == currentDefaultInputDeviceID,
+           meteringTap.gain == gain {
+            return
+        }
         meteringTap?.stop()
         meteringTap = nil
-        guard isMicInUse, currentDefaultInputDeviceID != kAudioObjectUnknown else { return }
-        let tap = MicrophoneMeteringTap(deviceID: currentDefaultInputDeviceID, gain: amplifierEnabled ? amplifierGain : 1.0) { [weak self] level, peak, clipping in
+        let tap = MicrophoneMeteringTap(deviceID: currentDefaultInputDeviceID, gain: gain) { [weak self] level, peak, clipping in
             Task { @MainActor in self?.publishMeter(level: level, peak: peak, clipping: clipping) }
         }
         guard tap.start() else { return }
@@ -277,8 +312,8 @@ enum MicrophoneUsageFilter {
 
 private final class MicrophoneMeteringTap {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Sapphire", category: "MicrophoneMeteringTap")
-    private let deviceID: AudioDeviceID
-    private let gain: Float
+    let deviceID: AudioDeviceID
+    let gain: Float
     private let callback: (Float, Float, Bool) -> Void
     private var ioProcID: AudioDeviceIOProcID?
     private var isRunning = false

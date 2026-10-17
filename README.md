@@ -2,9 +2,11 @@
 
 **Sapphire-CN 是基于 [Sapphire](https://github.com/cshariq/Sapphire) 的二次开发项目**，主要增加中文适配、Codex / Claude 订阅额度与第三方平台余额查询，并修复 Helper 启动连接问题。
 
-📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/Sapphire-CN-3.0-cn.1-preview-arm64.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.1-preview)
+📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.2-preview/Sapphire-CN-3.0-cn.2-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.2-preview/Sapphire-CN-3.0-cn.2-preview-arm64.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.2-preview)
 
-**`v3.0-cn.1-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+**`v3.0-cn.2-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+
+🛠️ 本版修复录制时隐私指示图标交替、位置跳动，本机实录验收通过。
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
@@ -32,7 +34,7 @@
 4. **切换中文**：「系统设置 → 通用 → 语言与地区 → 应用程序」添加 Sapphire，选择「简体中文」并重启应用。
 5. **打开面板**：按住 **⌘ Command 点击刘海**，点击 ⚙️ 进入设置；默认未开启悬停展开。
 
-安装者无需开发者会员或自行编译。应用内版本显示 `3.0 (1)`，发布标签为 `v3.0-cn.1-preview`。
+安装者无需开发者会员或自行编译。应用内版本显示 `3.0 (1)`，发布标签为 `v3.0-cn.2-preview`。
 
 ### 首次打开被系统拦截
 
@@ -48,7 +50,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.1-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.2-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -172,7 +174,7 @@ Claude Code 当前使用 DeepSeek 时会自动识别，也可手动配置。Code
 
 🧪 [开发指南](docs/development.md#开发与验证)包含 Helper 的 14 项 XPC 边界检查与翻译维护说明。
 
-实测记录：[签名修复](docs/plans/2026-10-13-helper-signature-repair.md) · [冷启动修复](docs/plans/2026-10-14-helper-cold-handshake.md) · [发行验证](docs/releases/v3.0-cn.1-preview.md)。
+实测记录：[签名修复](docs/plans/2026-10-13-helper-signature-repair.md) · [冷启动修复](docs/plans/2026-10-14-helper-cold-handshake.md) · [发行验证](docs/releases/v3.0-cn.2-preview.md)。
 
 ## 来源与许可证
 
