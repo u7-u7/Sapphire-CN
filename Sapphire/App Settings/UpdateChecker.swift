@@ -18,7 +18,8 @@ let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortV
 enum SapphireUpdateSource {
     static let repositoryURL = URL(string: "https://github.com/u7-u7/Sapphire-CN")!
     static let releasesURL = repositoryURL.appendingPathComponent("releases")
-    static let metadataURL = URL(string: "https://api.github.com/repos/u7-u7/Sapphire-CN/releases?per_page=50")!
+    // 发布时由真实 GitHub Release 生成此清单，经 CDN 分发，不消耗用户的未登录 API 配额。
+    static let metadataURL = URL(string: "https://raw.githubusercontent.com/u7-u7/Sapphire-CN/main/updates/releases.json")!
     static let bundleIdentifier = "com.cshariq.sapphire"
 
     static var currentReleaseVersion: String {
@@ -336,14 +337,14 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     private let networkMonitorQueue = DispatchQueue(label: "com.cshariq.sapphire.update-network", qos: .utility)
     private var periodicCheckInterval: TimeInterval = 5 * 60 * 60
     // 换源后不能从上游缓存恢复候选、ETag 或旧检查调度。
-    private let persistedAvailableUpdateKey = "SapphireCNPersistedAvailableUpdate"
-    private let releasesCacheKey = "SapphireCNReleasesCache"
-    private let releasesCacheETagKey = "SapphireCNReleasesCacheETag"
-    private let releasesCacheDateKey = "SapphireCNReleasesCacheDate"
-    private let lastSuccessfulCheckKey = "SapphireCNUpdateLastSuccessfulCheck"
-    private let nextScheduledCheckKey = "SapphireCNUpdateNextScheduledCheck"
-    private let failureCountKey = "SapphireCNUpdateFailureCount"
-    private let lastNotifiedUpdateVersionKey = "SapphireCNLastNotifiedUpdateVersion"
+    private let persistedAvailableUpdateKey = "SapphireCNFeedV1PersistedAvailableUpdate"
+    private let releasesCacheKey = "SapphireCNFeedV1ReleasesCache"
+    private let releasesCacheETagKey = "SapphireCNFeedV1ReleasesCacheETag"
+    private let releasesCacheDateKey = "SapphireCNFeedV1ReleasesCacheDate"
+    private let lastSuccessfulCheckKey = "SapphireCNFeedV1UpdateLastSuccessfulCheck"
+    private let nextScheduledCheckKey = "SapphireCNFeedV1UpdateNextScheduledCheck"
+    private let failureCountKey = "SapphireCNFeedV1UpdateFailureCount"
+    private let lastNotifiedUpdateVersionKey = "SapphireCNFeedV1LastNotifiedUpdateVersion"
     private let maximumMetadataBytes = 5 * 1_024 * 1_024
     nonisolated private static let maximumDownloadBytes: Int64 = 1_024 * 1_024 * 1_024
     nonisolated private static let maximumArchiveListingBytes = 5 * 1_024 * 1_024
@@ -561,7 +562,6 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
         request.setValue("Sapphire/\(currentAppVersion)", forHTTPHeaderField: "User-Agent")
-        request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
         if useConditionalRequest,
            let etag = UserDefaults.standard.string(forKey: releasesCacheETagKey) {
             request.setValue(etag, forHTTPHeaderField: "If-None-Match")
@@ -574,7 +574,8 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         let (data, response) = try await URLSession(configuration: configuration).data(for: request)
         guard let http = response as? HTTPURLResponse,
               http.url?.scheme == "https",
-              http.url?.host?.lowercased() == "api.github.com" else {
+              http.url?.host?.lowercased() == SapphireUpdateSource.metadataURL.host?.lowercased(),
+              http.url?.path == SapphireUpdateSource.metadataURL.path else {
             throw UpdateMetadataError.insecureRedirect
         }
 
