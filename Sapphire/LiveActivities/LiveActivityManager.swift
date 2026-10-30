@@ -1161,7 +1161,8 @@ class LiveActivityManager: ObservableObject {
         if let duration = duration {
             self.dismissalTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self, self.currentActivity == type else { return }
+                    guard let self, self.currentActivity == type,
+                          self.activityContent.id == content.id else { return }
                     self.dismissalTimer = nil
                     self.handleActivityDismissal(for: type)
                     self.currentActivity = .none
@@ -1192,9 +1193,14 @@ class LiveActivityManager: ObservableObject {
         case .audioSwitch: self.lastShownAudioSwitchEventID = self.audioDeviceManager.lastSwitchEvent?.id
         case .music: self.isDismissingPausedMusic = true
         case .otp:
-            SmartInboxMonitor.shared.dismissOTP()
+            // 新事件可能已入队但还未替换视图，关闭旧弹窗不能把它一起消费。
+            if let event = SmartInboxMonitor.shared.latestOTP,
+               currentActivity != .otp || activityContent.id == AnyHashable(event.id) {
+                SmartInboxMonitor.shared.dismissOTP()
+            }
             if let notification = notificationManager.latestNotification,
-               let code = notification.verificationCode {
+               let code = notification.verificationCode,
+               activityContent.id == AnyHashable("notif-\(notification.id)") {
                 SmartInboxMonitor.shared.consumeOTP(code)
             }
         case .notification:
@@ -2017,7 +2023,9 @@ class LiveActivityManager: ObservableObject {
         guard settingsModel.settings.otpLiveActivityEnabled else { return nil }
 
         if let event = SmartInboxMonitor.shared.latestOTP {
-            if SmartInboxMonitor.shared.hasConsumedOTP(event.code), currentActivity != .otp {
+            let isCurrentEvent = currentActivity == .otp && activityContent.id == AnyHashable(event.id)
+            if !isCurrentEvent && (SmartInboxMonitor.shared.hasConsumedOTP(event.code)
+                || Date().timeIntervalSince(event.date) > 300) {
                 SmartInboxMonitor.shared.dismissOTP()
                 return nil
             }
@@ -2029,11 +2037,14 @@ class LiveActivityManager: ObservableObject {
         notificationManager.start()
         if let notification = notificationManager.latestNotification,
            let code = notification.verificationCode {
-            if SmartInboxMonitor.shared.hasConsumedOTP(code) {
+            let eventID = "notif-\(notification.id)"
+            let isCurrentEvent = currentActivity == .otp && activityContent.id == AnyHashable(eventID)
+            // 当前弹窗保持到关闭/超时；已消费或过期的旧通知不能重新变成候选。
+            if !isCurrentEvent && (SmartInboxMonitor.shared.hasConsumedOTP(code)
+                || Date().timeIntervalSince(notification.date) > 300) {
                 return nil
             }
             SmartInboxMonitor.shared.consumeOTP(code)
-            let eventID = "notif-\(notification.id)"
             let event = OTPEvent(
                 id: eventID,
                 code: code,

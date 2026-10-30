@@ -1994,7 +1994,9 @@ struct OTPLiveActivityView: View {
                     NSPasteboard.general.copyString(event.code)
                     withAnimation(.spring) { didCopy = true }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-                        SmartInboxMonitor.shared.dismissOTP()
+                        // 新验证码可能已替换旧弹窗，旧的延迟回调不能关闭新活动。
+                        guard liveActivityManager.currentActivity == .otp,
+                              liveActivityManager.activityContent.id == AnyHashable(event.id) else { return }
                         liveActivityManager.dismissCurrentActivity()
                     }
                 } label: {
