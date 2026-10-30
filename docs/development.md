@@ -153,3 +153,13 @@ xcrun swiftc -swift-version 5 -parse-as-library \
 - 修改后检查中英文显示、长文本布局、按钮含义和实际交互，不把“资源已翻译”当作“页面已验收”。
 
 相关记录：[签名修复](plans/2026-10-13-helper-signature-repair.md)、[冷启动连接修复与验收](plans/2026-10-14-helper-cold-handshake.md)。
+
+
+## CN 应用内更新发行约定
+
+- GitHub 标签使用 `v3.0-cn.N-preview`（正式 CN 标签也可省略 `-preview`）。签名前把主应用 Info 的 `SapphireCNReleaseVersion` 设置为去掉 `v` 的相同值，并递增主应用 `CURRENT_PROJECT_VERSION`，例如 CN4 对应 `3.0 (4)`。不能复用旧 build，否则旧 Helper 会拒绝同营销版本升级。
+- 主更新器仅从 `u7-u7/Sapphire-CN` 读取 CN 标签，包含公开预发布；旧上游缓存与更新候选不会被恢复。
+- 发布 DMG，以及**只包含完整 `Sapphire.app` 的 `-update.zip`**。更新 ZIP 不得包含 `Applications → /Applications` 外链；该链接只能放在手动安装 DMG 中。ZIP 也可解压后手动安装。
+- 更新器优先选择架构匹配的 `-update.zip`，核对 GitHub 资产大小和摘要，安装时核对 CN 发行标识、版本/build 单调升级、原生架构及真实同团队签名。不要用关闭这些校验来修复打包问题。
+- 主程序与 Helper 的签名身份应一致。旧 Helper 接收的 `expectedVersion` 仍是实际营销版本（如 `3.0`），无需为 CN 标签更改 XPC 协议。
+- 已发 CN1–CN3 的检查地址写死上游，用户首次需要手动安装包含新源的版本，不能声称旧二进制可仅靠远端发版自动换源。

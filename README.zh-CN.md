@@ -2,9 +2,9 @@
 
 🔗 本项目基于 [Sapphire](https://github.com/cshariq/Sapphire) 二次开发，增加中文适配、AI 额度查询与 Helper 连接修复。
 
-📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.3-preview/Sapphire-CN-3.0-cn.3-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.3-preview/Sapphire-CN-3.0-cn.3-preview-arm64.zip) · [发布说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.3-preview)
+📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64-update.zip) · [发布说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.4-preview)
 
-🛠️ 本版修复验证码误识别与反复弹出，已完成飞书通知、复制、关闭和超时的本机实测。
+🛠️ 本版接入自有 GitHub 应用内更新。CN1–CN3 用户需先手动安装一次换源版，之后可在应用内检测和下载后续 CN 更新。
 
 Apple 芯片 · 项目最低 macOS 14.6 · DMG 直接安装，无需 Xcode 或 App Store。🔓 当前未公证，首次如被拦截，按[教程](README.md#首次打开被系统拦截)在「隐私与安全性」手动允许。
 

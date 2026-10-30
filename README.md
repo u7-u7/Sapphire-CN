@@ -2,11 +2,11 @@
 
 **Sapphire-CN 是基于 [Sapphire](https://github.com/cshariq/Sapphire) 的二次开发项目**，主要增加中文适配、Codex / Claude 订阅额度与第三方平台余额查询，并修复 Helper 启动连接问题。
 
-📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.3-preview/Sapphire-CN-3.0-cn.3-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.3-preview/Sapphire-CN-3.0-cn.3-preview-arm64.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.3-preview)
+📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.4-preview)
 
-**`v3.0-cn.3-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+**`v3.0-cn.4-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
 
-🛠️ 本版修复验证码误识别、反复弹出与复制；普通飞书消息、自动/手动复制、X 关闭和自然超时已完成本机实测。
+🛠️ 本版接入 Sapphire-CN 自有 GitHub 应用内更新，并保留上一版已实测的验证码修复。
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
@@ -34,7 +34,7 @@
 4. **切换中文**：「系统设置 → 通用 → 语言与地区 → 应用程序」添加 Sapphire，选择「简体中文」并重启应用。
 5. **打开面板**：按住 **⌘ Command 点击刘海**，点击 ⚙️ 进入设置；默认未开启悬停展开。
 
-安装者无需开发者会员或自行编译。应用内版本显示 `3.0 (1)`，发布标签为 `v3.0-cn.3-preview`。
+安装者无需开发者会员或自行编译。应用显示 `3.0-cn.4-preview`，系统版本为 `3.0 (4)`，发布标签为 `v3.0-cn.4-preview`。
 
 ### 首次打开被系统拦截
 
@@ -50,7 +50,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.3-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -158,7 +158,11 @@ Claude Code 当前使用 DeepSeek 时会自动识别，也可手动配置。Code
 
 ## 更新与卸载
 
-⚠️ **应用内更新指向上游原版**，会覆盖本分支功能。中文版请从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)更新；可在「关于」关闭自动下载。
+从 **CN4 换源版**开始，「设置 → 关于 → Sapphire 更新」从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)检测和下载，包含本仓库的公开预发布，不再接收上游原版更新。
+
+**CN1–CN3 用户需要首次手动安装一次 CN4 或更高换源版**：旧程序写死上游地址，不能仅靠 GitHub 发版远程换源。完成一次手动迁移后，后续可在应用内更新。
+
+应用内下载使用仅包含完整应用的 `-update.zip`；下载后仍需本人点击「安装并重新启动」。自动检查、后台下载和更新通知可在「关于」按需配置。
 
 - **安装包更新**：退出并备份旧版 → 核对新包 → 替换「应用程序」中的应用 → 确认权限、Helper 与额度。
 - **源码更新**：工作区无未提交修改时运行 `git pull --ff-only`，使用相同身份重新构建签名后替换。签名变化可能触发重新授权。

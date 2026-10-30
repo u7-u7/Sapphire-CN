@@ -10,9 +10,40 @@ import AppKit
 import CryptoKit
 import Network
 import Darwin
+import Security
 @preconcurrency import UserNotifications
 
 let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0"
+
+enum SapphireUpdateSource {
+    static let repositoryURL = URL(string: "https://github.com/u7-u7/Sapphire-CN")!
+    static let releasesURL = repositoryURL.appendingPathComponent("releases")
+    static let metadataURL = URL(string: "https://api.github.com/repos/u7-u7/Sapphire-CN/releases?per_page=50")!
+    static let bundleIdentifier = "com.cshariq.sapphire"
+
+    static var currentReleaseVersion: String {
+        releaseVersion(in: .main) ?? "\(currentAppVersion)-cn.0-preview"
+    }
+
+    static func releaseVersion(in bundle: Bundle?) -> String? {
+        guard let value = bundle?.object(forInfoDictionaryKey: "SapphireCNReleaseVersion") as? String,
+              isCNVersion(value) else { return nil }
+        return value
+    }
+
+    static func isCNVersion(_ value: String) -> Bool {
+        value.range(of: #"^[0-9]+(?:\.[0-9]+){1,2}-cn\.[0-9]+(?:-preview)?$"#,
+                    options: .regularExpression) != nil
+    }
+
+    static func isReleaseAssetURL(_ url: URL) -> Bool {
+        url.scheme?.lowercased() == "https"
+            && url.host?.lowercased() == "github.com"
+            && url.user == nil && url.password == nil
+            && (url.port == nil || url.port == 443)
+            && url.path.hasPrefix("/u7-u7/Sapphire-CN/releases/download/")
+    }
+}
 
 enum AppVersionOrdering {
     static func compare(_ lhs: String, _ rhs: String) -> ComparisonResult {
@@ -304,14 +335,15 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     private var networkMonitor: NWPathMonitor?
     private let networkMonitorQueue = DispatchQueue(label: "com.cshariq.sapphire.update-network", qos: .utility)
     private var periodicCheckInterval: TimeInterval = 5 * 60 * 60
-    private let persistedAvailableUpdateKey = "SapphirePersistedAvailableUpdate"
-    private let releasesCacheKey = "SapphireReleasesCache"
-    private let releasesCacheETagKey = "SapphireReleasesCacheETag"
-    private let releasesCacheDateKey = "SapphireReleasesCacheDate"
-    private let lastSuccessfulCheckKey = "SapphireUpdateLastSuccessfulCheck"
-    private let nextScheduledCheckKey = "SapphireUpdateNextScheduledCheck"
-    private let failureCountKey = "SapphireUpdateFailureCount"
-    private let lastNotifiedUpdateVersionKey = "SapphireLastNotifiedUpdateVersion"
+    // 换源后不能从上游缓存恢复候选、ETag 或旧检查调度。
+    private let persistedAvailableUpdateKey = "SapphireCNPersistedAvailableUpdate"
+    private let releasesCacheKey = "SapphireCNReleasesCache"
+    private let releasesCacheETagKey = "SapphireCNReleasesCacheETag"
+    private let releasesCacheDateKey = "SapphireCNReleasesCacheDate"
+    private let lastSuccessfulCheckKey = "SapphireCNUpdateLastSuccessfulCheck"
+    private let nextScheduledCheckKey = "SapphireCNUpdateNextScheduledCheck"
+    private let failureCountKey = "SapphireCNUpdateFailureCount"
+    private let lastNotifiedUpdateVersionKey = "SapphireCNLastNotifiedUpdateVersion"
     private let maximumMetadataBytes = 5 * 1_024 * 1_024
     nonisolated private static let maximumDownloadBytes: Int64 = 1_024 * 1_024 * 1_024
     nonisolated private static let maximumArchiveListingBytes = 5 * 1_024 * 1_024
@@ -400,18 +432,14 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
             clearPersistedAvailableUpdate()
             return
         }
-        let offerStableDowngrade = ReleaseChannelPolicy.shouldOfferStableDowngrade(
-            for: SettingsModel.shared.settings
-        )
-        let stillRelevant = SapphireVersionOrdering.isNewer(persisted.version, than: currentAppVersion)
-            || (offerStableDowngrade
-                && SapphireVersionOrdering.compare(persisted.version, currentAppVersion) != .orderedSame)
+        let stillRelevant = SapphireUpdateSource.isCNVersion(persisted.version)
+            && AppVersionOrdering.isNewer(persisted.version, than: SapphireUpdateSource.currentReleaseVersion)
         guard stillRelevant,
               Self.isSafeReleaseAssetName(persisted.asset.name),
               persisted.asset.name.lowercased().hasSuffix(".zip"),
               persisted.asset.name.lowercased().contains("sapphire"),
               persisted.asset.size.map({ $0 > 0 && $0 <= Self.maximumDownloadBytes }) == true,
-              Self.isTrustedDownloadURL(persisted.asset.browserDownloadUrl) else {
+              SapphireUpdateSource.isReleaseAssetURL(persisted.asset.browserDownloadUrl) else {
             clearPersistedAvailableUpdate()
             return
         }
@@ -419,19 +447,18 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     }
 
     func checkForUpdates() {
-        beginCheck(channel: .stable)
+        beginCheck()
     }
 
     func checkForBetaUpdates() {
-        beginCheck(channel: .beta)
+        beginCheck()
     }
 
     func checkForUpdatesMatchingCurrentChannel() {
-        let channel = ReleaseChannelPolicy.displayedChannel(for: SettingsModel.shared.settings)
-        beginCheck(channel: channel)
+        beginCheck()
     }
 
-    private func beginCheck(channel: ReleaseChannel) {
+    private func beginCheck() {
         switch status {
         case .checking, .downloading, .downloaded, .installing:
             return
@@ -443,27 +470,27 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         lastCheckAttemptAt = Date()
         lastCheckError = nil
         lastFailureWasRateLimit = false
-        Task { await performCheck(channel: channel, previousStatus: previousStatus) }
+        Task { await performCheck(previousStatus: previousStatus) }
     }
 
-    private func performCheck(channel: ReleaseChannel, previousStatus: UpdateStatus) async {
+    private func performCheck(previousStatus: UpdateStatus) async {
         do {
             let fetched = try await fetchReleasesWithRetry()
             isUsingCachedReleaseData = fetched.usedCache
-            let releases = fetched.releases.filter { !$0.draft }
-            let eligible = channel == .beta ? releases : releases.filter { !$0.prerelease }
-            guard let release = eligible.max(by: {
-                SapphireVersionOrdering.compare($0.marketingVersion, $1.marketingVersion) == .orderedAscending
+            // CN 发行目前为公开预发布，与上游付费 Beta 通道无关。
+            let releases = fetched.releases.filter {
+                !$0.draft && SapphireUpdateSource.isCNVersion($0.marketingVersion)
+            }
+            guard let release = releases.max(by: {
+                AppVersionOrdering.compare($0.marketingVersion, $1.marketingVersion) == .orderedAscending
             }) else {
                 throw UpdateMetadataError.noEligibleRelease
             }
 
             let latestVersion = release.marketingVersion
-            let offerStableDowngrade = channel == .stable
-                && ReleaseChannelPolicy.shouldOfferStableDowngrade(for: SettingsModel.shared.settings)
-            let shouldOffer = SapphireVersionOrdering.isNewer(latestVersion, than: currentAppVersion)
-                || (offerStableDowngrade
-                    && SapphireVersionOrdering.compare(latestVersion, currentAppVersion) != .orderedSame)
+            let shouldOffer = AppVersionOrdering.isNewer(
+                latestVersion, than: SapphireUpdateSource.currentReleaseVersion
+            )
 
             applyReleaseNotes(from: releases, offeredVersion: shouldOffer ? latestVersion : nil)
             if shouldOffer {
@@ -529,10 +556,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     }
 
     private func fetchReleases(useConditionalRequest: Bool = true) async throws -> FetchedGitHubReleases {
-        guard let url = URL(string: "https://api.github.com/repos/cshariq/Sapphire/releases?per_page=50") else {
-            throw UpdateMetadataError.invalidResponse
-        }
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: SapphireUpdateSource.metadataURL)
         request.timeoutInterval = 25
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
@@ -633,7 +657,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
             return isSafeReleaseAssetName(asset.name)
                 && lower.hasSuffix(".zip")
                 && lower.contains("sapphire")
-                && isTrustedDownloadURL(asset.browserDownloadUrl)
+                && SapphireUpdateSource.isReleaseAssetURL(asset.browserDownloadUrl)
                 && asset.size.map({ $0 > 0 && $0 <= maximumDownloadBytes }) == true
                 && isAssetNameCompatible(asset.name, with: architecture)
         }
@@ -692,6 +716,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     nonisolated private static func assetScore(_ asset: GitHubReleaseAsset, architecture: String) -> Int {
         let name = asset.name.lowercased()
         var score = 0
+        if name.hasSuffix("-update.zip") { score += 100 }
         if name.contains("universal") { score += 30 }
         if name.contains(architecture) { score += 25 }
         if name == "sapphire.zip" { score += 20 }
@@ -800,7 +825,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     }
 
     private func applyReleaseNotes(from releases: [GitHubRelease], offeredVersion: String?) {
-        let targetVersion = offeredVersion ?? currentAppVersion
+        let targetVersion = offeredVersion ?? SapphireUpdateSource.currentReleaseVersion
         if let match = Self.findRelease(version: targetVersion, in: releases) {
             releaseNotesVersion = match.marketingVersion
             releaseNotes = Self.normalizedNotes(match.body)
@@ -809,7 +834,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         }
         releaseNotesVersion = targetVersion
         releaseNotes = nil
-        releaseNotesURL = URL(string: "https://github.com/cshariq/Sapphire/releases")
+        releaseNotesURL = SapphireUpdateSource.releasesURL
     }
 
     private static func normalizedNotes(_ body: String?) -> String? {
@@ -821,8 +846,8 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
 
     private static func findRelease(version: String, in releases: [GitHubRelease]) -> GitHubRelease? {
         releases.first { release in
-            SapphireVersionOrdering.compare(release.marketingVersion, version) == .orderedSame
-                || SapphireVersionOrdering.compare(
+            AppVersionOrdering.compare(release.marketingVersion, version) == .orderedSame
+                || AppVersionOrdering.compare(
                     release.tagName
                         .trimmingCharacters(in: .whitespacesAndNewlines)
                         .replacingOccurrences(of: "v", with: "", options: .caseInsensitive),
@@ -944,7 +969,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     }
 
     private func downloadUpdate(asset: GitHubReleaseAsset, version: String) {
-        guard Self.isTrustedDownloadURL(asset.browserDownloadUrl),
+        guard SapphireUpdateSource.isReleaseAssetURL(asset.browserDownloadUrl),
               Self.isSafeReleaseAssetName(asset.name),
               asset.name.lowercased().hasSuffix(".zip"),
               asset.name.lowercased().contains("sapphire"),
@@ -1074,33 +1099,71 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         candidate: URL,
         replacing installed: URL
     ) throws {
-        let installedIdentity = try AppSecurityValidator.identity(at: installed)
-        let candidateIdentity = try AppSecurityValidator.identity(at: candidate)
-
-        guard candidateIdentity.bundleIdentifier == installedIdentity.bundleIdentifier else {
-            throw NSError(
-                domain: "UpdateError",
-                code: 25,
-                userInfo: [NSLocalizedDescriptionKey: "The downloaded update has the wrong bundle identifier."]
-            )
-        }
-        guard let installedTeam = installedIdentity.teamIdentifier else {
-            try AppSecurityValidator.validateReplacement(candidate: candidate, replacing: installed)
-            return
-        }
-        guard candidateIdentity.teamIdentifier == installedTeam else {
+        let installedIdentity = try validatedUpdateIdentity(at: installed)
+        let candidateIdentity = try validatedUpdateIdentity(at: candidate)
+        guard installedIdentity.identifier == SapphireUpdateSource.bundleIdentifier,
+              candidateIdentity.identifier == installedIdentity.identifier,
+              candidateIdentity.team == installedIdentity.team else {
             throw NSError(
                 domain: "UpdateError",
                 code: 26,
-                userInfo: [NSLocalizedDescriptionKey: "The update was not signed by the same Apple developer team."]
+                userInfo: [NSLocalizedDescriptionKey: "The update must be the same app, signed by the same Apple developer team."]
             )
         }
+    }
+
+    nonisolated private static func validatedUpdateIdentity(at url: URL) throws -> (identifier: String, team: String) {
+        // 公开构建的通用验证器是占位实现，更新入口必须与 Helper 一样做真实系统验签。
+        var code: SecStaticCode?
+        var information: CFDictionary?
+        let flags = SecCSFlags(rawValue: kSecCSCheckAllArchitectures | kSecCSStrictValidate | kSecCSCheckNestedCode)
+        guard SecStaticCodeCreateWithPath(url as CFURL, [], &code) == errSecSuccess,
+              let code,
+              SecStaticCodeCheckValidity(code, flags, nil) == errSecSuccess,
+              SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &information) == errSecSuccess,
+              let info = information as? [String: Any],
+              let securedPlist = info[kSecCodeInfoPList as String] as? [String: Any],
+              let identifier = securedPlist["CFBundleIdentifier"] as? String,
+              let team = info[kSecCodeInfoTeamIdentifier as String] as? String,
+              !team.isEmpty else {
+            throw NSError(domain: "UpdateError", code: 25, userInfo: [
+                NSLocalizedDescriptionKey: "The app signature could not be verified. Install a signed Sapphire-CN build manually."
+            ])
+        }
+        return (identifier, team)
+    }
+
+    nonisolated private static func validatedCandidateVersion(
+        at candidate: URL, replacing installed: URL, expectedReleaseVersion: String
+    ) throws -> String {
+        let candidateBundle = Bundle(url: candidate)
+        let installedBundle = Bundle(url: installed)
+        let marketing = candidateBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        let currentMarketing = installedBundle?.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        let release = SapphireUpdateSource.releaseVersion(in: candidateBundle)
+        let currentRelease = SapphireUpdateSource.releaseVersion(in: installedBundle) ?? "\(currentMarketing)-cn.0-preview"
+        let build = candidateBundle?.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"
+        let currentBuild = installedBundle?.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"
+        let marketingOrder = SapphireVersionOrdering.compare(marketing, currentMarketing)
+        // CN 标签用于发行校验；系统版本和递增 build 保持旧 Helper 的升级契约。
+        guard let release,
+              AppVersionOrdering.compare(release, expectedReleaseVersion) == .orderedSame,
+              AppVersionOrdering.isNewer(release, than: currentRelease),
+              !marketing.isEmpty,
+              marketingOrder == .orderedDescending
+                || (marketingOrder == .orderedSame && AppVersionOrdering.isNewer(build, than: currentBuild)) else {
+            throw NSError(domain: "UpdateError", code: 14, userInfo: [
+                NSLocalizedDescriptionKey: "The signed app must match the offered CN release and have a newer version or build."
+            ])
+        }
+        return marketing
     }
 
     nonisolated private static func stageForCurrentUserInstallation(
         candidate: URL,
         replacing currentAppURL: URL,
-        expectedVersion: String
+        expectedVersion: String,
+        expectedReleaseVersion: String
     ) throws -> URL {
         let fileManager = FileManager.default
         let stagedURL = currentAppURL.deletingLastPathComponent()
@@ -1110,8 +1173,9 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
             try fileManager.copyItem(at: candidate, to: stagedURL)
             try validateUpdatePublisher(candidate: stagedURL, replacing: currentAppURL)
 
-            let stagedVersion = Bundle(url: stagedURL)?
-                .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+            let stagedVersion = try validatedCandidateVersion(
+                at: stagedURL, replacing: currentAppURL, expectedReleaseVersion: expectedReleaseVersion
+            )
             guard SapphireVersionOrdering.compare(stagedVersion, expectedVersion) == .orderedSame else {
                 throw NSError(
                     domain: "UpdateError",
@@ -1259,15 +1323,9 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
                 }
                 try Self.validateRuntimeArchitecture(newAppURL)
                 try Self.validateUpdatePublisher(candidate: newAppURL, replacing: currentAppURL)
-                let candidateVersion = Bundle(url: newAppURL)?
-                    .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
-                guard SapphireVersionOrdering.compare(candidateVersion, expectedVersion) == .orderedSame else {
-                    throw NSError(
-                        domain: "UpdateError",
-                        code: 14,
-                        userInfo: [NSLocalizedDescriptionKey: "The signed app version (\(candidateVersion)) does not match the offered release (\(expectedVersion))."]
-                    )
-                }
+                let candidateVersion = try Self.validatedCandidateVersion(
+                    at: newAppURL, replacing: currentAppURL, expectedReleaseVersion: expectedVersion
+                )
                 let currentAppPath = Bundle.main.bundlePath
                 let userWritable = await MainActor.run { self.isInstallPathUserWritable() }
                 var stagedAppURL: URL?
@@ -1281,7 +1339,8 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
                     let stagedURL = try Self.stageForCurrentUserInstallation(
                         candidate: newAppURL,
                         replacing: currentAppURL,
-                        expectedVersion: candidateVersion
+                        expectedVersion: candidateVersion,
+                        expectedReleaseVersion: expectedVersion
                     )
                     stagedAppURL = stagedURL
                     try Self.atomicallyReplaceAppBundle(

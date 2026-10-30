@@ -10214,25 +10214,8 @@ struct AboutSettingsView: View {
     @State private var debugTapCount = 0
     @State private var debugTapResetTask: Task<Void, Never>?
 
-    private var displayedReleaseChannel: ReleaseChannel {
-        ReleaseChannelPolicy.displayedChannel(for: settingsModel.settings)
-    }
-
-    private var releaseChannelBinding: Binding<ReleaseChannel> {
-        Binding(
-            get: { displayedReleaseChannel },
-            set: { newValue in
-                guard SubscriptionAccess.hasAccess(to: .betaSoftwareUpdates) || newValue == .stable else { return }
-                settingsModel.settings.releaseChannel = newValue
-            }
-        )
-    }
-
     private var versionLabel: String {
-        if BetaEntitlementRuntime.isBetaBuild {
-            return "Version \(currentAppVersion) Beta"
-        }
-        return "Version \(currentAppVersion)"
+        "Version \(currentAppVersion)"
     }
 
     var body: some View {
@@ -10282,7 +10265,7 @@ struct AboutSettingsView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
 
-                            Link(destination: URL(string: "https://github.com/cshariq/Sapphire")!) {
+                            Link(destination: SapphireUpdateSource.repositoryURL) {
                                 Image("github_logo")
                                     .resizable()
                                     .renderingMode(.template)
@@ -10326,14 +10309,9 @@ struct AboutSettingsView: View {
                 Text("© 2025 Shariq Charolia. All rights reserved.").font(.caption).foregroundStyle(.tertiary).frame(maxWidth: .infinity, alignment: .center).padding(.top, 20)
             }.padding(25).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .onAppear {
-                ReleaseChannelPolicy.reconcileStoredPreference(&settingsModel.settings)
                 settingsModel.commitNow()
                 updateChecker.checkForUpdatesMatchingCurrentChannel()
             }
-        }
-        .onChange(of: settingsModel.settings.releaseChannel) { _, _ in
-            settingsModel.commitNow()
-            updateChecker.checkForUpdatesMatchingCurrentChannel()
         }
         .onChange(of: settingsModel.settings.automaticUpdateChecksEnabled) { _, enabled in
             settingsModel.commitNow()
@@ -10511,39 +10489,23 @@ struct AboutSettingsView: View {
             }
 
             VStack(alignment: .leading, spacing: 0) {
-                Text("Release Channel")
+                Text("更新通道")
                     .font(.headline)
                     .padding([.horizontal, .top])
-                Text("Choose which update channel to receive releases from.")
+                Label("Sapphire-CN · GitHub", systemImage: "arrow.triangle.branch")
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal)
+                    .padding(.top, 10)
+                Text("接收 Sapphire-CN 仓库的公开版本和预发布更新。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.horizontal)
-                    .padding(.bottom, 10)
-
-                ModernChannelSwitcher(
-                    selection: releaseChannelBinding,
-                    hasBetaAccess: SubscriptionAccess.hasAccess(to: .betaSoftwareUpdates),
-                    isLockedToRunningBuild: false
-                )
-                .padding(.horizontal)
-                .padding(.bottom)
-
-                if BetaEntitlementRuntime.isBetaBuild && settingsModel.settings.releaseChannel == .stable {
-                    Text("You're on a beta build. Switching to Stable lets you install the latest stable release.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal)
-                        .padding(.bottom, 12)
-                } else if !SubscriptionAccess.hasAccess(to: .betaSoftwareUpdates) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "lock.fill").font(.caption2)
-                        Text("Beta access requires a Plus subscription or higher.")
-                            .font(.caption)
-                    }
-                    .foregroundStyle(.secondary)
+                    .padding(.top, 6)
+                Link("查看 GitHub 发布", destination: SapphireUpdateSource.releasesURL)
+                    .font(.caption)
                     .padding(.horizontal)
-                    .padding(.bottom, 12)
-                }
+                    .padding(.top, 10)
+                    .padding(.bottom)
             }
             .modifier(SettingsContainerModifier())
 
@@ -10584,7 +10546,7 @@ struct AboutSettingsView: View {
     }
 
     var currentAppVersion: String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "N/A"
+        SapphireUpdateSource.currentReleaseVersion
     }
 
     private func handleDebugIconTap() {
