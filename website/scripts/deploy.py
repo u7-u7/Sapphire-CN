@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INSTANCE = 'i-bp1163pp7k7o228siqnp'
-DOMAIN = 'sapphire.121.41.102.231.sslip.io'
+DOMAIN = 'sapphire.u7u7.top'
 
 
 def remote(command):
@@ -54,7 +54,7 @@ if ! docker exec agent-path-web caddy reload --config /etc/caddy/Caddyfile --ada
     cat "$backup" > "$config"
     exit 1
 fi
-curl -fsS http://127.0.0.1:8787/ | grep -q 'The Notch'
+curl -fsS http://127.0.0.1:8787/ | grep -q 'Sapphire-CN'
 curl -fsS https://learn.u7u7.top/ -o /dev/null
 echo 'Sapphire published; existing Agent Path verified'
 ''')

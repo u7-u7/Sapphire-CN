@@ -1,8 +1,10 @@
 # 💎 Sapphire-CN
 
-🌐 **[项目网站](https://sapphire.121.41.102.231.sslip.io/)** · 网站源码位于 [`website/`](website/README.md)。
+🌐 **[项目网站](https://sapphire.u7u7.top/)** · [二开说明与致谢](https://sapphire.u7u7.top/about) · 网站源码位于 [`website/`](website/README.md)。
 
 **Sapphire-CN 是基于 [Sapphire](https://github.com/cshariq/Sapphire) 的二次开发项目**，主要增加中文适配、Codex / Claude 订阅额度与第三方平台余额查询，并修复 Helper 启动连接问题。
+
+本项目由 `u7-u7/Sapphire-CN` 独立维护，非上游官方网站或官方中文版；保留 Shariq Charolia 与上游贡献者署名，许可证见 [LICENSE](LICENSE)。
 
 📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.4-preview)
 

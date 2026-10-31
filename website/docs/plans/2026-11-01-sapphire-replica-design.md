@@ -12,10 +12,14 @@
 
 ## 部署与回退
 
-使用 alibabacloud-workbench-cli 管理现有 ECS i-bp1163pp7k7o228siqnp / cn-hangzhou。独立 sapphire-web 静态服务绑定 127.0.0.1:8787，现有 Caddy 为 sapphire.121.41.102.231.sslip.io 增加独立代理并签发 HTTPS 证书。原有 learn.u7u7.top 配置原文保留，使用热加载，不重启服务。
+使用 alibabacloud-workbench-cli 管理现有 ECS i-bp1163pp7k7o228siqnp / cn-hangzhou。独立 sapphire-web 静态服务绑定 127.0.0.1:8787，现有 Caddy 为 sapphire.u7u7.top 增加独立代理并签发 HTTPS 证书；原 sslip.io 临时域名301到正式域名。原有 learn.u7u7.top 配置原文保留，使用热加载，不重启服务。
 
-后续增量发布对比 SHA256，先备份旧文件，再逐文件原子替换。配置和静态文件回退资料均在 /opt/sapphire-site/backups/。临时域名可换为用户自有域名。
+后续增量发布对比 SHA256，先备份旧文件，再逐文件原子替换。配置和静态文件回退资料均在 /opt/sapphire-site/backups/。权威 DNS 由 Cloudflare 托管，sapphire 的 A 记录直接解析至阿里云 ECS；不修改整域 NS。
 
 ## 验证
 
-未新增测试用例。已验证本地页面引用、JS 语法、主题切换、FAQ 展开、公开 CN4 发行记录与资产、线上页面/本地哈希一致、全部79个静态文件远端哈希、视频206 Range、HTTPS和旧账号/结算地址重定向。原有站点保持可访问。
+未新增测试用例。已验证本地页面引用、JS 语法、主题切换、FAQ 展开、公开 CN4 发行记录与资产、线上页面/本地哈希一致、全部80个静态文件远端哈希、视频206 Range、HTTPS和旧账号/结算地址重定向。原有站点保持可访问。
+
+## 二开说明
+
+首页、全站页脚与 /about 明确上游作者、独立维护关系和本分支新增/修复范围，保留上游仓库与 LICENSE 链接；不称上游官方中文版。

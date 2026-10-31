@@ -57,7 +57,7 @@ for p,v in manifest.items():
 print('Published %s changed assets; all %s hashes verified' % (len(changed),len(manifest)))
 PY
 ''')
-    print('https://sapphire.121.41.102.231.sslip.io/')
+    print('https://sapphire.u7u7.top/')
 
 
 if __name__ == '__main__':

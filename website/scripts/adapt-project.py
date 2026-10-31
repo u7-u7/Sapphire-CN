@@ -12,7 +12,7 @@ PROJECT = ROOT.parent
 DIST = ROOT / 'dist'
 TEMPLATES = ROOT / 'templates'
 REPO = 'https://github.com/u7-u7/Sapphire-CN'
-SITE = 'https://sapphire.121.41.102.231.sslip.io'
+SITE = 'https://sapphire.u7u7.top'
 RELEASES = json.loads((PROJECT / 'updates/releases.json').read_text())
 LATEST = RELEASES[0]
 VERSION = LATEST['tag_name']
@@ -25,9 +25,9 @@ def footer():
     return f'''<footer class="main-footer border-t border-[var(--color-border-color)] bg-[var(--color-surface)] relative z-10">
       <div class="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
         <div><div class="flex items-center gap-3 text-xl font-extrabold"><img id="footer-logo" src="/sapphire-light.png" width="32" height="32" alt="Sapphire-CN">Sapphire-CN</div><p class="mt-4 text-sm text-[var(--color-text-secondary)]">刘海之间，尽在掌握。<br>中文适配 · AI 额度 · 桌面效率</p></div>
-        <div class="space-y-3 text-sm"><h4 class="font-bold mb-4">项目</h4><a class="block" href="/download">安装与下载</a><a class="block" href="/changelog">更新记录</a><a class="block" href="{REPO}">GitHub 源码</a></div>
+        <div class="space-y-3 text-sm"><h4 class="font-bold mb-4">项目</h4><a class="block" href="/about">二开说明</a><a class="block" href="/download">安装与下载</a><a class="block" href="/changelog">更新记录</a><a class="block" href="{REPO}">GitHub 源码</a></div>
         <div class="space-y-3 text-sm"><h4 class="font-bold mb-4">帮助</h4><a class="block" href="/faq">常见问题</a><a class="block" href="/issues">问题反馈</a><a class="block" href="{REPO}/blob/main/README.md">中文使用教程</a><a class="block" href="/privacy">数据与隐私</a></div>
-      </div><div class="max-w-6xl mx-auto px-6 pb-10 text-xs text-[var(--color-text-secondary)]">基于 <a href="https://github.com/cshariq/Sapphire">Shariq Charolia 的 Sapphire</a> 二次开发；Sapphire-CN 由本项目维护。页面视觉沿用上游设计。</div>
+      </div><div class="max-w-6xl mx-auto px-6 pb-10 text-xs text-[var(--color-text-secondary)]">基于 <a href="https://github.com/cshariq/Sapphire">Shariq Charolia 与贡献者的 Sapphire</a> 独立二次开发，由 u7-u7/Sapphire-CN 维护，非上游官方网站。<a href="/about">二开说明与致谢</a> · <a href="{REPO}/blob/main/LICENSE">项目许可证</a></div>
     </footer>'''
 
 
@@ -44,6 +44,7 @@ def shared(source):
     source = re.sub(r'\bSapphire\b(?!-CN)', 'Sapphire-CN', source)
     source = source.replace('https://github.com/cshariq/Sapphire-CN', 'https://github.com/cshariq/Sapphire')
     source = source.replace('Shariq Charolia 的 Sapphire-CN', 'Shariq Charolia 的 Sapphire')
+    source = source.replace('Shariq Charolia 与贡献者的 Sapphire-CN', 'Shariq Charolia 与贡献者的 Sapphire')
     source = source.replace(REPO + '/releases/latest', REPO + '/releases/tag/' + VERSION)
     source = source.replace('fetch(`${REPO_URL}/releases/latest`)', f'fetch(`${{REPO_URL}}/releases/tags/{VERSION}`)')
     source = source.replace('lang="en"', 'lang="zh-CN"')
@@ -78,6 +79,7 @@ def homepage():
     source = re.sub(r'<video src="/assets/sapphire-demo.mp4"[^>]*></video>', '<img src="/assets/notch-overview.png" class="cn-shot" alt="Sapphire-CN 音乐、AI 额度和专注面板，读数为示例">', source)
     source = source.replace('bg-black aspect-video border', 'bg-black border')
     source = source.replace('<!-- GitHub Stats -->', f'<p class="cn-note pt-2">{VERSION} · Apple 芯片 arm64 · macOS 14.6 起<br>未公证开发预览 · <a href="/download" class="underline">安装说明</a> · 截图读数为示例</p><!-- GitHub Stats -->')
+    source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">基于 Sapphire 的独立中文增强分支，非上游官方版本 · <a href="/about" class="underline">了解二开内容</a></p><!-- GitHub Stats -->')
     start = source.index('        <!-- 1. BLIP AGENT')
     end = source.index('    </main>', start)
     sections = [
@@ -122,6 +124,13 @@ def main():
         shutil.copyfile(PROJECT / 'docs/images' / name, DIST / 'assets' / name)
     homepage()
     script()
+    about = f'''<div class="cn-card"><h2 class="!mt-0">项目来源</h2><p>Sapphire-CN 是基于 <a href="https://github.com/cshariq/Sapphire">Shariq Charolia 与贡献者开发的 Sapphire</a> 的独立二次开发分支，由 <a href="{REPO}">u7-u7/Sapphire-CN</a> 维护。本网站展示和提供下载的是中文增强分支，并非上游官方网站或官方中文版。</p></div>
+    <div class="cn-card"><h2 class="!mt-0">本分支做了哪些改进？</h2><ul class="list-disc pl-6"><li>主要界面与权限说明中文适配。</li><li>Codex / Claude 官方订阅额度、同步状态与服务端重置时间展示。</li><li>DeepSeek、Sub2API、NewAPI 与自定义 JSON 平台余额查询。</li><li>Helper 启动连接与验证码通知修复。</li><li>本仓库 GitHub 应用内更新通道，包含公开 CN 预发布。</li></ul></div>
+    <div class="cn-card"><h2 class="!mt-0">下载与功能范围</h2><p>本站下载指向 Sapphire-CN 的 GitHub Release。上游原版安装包不包含本分支新增功能。部分公开源码为占位实现，订阅、系统扩展等功能需要额外配置；支持情况以 <a href="{REPO}/blob/main/README.md">本项目使用说明</a>和实际版本为准。</p></div>
+    <div class="cn-card"><h2 class="!mt-0">致谢与源码</h2><p>感谢 Shariq Charolia 与 Sapphire 上游贡献者。网站视觉沿用上游设计，同类功能演示素材保留来源说明；中文分支截图来自本项目。原作者与贡献者署名予以保留，项目许可见 <a href="{REPO}/blob/main/LICENSE">仓库 LICENSE</a>，第三方资源遵循各自声明。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-secondary-btn" href="https://github.com/cshariq/Sapphire">上游项目</a><a class="apple-secondary-btn" href="{REPO}">Sapphire-CN 源码</a></div></div>'''
+    about_page = content_page('faq.html','二次开发说明','独立维护的中文增强分支，保留上游署名与来源。',about)
+    about_page = about_page.replace(f'{SITE}/faq', f'{SITE}/about').replace('href="/faq" class="header-nav-link is-active"', 'href="/faq" class="header-nav-link"')
+    (DIST / 'about.html').write_text(about_page)
     faq = json.loads((ROOT / 'content/project-faq.json').read_text())
     faq_html = '<div class="space-y-4">' + ''.join(f'<details class="cn-card" {"open" if i==0 else ""}><summary class="font-bold cursor-pointer">{html.escape(q["question"])}</summary><p class="mt-4">{html.escape(q["answer"])}</p></details>' for i,q in enumerate(faq)) + '</div>'
     (DIST / 'faq.html').write_text(content_page('faq.html','常见问题','从当前项目文档整理，帮助你安装和配置 Sapphire-CN。',faq_html))
