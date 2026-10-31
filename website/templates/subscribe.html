@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subscription Plans - Sapphire</title>
+    <meta name="description" content="Choose a Sapphire plan — Basic, Pro, or Ultra — and unlock premium notch features." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sapphire" />
+    <meta property="og:title" content="Subscription Plans - Sapphire" />
+    <meta property="og:description" content="Choose a Sapphire plan — Basic, Pro, or Ultra — and unlock premium notch features." />
+    <meta property="og:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://sapphire-app.tech/subscribe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Subscription Plans - Sapphire" />
+    <meta name="twitter:description" content="Choose a Sapphire plan — Basic, Pro, or Ultra — and unlock premium notch features." />
+    <meta name="twitter:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preload" href="./style.css" as="style">
+    <link rel="preload" href="./sapphire-light.png" as="image">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Dependencies: Tailwind, Material Icons, Lenis -->
+    <script src="/vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="/vendor/symbols.css" />
+    <script src="/vendor/lenis.min.js"></script>
+    <link rel="canonical" href="https://sapphire-app.tech/subscribe" />
+
+    <!-- Immediate Theme Loader to prevent FOUC -->
+    <script>
+        const savedTheme = localStorage.getItem('sapphire-theme') || 'dark';
+        document.documentElement.className = `theme-${savedTheme}`;
+    </script>
+
+    <style>
+        .pricing-card {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--color-card-border);
+            border-radius: 28px;
+            padding: 2.25rem 1.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            background-color: var(--color-card-bg-hover);
+            border-color: var(--color-border-color);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.is-featured {
+            border-color: var(--color-accent-solid);
+            box-shadow: 0 20px 45px -15px rgba(59, 130, 246, 0.25);
+        }
+
+        .comparison-table-wrap {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--color-card-border);
+            border-radius: 28px;
+            overflow: hidden;
+        }
+    </style>
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "Sapphire Subscription",
+      "description": "Choose a Sapphire plan - Basic, Pro, or Ultra - and unlock premium notch features.",
+      "image": "https://sapphire-app.tech/sapphire-light.png",
+      "brand": {
+        "@type": "Brand",
+        "name": "Sapphire"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Basic",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "US",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+            "merchantReturnDays": 0
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "USD"
+            },
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "US"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              }
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Pro",
+          "price": "25.99",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "US",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+            "merchantReturnDays": 0
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "USD"
+            },
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "US"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              }
+            }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Ultra",
+          "price": "49.99",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "applicableCountry": "US",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+            "merchantReturnDays": 0
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "USD"
+            },
+            "shippingDestination": {
+              "@type": "DefinedRegion",
+              "addressCountry": "US"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 0,
+                "maxValue": 0,
+                "unitCode": "DAY"
+              }
+            }
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] relative min-h-screen">
+    
+    <!-- Custom Floating Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="dark-mode-gradient"></div>
+    <div id="dot-container">
+        <div id="dot-base" class="bg-dot-pattern"></div>
+        <div id="dot-spotlight"></div>
+    </div>
+
+    <!-- MAIN HEADER NAVBAR -->
+    <div class="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
+        <header id="main-header" class="header-glass-capsule flex items-center justify-between gap-4 w-full max-w-5xl mx-auto pointer-events-auto">
+            
+            <!-- Left: Logo & Core Nav -->
+            <div class="flex items-center gap-6">
+                <a href="/" class="flex items-center space-x-2.5 whitespace-nowrap pl-2">
+                    <img id="sapphire-icon" src="./sapphire-light.png" alt="Sapphire Logo" class="h-6 w-auto" />
+                    <span class="text-base font-extrabold tracking-tight text-[var(--color-text-primary)] hidden sm:block">Sapphire</span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="/changelog" class="header-nav-link">Changelog</a>
+                    <a href="/issues" class="header-nav-link">Issues</a>
+                    <a href="/faq" class="header-nav-link">FAQ</a>
+                    <a href="https://sapphire-app.tech/portal" class="header-nav-link flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">account_circle</span> Account</a>
+                </nav>
+            </div>
+
+            <!-- Right: Controls & CTAs -->
+            <div class="flex items-center gap-3">
+                <!-- Theme Switcher: Colorful, Dark, Light -->
+                <div id="theme-switcher" class="theme-switcher-container hidden md:inline-flex">
+                    <input type="radio" id="theme-radio-colorful" name="theme" value="colorful" class="switch-radio">
+                    <label for="theme-radio-colorful" class="switch-label" title="Colorful"><span class="material-symbols-outlined">palette</span></label>
+                    <input type="radio" id="theme-radio-dark" name="theme" value="dark" class="switch-radio" checked>
+                    <label for="theme-radio-dark" class="switch-label" title="Dark Mode"><span class="material-symbols-outlined">dark_mode</span></label>
+                    <input type="radio" id="theme-radio-light" name="theme" value="light" class="switch-radio">
+                    <label for="theme-radio-light" class="switch-label" title="Light Mode"><span class="material-symbols-outlined">light_mode</span></label>
+                    <div class="switch-puck"></div>
+                </div>
+
+                <div class="h-5 w-[1px] bg-[var(--color-border-color)] hidden md:block mx-1"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="/subscribe" class="header-btn header-btn-subscribe">
+                        <span class="material-symbols-outlined text-[16px]">workspace_premium</span> Subscribe
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="header-btn header-btn-download hidden sm:inline-flex">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Download
+                    </a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN SUBSCRIPTION VIEW -->
+    <div class="relative z-10 w-full min-h-screen pt-36 pb-24 px-6 max-w-7xl mx-auto">
+        <main class="page-content space-y-24">
+            
+            <!-- Page Header -->
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h1 class="apple-headline text-gradient-apple">Supercharge Your Workspace</h1>
+                <p class="apple-subheadline">
+                    Start completely free with foundational hardware utilities, or upgrade to autonomous screen intelligence anytime.
+                </p>
+            </div>
+
+            <!-- Tiers Grid (Free + 3 Premium Tiers) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Tier 0: Free Community Tier -->
+                <div class="pricing-card">
+                    <div>
+                        <div class="mb-5">
+                            <span class="tier-pill-free mb-2.5 inline-block">Free Tier</span>
+                            <h2 class="text-2xl font-extrabold text-[var(--color-text-primary)] tracking-tight">Free</h2>
+                            <p class="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">Core hardware & utility tools</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-4xl font-black text-[var(--color-text-primary)] tracking-tight">$0</span>
+                                <span class="text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-wider">/ forever</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5 font-medium">1 Mac Workstation Included</p>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-xs font-semibold text-[var(--color-text-primary)]">
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-base">face</span> Face ID on Mac</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-amber-400 text-base">wb_sunny</span> 60% XDR Brightness Boost</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-[#1DB954] text-base">graphic_eq</span> Spotify in Volume HUD</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-blue-400 text-base">tune</span> Pro Audio Mixer & 10-Band EQ</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-400 text-base">grid_view</span> Snap Zones Window Tiling</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-cyan-400 text-base">folder_open</span> File Shelf & Nearby Share</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-amber-400 text-base">coffee</span> Caffeinate Sleep Prevention</li>
+                        </ul>
+                    </div>
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="w-full py-3 rounded-xl bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-xs font-bold text-center uppercase tracking-wider transition-colors block">
+                        Download Free
+                    </a>
+                </div>
+
+                <!-- Tier 1: Basic Plan -->
+                <div class="pricing-card">
+                    <div>
+                        <div class="mb-5">
+                            <span class="tier-pill-basic mb-2.5 inline-block">Entry Level</span>
+                            <h2 class="text-2xl font-extrabold text-[var(--color-text-primary)] tracking-tight">Basic</h2>
+                            <p class="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">Conversational screen AI</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-4xl font-black text-[var(--color-text-primary)] tracking-tight">$15.99</span>
+                                <span class="text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-wider">/ month</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5 font-medium">+$11.00 / additional device</p>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-xs font-semibold text-[var(--color-text-primary)]">
+                            <li class="flex items-center gap-2 text-emerald-400 font-bold"><span class="material-symbols-outlined text-base">check_circle</span> Everything in Free</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-cyan-400 text-base">mic_double</span> Blip Live Voice Conversations</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-cyan-400 text-base">robot_2</span> Device Agent Automation</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-cyan-400 text-base">browser_updated</span> Beta Software Channels</li>
+                        </ul>
+                    </div>
+                    <a href="https://sapphire-app.tech/checkout.html?plan=basic&qty=1" class="w-full py-3 rounded-xl bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-xs font-bold text-center uppercase tracking-wider transition-colors block">
+                        Select Basic
+                    </a>
+                </div>
+
+                <!-- Tier 2: Pro Plan (Featured) -->
+                <div class="pricing-card is-featured">
+                    <div class="absolute -top-3 right-6 bg-[var(--color-accent-solid)] text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        Recommended
+                    </div>
+                    <div>
+                        <div class="mb-5">
+                            <span class="tier-pill-pro mb-2.5 inline-block">Pro Intelligence</span>
+                            <h2 class="text-2xl font-extrabold text-[var(--color-text-primary)] tracking-tight">Pro</h2>
+                            <p class="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">Autonomous multi-app agent</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-4xl font-black text-[var(--color-text-primary)] tracking-tight">$25.99</span>
+                                <span class="text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-wider">/ month</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5 font-medium">+$13.99 / additional device</p>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-xs font-semibold text-[var(--color-text-primary)]">
+                            <li class="flex items-center gap-2 text-blue-400 font-bold"><span class="material-symbols-outlined text-base">check_circle</span> Everything in Basic</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-400 text-base">psychology</span> Blip Agent</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-blue-400 text-base">image_search</span> Circle to Search</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-emerald-400 text-base">sports_soccer</span> Sports Live Activity in Notch</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-cyan-400 text-base">data_usage</span> Increased AI Quotas</li>
+                        </ul>
+                    </div>
+                    <a href="https://sapphire-app.tech/checkout.html?plan=pro&qty=1" class="apple-cta-btn !py-3 w-full text-xs uppercase tracking-wider text-center block">
+                        Select Pro
+                    </a>
+                </div>
+
+                <!-- Tier 3: Ultra Plan -->
+                <div class="pricing-card">
+                    <div>
+                        <div class="mb-5">
+                            <span class="tier-pill-ultra mb-2.5 inline-block">Ultimate Power</span>
+                            <h2 class="text-2xl font-extrabold text-[var(--color-text-primary)] tracking-tight">Ultra</h2>
+                            <p class="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">Telemetry widgets & priority core</p>
+                        </div>
+                        <div class="mb-6">
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="text-4xl font-black text-[var(--color-text-primary)] tracking-tight">$30.99</span>
+                                <span class="text-[11px] text-[var(--color-text-secondary)] font-bold uppercase tracking-wider">/ month</span>
+                            </div>
+                            <p class="text-[11px] text-[var(--color-text-secondary)] mt-1.5 font-medium">+$15.99 / additional device</p>
+                        </div>
+                        <ul class="space-y-3 mb-8 text-xs font-semibold text-[var(--color-text-primary)]">
+                            <li class="flex items-center gap-2 text-purple-400 font-bold"><span class="material-symbols-outlined text-base">check_circle</span> Everything in Pro</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-400 text-base">show_chart</span> Finance Widget & Live Markets</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-purple-400 text-base">sports_score</span> Sports Dedicated Widget</li>
+                            <li class="flex items-center gap-2"><span class="material-symbols-outlined text-pink-400 text-base">engineering</span> Priority Support within the app</li>
+                        </ul>
+                    </div>
+                    <a href="https://sapphire-app.tech/checkout.html?plan=ultra&qty=1" class="w-full py-3 rounded-xl bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-xs font-bold text-center uppercase tracking-wider transition-colors block">
+                        Select Ultra
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- COMPREHENSIVE COMPARISON TABLE -->
+            <section class="space-y-8">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <h3 class="text-2xl font-extrabold tracking-tight text-[var(--color-text-primary)]">Comprehensive Feature Matrix</h3>
+                    <p class="text-xs text-[var(--color-text-secondary)]">Detailed breakdown of included capabilities across all tiers.</p>
+                </div>
+
+                <div class="comparison-table-wrap">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="border-b border-[var(--color-card-border)] bg-[var(--color-secondary)] text-[10px] font-black uppercase tracking-wider text-[var(--color-text-secondary)]">
+                                    <th class="p-5">Feature</th>
+                                    <th class="p-5 text-center">Free</th>
+                                    <th class="p-5 text-center">Basic</th>
+                                    <th class="p-5 text-center">Pro</th>
+                                    <th class="p-5 text-center">Ultra</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--color-card-border)] font-medium text-[var(--color-text-primary)]">
+                                <tr>
+                                    <td class="p-5 font-bold">Base Cost</td>
+                                    <td class="p-5 text-center text-[var(--color-text-secondary)]">Free ($0)</td>
+                                    <td class="p-5 text-center">$15.99 / mo</td>
+                                    <td class="p-5 text-center">$25.99 / mo</td>
+                                    <td class="p-5 text-center">$30.99 / mo</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5 font-bold">Additional Seat</td>
+                                    <td class="p-5 text-center text-[var(--color-text-secondary)]">-</td>
+                                    <td class="p-5 text-center">$11.00 / device</td>
+                                    <td class="p-5 text-center">$13.99 / device</td>
+                                    <td class="p-5 text-center">$15.99 / device</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Face ID on Mac Biometric Unlock</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">60% Extra Brightness Boost (XDR 1600 nits)</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Spotify Controls in Volume HUD</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Pro Audio Mixer & 10-Band EQ</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Snap Zones Precision Window Tiling</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">File Shelf & Android Nearby Share</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Caffeinate Sleep Prevention & Lock Screen</td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Blip Live</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Blip Agent</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Circle to Search</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Sports Live Activity</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Sports Dedicated Widget</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Finance Widget & Live Activity</td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-red-500"><span class="material-symbols-outlined text-base">close</span></td>
+                                    <td class="p-5 text-center text-emerald-400"><span class="material-symbols-outlined text-base">check_circle</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-5">Priority Support</td>
+                                    <td class="p-5 text-center text-[var(--color-text-secondary)]">Public</td>
+                                    <td class="p-5 text-center text-[var(--color-text-secondary)]">Public</td>
+                                    <td class="p-5 text-center text-[var(--color-text-secondary)]">Public</td>
+                                    <td class="p-5 text-center text-purple-400 font-bold">Direct Support</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer border-t border-[var(--color-border-color)] bg-[var(--color-surface)] relative z-10">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <img id="footer-logo" src="./sapphire-light.png" alt="Sapphire Logo" class="h-8 w-auto" />
+                    <span class="text-xl font-extrabold tracking-tight">Sapphire</span>
+                </div>
+                <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                    The Notch, Reimagined. 
+<br> An all-in one utillity app for mac os.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Product</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/subscribe" class="hover:text-[var(--color-text-primary)] transition-colors">Subscription Plans</a></li>
+                    <li><a href="https://sapphire-app.tech/portal" class="hover:text-[var(--color-text-primary)] transition-colors">Manage License & Portal</a></li>
+                    <li><a href="/changelog" class="hover:text-[var(--color-text-primary)] transition-colors">Release Changelog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Support & Community</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/faq" class="hover:text-[var(--color-text-primary)] transition-colors">Frequently Asked Questions</a></li>
+                    <li><a href="/issues" class="hover:text-[var(--color-text-primary)] transition-colors">Issue Tracker</a></li>
+                    <li><a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">Discord Server</a></li>
+                    <li><a href="mailto:shariq.charolia@gmail.com" class="hover:text-[var(--color-text-primary)] transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Resources</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">GitHub Repository</a></li>
+                    <li><a href="/privacy" class="hover:text-[var(--color-text-primary)] transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="py-6 border-t border-[var(--color-border-color)] text-center text-xs text-[var(--color-text-muted)]">
+            <p>© 2026 Shariq Charolia. All rights reserved. Sapphire for macOS.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

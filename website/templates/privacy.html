@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy - Sapphire</title>
+    <meta name="description" content="Sapphire's privacy policy — how we handle (and never handle) your data. Anonymous analytics only, opt-out anytime." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sapphire" />
+    <meta property="og:title" content="Privacy Policy - Sapphire" />
+    <meta property="og:description" content="Sapphire's privacy policy — how we handle (and never handle) your data. Anonymous analytics only, opt-out anytime." />
+    <meta property="og:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://sapphire-app.tech/privacy" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Privacy Policy - Sapphire" />
+    <meta name="twitter:description" content="Sapphire's privacy policy — how we handle (and never handle) your data. Anonymous analytics only, opt-out anytime." />
+    <meta name="twitter:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preload" href="./style.css" as="style">
+    <link rel="preload" href="./sapphire-light.png" as="image">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Dependencies: Tailwind, Material Icons, Lenis Smooth Scroll -->
+    <script src="/vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="/vendor/symbols.css" />
+    <script src="/vendor/lenis.min.js"></script>
+    <link rel="canonical" href="https://sapphire-app.tech/privacy" />
+
+    <style>
+        .privacy-glass-panel {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--color-card-border);
+            border-radius: 24px;
+        }
+
+        .privacy-item {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--color-card-border);
+            border-radius: 20px;
+            padding: 1.75rem 2rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .privacy-item:hover {
+            background-color: var(--color-card-bg-hover);
+            border-color: var(--color-border-color);
+        }
+
+        .privacy-item h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .privacy-item-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .privacy-item p {
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-top: 0.75rem;
+        }
+
+        .privacy-list {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .privacy-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .privacy-list .material-symbols-outlined {
+            font-size: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] relative min-h-screen">
+    
+    <!-- Custom Floating Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="dark-mode-gradient"></div>
+    <div id="dot-container">
+        <div id="dot-base" class="bg-dot-pattern"></div>
+        <div id="dot-spotlight"></div>
+    </div>
+
+    <!-- MAIN HEADER NAVBAR -->
+    <div class="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
+        <header id="main-header" class="header-glass-capsule flex items-center justify-between gap-4 w-full max-w-5xl mx-auto pointer-events-auto">
+            
+            <!-- Left: Logo & Core Nav -->
+            <div class="flex items-center gap-6">
+                <a href="/" class="flex items-center space-x-2.5 whitespace-nowrap pl-2">
+                    <img id="sapphire-icon" src="./sapphire-light.png" alt="Sapphire Logo" class="h-6 w-auto" />
+                    <span class="text-base font-extrabold tracking-tight text-[var(--color-text-primary)] hidden sm:block">Sapphire</span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="/changelog" class="header-nav-link">Changelog</a>
+                    <a href="/issues" class="header-nav-link">Issues</a>
+                    <a href="/faq" class="header-nav-link">FAQ</a>
+                    <a href="https://sapphire-app.tech/portal" class="header-nav-link flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">account_circle</span> Account</a>
+                </nav>
+            </div>
+
+            <!-- Right: Controls & CTAs -->
+            <div class="flex items-center gap-3">
+                <!-- Theme Switcher: Colorful, Dark, Light -->
+                <div id="theme-switcher" class="theme-switcher-container hidden md:inline-flex">
+                    <input type="radio" id="theme-radio-colorful" name="theme" value="colorful" class="switch-radio">
+                    <label for="theme-radio-colorful" class="switch-label" title="Colorful"><span class="material-symbols-outlined">palette</span></label>
+                    <input type="radio" id="theme-radio-dark" name="theme" value="dark" class="switch-radio" checked>
+                    <label for="theme-radio-dark" class="switch-label" title="Dark Mode"><span class="material-symbols-outlined">dark_mode</span></label>
+                    <input type="radio" id="theme-radio-light" name="theme" value="light" class="switch-radio">
+                    <label for="theme-radio-light" class="switch-label" title="Light Mode"><span class="material-symbols-outlined">light_mode</span></label>
+                    <div class="switch-puck"></div>
+                </div>
+
+                <div class="h-5 w-[1px] bg-[var(--color-border-color)] hidden md:block mx-1"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="/subscribe" class="header-btn header-btn-subscribe">
+                        <span class="material-symbols-outlined text-[16px]">workspace_premium</span> Subscribe
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="header-btn header-btn-download hidden sm:inline-flex">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Download
+                    </a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN PRIVACY CONTENT WRAPPER -->
+    <div class="relative z-10 w-full min-h-screen pt-36 pb-24 px-6 max-w-4xl mx-auto">
+        <main class="page-content space-y-16">
+
+            <!-- Page Header -->
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <div class="flex items-center justify-center">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl">admin_panel_settings</span>
+                    </div>
+                </div>
+                <h1 class="apple-headline text-gradient-apple">Your Privacy Matters</h1>
+                <p class="apple-subheadline">
+                    We believe in transparency. Please review our data handling practices below.
+                </p>
+                <p class="text-xs text-[var(--color-text-muted)]">Last updated: September 20, 2026</p>
+            </div>
+
+            <!-- Policy Sections -->
+            <div class="space-y-4">
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-blue-500/20 text-blue-400">
+                            <span class="material-symbols-outlined text-xl">analytics</span>
+                        </div>
+                        Data We Collect (Analytics)
+                    </h3>
+                    <p>
+                        To improve Sapphire, we collect completely anonymous, aggregated usage data. This helps us understand which features are popular, identify bugs, and make the app better for everyone.
+                    </p>
+                </section>
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-cyan-500/20 text-cyan-400">
+                            <span class="material-symbols-outlined text-xl">data_usage</span>
+                        </div>
+                        What This Includes
+                    </h3>
+                    <ul class="privacy-list">
+                        <li><span class="material-symbols-outlined text-emerald-400">check_circle</span> Feature usage frequency (e.g., how often a widget is used)</li>
+                        <li><span class="material-symbols-outlined text-emerald-400">check_circle</span> App version and macOS version</li>
+                        <li><span class="material-symbols-outlined text-emerald-400">check_circle</span> Anonymous crash reports</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-red-500/20 text-red-400">
+                            <span class="material-symbols-outlined text-xl">block</span>
+                        </div>
+                        Data We NEVER Collect
+                    </h3>
+                    <p>
+                        We are committed to your privacy. We DO NOT automatically collect, store, or transmit any personal or sensitive information. This includes, but is not limited to:
+                    </p>
+                    <ul class="privacy-list">
+                        <li><span class="material-symbols-outlined text-red-400">cancel</span> Your name, email, or other personal identifiers</li>
+                        <li><span class="material-symbols-outlined text-red-400">cancel</span> Screen contents or keyboard input</li>
+                        <li><span class="material-symbols-outlined text-red-400">cancel</span> Application data from other apps</li>
+                    </ul>
+                </section>
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-purple-500/20 text-purple-400">
+                            <span class="material-symbols-outlined text-xl">cloud_off</span>
+                        </div>
+                        Data Storage &amp; Third Parties
+                    </h3>
+                    <p>
+                        Anonymous data is processed by Google for analytics. This data is always aggregated and cannot be used to identify you.
+                    </p>
+                </section>
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-emerald-500/20 text-emerald-400">
+                            <span class="material-symbols-outlined text-xl">tune</span>
+                        </div>
+                        Your Choice &amp; Control
+                    </h3>
+                    <p>
+                        Sharing anonymous usage data with Google Analytics is optional and asked about during onboarding. You can change this anytime in the app under <strong class="text-[var(--color-text-primary)]">Settings &gt; General</strong>.
+                    </p>
+                </section>
+
+                <section class="privacy-item">
+                    <h3 class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight">
+                        <div class="privacy-item-icon bg-amber-500/20 text-amber-400">
+                            <span class="material-symbols-outlined text-xl">language</span>
+                        </div>
+                        Website &amp; Payments
+                    </h3>
+                    <p>
+                        This website also uses Google Analytics to understand overall traffic in an aggregated form. Subscription payments and account data (email, license key, and billing information) are processed securely by <strong class="text-[var(--color-text-primary)]">Stripe</strong> and are never used for advertising or sold to third parties.
+                    </p>
+                </section>
+
+            </div>
+
+            <!-- Contact banner -->
+            <div class="privacy-glass-panel p-8 text-center space-y-4">
+                <h3 class="text-xl font-bold text-[var(--color-text-primary)] tracking-tight">Questions about your privacy?</h3>
+                <p class="text-xs text-[var(--color-text-secondary)] max-w-md mx-auto leading-relaxed">
+                    If you have any questions about this policy or how your data is handled, get in touch with us directly.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <a href="mailto:shariq.charolia@gmail.com" class="apple-cta-btn !py-2.5 !px-5 text-xs font-bold">
+                        <span class="material-symbols-outlined text-sm">mail</span> Contact Us
+                    </a>
+                    <a href="/faq" class="apple-secondary-btn !py-2.5 !px-5 text-xs font-semibold">
+                        <span class="material-symbols-outlined text-sm">help</span> Read the FAQ
+                    </a>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer border-t border-[var(--color-border-color)] bg-[var(--color-surface)] relative z-10">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <img id="footer-logo" src="./sapphire-light.png" alt="Sapphire Logo" class="h-8 w-auto" />
+                    <span class="text-xl font-extrabold tracking-tight">Sapphire</span>
+                </div>
+                <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                    The Notch, Reimagined. 
+<br> An all-in one utillity app for mac os.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Product</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/subscribe" class="hover:text-[var(--color-text-primary)] transition-colors">Subscription Plans</a></li>
+                    <li><a href="https://sapphire-app.tech/portal" class="hover:text-[var(--color-text-primary)] transition-colors">Manage License & Portal</a></li>
+                    <li><a href="/changelog" class="hover:text-[var(--color-text-primary)] transition-colors">Release Changelog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Support & Community</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/faq" class="hover:text-[var(--color-text-primary)] transition-colors">Frequently Asked Questions</a></li>
+                    <li><a href="/issues" class="hover:text-[var(--color-text-primary)] transition-colors">Issue Tracker</a></li>
+                    <li><a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">Discord Server</a></li>
+                    <li><a href="mailto:shariq.charolia@gmail.com" class="hover:text-[var(--color-text-primary)] transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Resources</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">GitHub Repository</a></li>
+                    <li><a href="/privacy" class="hover:text-[var(--color-text-primary)] transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="py-6 border-t border-[var(--color-border-color)] text-center text-xs text-[var(--color-text-muted)]">
+            <p>© 2026 Shariq Charolia. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

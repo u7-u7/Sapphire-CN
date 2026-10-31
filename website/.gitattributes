@@ -1,0 +1,2 @@
+# 上游模板保留原始行尾空白，以便与取得的公开源码核对。
+templates/* whitespace=-blank-at-eol

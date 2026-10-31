@@ -1,5 +1,7 @@
 # 💎 Sapphire-CN 中文教程
 
+🌐 **[项目网站](https://sapphire.121.41.102.231.sslip.io/)** · 网站源码与部署说明见 [`website/`](website/README.md)。
+
 🔗 本项目基于 [Sapphire](https://github.com/cshariq/Sapphire) 二次开发，增加中文适配、AI 额度查询与 Helper 连接修复。
 
 📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64-update.zip) · [发布说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.4-preview)

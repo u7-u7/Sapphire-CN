@@ -1,0 +1,48 @@
+{
+  "project": "u7-u7/Sapphire-CN",
+  "version": "v3.0-cn.4-preview",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 19064,
+      "matches_local": true
+    },
+    {
+      "path": "/download",
+      "status": 200,
+      "bytes": 10972,
+      "matches_local": true
+    },
+    {
+      "path": "/faq",
+      "status": 200,
+      "bytes": 13562,
+      "matches_local": true
+    },
+    {
+      "path": "/changelog",
+      "status": 200,
+      "bytes": 14343,
+      "matches_local": true
+    },
+    {
+      "path": "/issues",
+      "status": 200,
+      "bytes": 33235,
+      "matches_local": true
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "bytes": 10675,
+      "matches_local": true
+    },
+    {
+      "path": "/project-releases.json",
+      "status": 200,
+      "bytes": 3589,
+      "matches_local": true
+    }
+  ]
+}

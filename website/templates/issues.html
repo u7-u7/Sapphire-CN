@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Issues & Feedback - Sapphire</title>
+    <meta name="description" content="Report an issue or share feedback for Sapphire on macOS." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sapphire" />
+    <meta property="og:title" content="Issues & Feedback - Sapphire" />
+    <meta property="og:description" content="Report an issue or share feedback for Sapphire on macOS." />
+    <meta property="og:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://sapphire-app.tech/issues" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Issues & Feedback - Sapphire" />
+    <meta name="twitter:description" content="Report an issue or share feedback for Sapphire on macOS." />
+    <meta name="twitter:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preload" href="./style.css" as="style">
+    <link rel="preload" href="./sapphire-light.png" as="image">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Immediate Theme Loader to prevent FOUC -->
+    <script>
+        const savedTheme = localStorage.getItem('sapphire-theme') || 'dark';
+        document.documentElement.className = `theme-${savedTheme}`;
+    </script>
+    
+    <!-- Dependencies: Tailwind, Material Symbols, Lenis & Marked JS -->
+    <script src="/vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="/vendor/symbols.css" />
+    <script src="/vendor/lenis.min.js"></script>
+    <script src="/vendor/marked.min.js"></script>
+    <link rel="canonical" href="https://sapphire-app.tech/issues" />
+
+    <style>
+        .issues-glass-panel {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--color-card-border);
+            border-radius: 24px;
+        }
+
+        .issues-input {
+            background-color: var(--color-secondary);
+            border: 1px solid var(--color-card-border);
+            border-radius: 16px;
+            padding: 0.85rem 1.15rem;
+            color: var(--color-text-primary);
+            outline: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .issues-input:focus {
+            background-color: var(--color-card-bg-hover);
+            border-color: var(--color-text-primary);
+        }
+
+        /* Fix browser autofill: Chrome/Safari force their own text + background color onto
+           autofilled fields (their UA !important rules beat the page's). Restore the themed
+           text color via -webkit-text-fill-color and repaint the background with an inset
+           box-shadow. The color-scheme declarations in style.css also tell the browser which
+           theme the page is in, so its native autofill paint adapts to the background too. */
+        .issues-input:-webkit-autofill,
+        .issues-input:-webkit-autofill:hover,
+        .issues-input:-webkit-autofill:focus,
+        .issues-input:-internal-autofill-selected {
+            -webkit-text-fill-color: var(--color-text-primary) !important;
+            -webkit-box-shadow: 0 0 0 1000px var(--color-secondary) inset !important;
+            box-shadow: 0 0 0 1000px var(--color-secondary) inset !important;
+            caret-color: var(--color-text-primary) !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        .issues-input:-moz-autofill {
+            -moz-box-shadow: 0 0 0 1000px var(--color-secondary) inset !important;
+            box-shadow: 0 0 0 1000px var(--color-secondary) inset !important;
+            filter: none;
+        }
+
+        .issue-card {
+            background-color: var(--color-card-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--color-card-border);
+            border-radius: 20px;
+            padding: 1.25rem 1.5rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            display: block;
+        }
+
+        .issue-card:hover {
+            background-color: var(--color-card-bg-hover);
+            border-color: var(--color-border-color);
+            transform: translateY(-2px);
+        }
+
+        .issue-card-pinned {
+            border-color: rgba(251, 191, 36, 0.35);
+        }
+        .issue-card-pinned:hover {
+            border-color: rgba(251, 191, 36, 0.6);
+        }
+
+        .issue-card-closed {
+            opacity: 0.7;
+        }
+        .issue-card-closed:hover {
+            opacity: 1;
+        }
+
+        .stat-badge-card {
+            background-color: var(--color-secondary);
+            border: 1px solid var(--color-card-border);
+            border-radius: 20px;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .stat-badge-card:hover {
+            background-color: var(--color-secondary-hover);
+            border-color: var(--color-border-color);
+        }
+
+        .label-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.65rem;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .header-nav-link.is-active {
+            color: var(--color-text-primary) !important;
+            background-color: var(--color-secondary-hover) !important;
+            border: 1px solid var(--color-border-color) !important;
+        }
+    </style>
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Issues & Feedback - Sapphire",
+      "description": "Report an issue or share feedback for Sapphire on macOS.",
+      "url": "https://sapphire-app.tech/issues",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Sapphire",
+        "url": "https://sapphire-app.tech/issues"
+      }
+    }
+    </script>
+</head>
+<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] relative min-h-screen">
+    
+    <!-- Custom Floating Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="dark-mode-gradient"></div>
+    <div id="dot-container">
+        <div id="dot-base" class="bg-dot-pattern"></div>
+        <div id="dot-spotlight"></div>
+    </div>
+
+    <!-- MAIN HEADER NAVBAR -->
+    <div class="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
+        <header id="main-header" class="header-glass-capsule flex items-center justify-between gap-4 w-full max-w-5xl mx-auto pointer-events-auto">
+            
+            <!-- Left: Logo & Core Nav -->
+            <div class="flex items-center gap-6">
+                <a href="/" class="flex items-center space-x-2.5 whitespace-nowrap pl-2">
+                    <img id="sapphire-icon" src="./sapphire-light.png" alt="Sapphire Logo" class="h-6 w-auto" />
+                    <span class="text-base font-extrabold tracking-tight text-[var(--color-text-primary)] hidden sm:block">Sapphire</span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="/changelog" class="header-nav-link">Changelog</a>
+                    <a href="/issues" class="header-nav-link is-active">Issues</a>
+                    <a href="/faq" class="header-nav-link">FAQ</a>
+                    <a href="https://sapphire-app.tech/portal" class="header-nav-link flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">account_circle</span> Account</a>
+                </nav>
+            </div>
+
+            <!-- Right: Controls & CTAs -->
+            <div class="flex items-center gap-3">
+                <!-- Theme Switcher: Colorful, Dark, Light -->
+                <div id="theme-switcher" class="theme-switcher-container hidden md:inline-flex">
+                    <input type="radio" id="theme-radio-colorful" name="theme" value="colorful" class="switch-radio">
+                    <label for="theme-radio-colorful" class="switch-label" title="Colorful"><span class="material-symbols-outlined">palette</span></label>
+                    <input type="radio" id="theme-radio-dark" name="theme" value="dark" class="switch-radio" checked>
+                    <label for="theme-radio-dark" class="switch-label" title="Dark Mode"><span class="material-symbols-outlined">dark_mode</span></label>
+                    <input type="radio" id="theme-radio-light" name="theme" value="light" class="switch-radio">
+                    <label for="theme-radio-light" class="switch-label" title="Light Mode"><span class="material-symbols-outlined">light_mode</span></label>
+                    <div class="switch-puck"></div>
+                </div>
+
+                <div class="h-5 w-[1px] bg-[var(--color-border-color)] hidden md:block mx-1"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="/subscribe" class="header-btn header-btn-subscribe">
+                        <span class="material-symbols-outlined text-[16px]">workspace_premium</span> Subscribe
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="header-btn header-btn-download hidden sm:inline-flex">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Download
+                    </a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN ISSUES CONTAINER -->
+    <div class="relative z-10 w-full min-h-screen pt-36 pb-24 px-6 max-w-7xl mx-auto">
+        <main class="page-content">
+            
+            <!-- Page Header -->
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-14">
+                <h1 class="apple-headline text-gradient-apple">Community Issues & Requests</h1>
+                <p class="apple-subheadline">
+                    Track live bug reports, suggest feature ideas, and inspect real-time development velocity directly from GitHub.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Main Content Column: Issues List -->
+                <div class="lg:col-span-8 space-y-8">
+                    
+                    <!-- Mobile Repository Metrics (Hidden on Desktop) -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:hidden">
+                        <div class="stat-badge-card text-center">
+                            <span class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block mb-1">Stars</span>
+                            <p id="stats-stars-mobile" class="text-xl font-extrabold text-[var(--color-text-primary)]">...</p>
+                        </div>
+                        <div class="stat-badge-card text-center">
+                            <span class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block mb-1">Forks</span>
+                            <p id="stats-forks-mobile" class="text-xl font-extrabold text-[var(--color-text-primary)]">...</p>
+                        </div>
+                        <div class="stat-badge-card text-center">
+                            <span class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block mb-1">Open Issues</span>
+                            <p id="stats-issues-mobile" class="text-xl font-extrabold text-[var(--color-text-primary)]">...</p>
+                        </div>
+                        <div class="stat-badge-card text-center">
+                            <span class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider block mb-1">Release</span>
+                            <a id="stats-latest-release-mobile" href="https://github.com/cshariq/Sapphire/releases/latest" target="_blank" rel="noopener noreferrer" class="text-base font-bold text-[var(--color-accent-solid)] truncate block">...</a>
+                        </div>
+                    </div>
+
+                    <!-- Create Issue Action Bar -->
+                    <div class="issues-glass-panel p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base font-bold text-[var(--color-text-primary)] tracking-tight">Encountered a bug or have a suggestion?</h3>
+                            <p class="text-xs text-[var(--color-text-secondary)] font-medium mt-0.5">Submit a public issue directly to our repository.</p>
+                        </div>
+                        <button id="open-issue-modal-btn" class="apple-cta-btn !py-2.5 !px-5 text-xs whitespace-nowrap shrink-0">
+                            <span class="material-symbols-outlined text-base">add_circle</span> Create New Issue
+                        </button>
+                    </div>
+
+                    <!-- Issues Feed Section -->
+                    <div class="space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3 px-2">
+                            <h2 id="issues-list-title" class="text-lg font-bold text-[var(--color-text-primary)] tracking-tight flex items-center gap-2">
+                                <span class="material-symbols-outlined text-emerald-400 text-lg">adjust</span> Open GitHub Issues
+                            </h2>
+                            <div class="flex items-center gap-1 bg-[var(--color-secondary)] border border-[var(--color-card-border)] rounded-xl p-1" role="group" aria-label="Filter issues by state">
+                                <button id="issues-view-open" class="px-3.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-colors bg-[var(--color-text-primary)] text-[var(--color-background)]">Open</button>
+                                <button id="issues-view-closed" class="px-3.5 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">Closed</button>
+                            </div>
+                            <a href="https://github.com/cshariq/Sapphire/issues" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors flex items-center gap-1">
+                                View on GitHub <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </a>
+                        </div>
+
+                        <div id="issues-list" class="space-y-3">
+                            <div class="p-12 text-center text-xs font-medium text-[var(--color-text-secondary)] issues-glass-panel">
+                                Loading issues from GitHub...
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Desktop Sidebar: Repository Stats -->
+                <aside class="hidden lg:block lg:col-span-4 sticky top-28 space-y-5">
+                    <div class="issues-glass-panel p-6 space-y-5">
+                        <div>
+                            <h3 class="text-base font-bold text-[var(--color-text-primary)] tracking-tight">Project Statistics</h3>
+                            <p class="text-xs text-[var(--color-text-secondary)] font-medium mt-0.5">Live GitHub telemetry for Sapphire.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="stat-badge-card flex items-center justify-between">
+                                <span class="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-amber-400 text-lg">star</span> Stars
+                                </span>
+                                <p id="stats-stars" class="text-lg font-mono font-extrabold text-[var(--color-text-primary)]">...</p>
+                            </div>
+
+                            <div class="stat-badge-card flex items-center justify-between">
+                                <span class="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-blue-400 text-lg">call_split</span> Forks
+                                </span>
+                                <p id="stats-forks" class="text-lg font-mono font-extrabold text-[var(--color-text-primary)]">...</p>
+                            </div>
+
+                            <div class="stat-badge-card flex items-center justify-between">
+                                <span class="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-emerald-400 text-lg">adjust</span> Open Issues
+                                </span>
+                                <p id="stats-issues" class="text-lg font-mono font-extrabold text-[var(--color-text-primary)]">...</p>
+                            </div>
+
+                            <div class="stat-badge-card flex items-center justify-between">
+                                <span class="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-purple-400 text-lg">tag</span> Latest Release
+                                </span>
+                                <a id="stats-latest-release" href="https://github.com/cshariq/Sapphire/releases/latest" target="_blank" rel="noopener noreferrer" class="text-sm font-mono font-bold text-[var(--color-accent-solid)] hover:underline truncate max-w-[120px]">...</a>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-[var(--color-card-border)]">
+                            <a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[var(--color-secondary)] hover:bg-[var(--color-secondary-hover)] text-xs font-bold text-[var(--color-text-primary)] transition-colors">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                                Star on GitHub
+                            </a>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Issue Submission Modal -->
+    <div id="issue-modal-overlay" class="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div id="issue-modal-content" class="relative issues-glass-panel p-8 w-full max-w-2xl mx-4 shadow-2xl transition-all duration-300 transform scale-95 opacity-0">
+            <button id="close-issue-modal-btn" class="absolute top-6 right-6 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-[var(--color-text-primary)] tracking-tight">Submit a New Issue</h2>
+                <p class="text-xs text-[var(--color-text-secondary)] font-medium mt-1">Describe bugs, crashes, or feature suggestions for Sapphire.</p>
+            </div>
+            <form id="issue-form" class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider ml-1 mb-1 block">Title</label>
+                    <input type="text" id="issue-title" placeholder="Brief summary of the issue..." required class="issues-input">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-[var(--color-text-secondary)] uppercase tracking-wider ml-1 mb-1 block">Description</label>
+                    <textarea id="issue-body" placeholder="Describe the steps to reproduce, expected behavior, and macOS version... (Markdown is supported)" rows="6" required class="issues-input resize-y"></textarea>
+                </div>
+                <div id="form-feedback" class="text-xs min-h-[20px] font-semibold text-emerald-400"></div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="submit" id="submit-issue-btn" class="apple-cta-btn !py-2.5 !px-6 text-xs uppercase tracking-wider">
+                        Continue to GitHub
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="main-footer border-t border-[var(--color-border-color)] bg-[var(--color-surface)] relative z-10">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <img id="footer-logo" src="./sapphire-light.png" alt="Sapphire Logo" class="h-8 w-auto" />
+                    <span class="text-xl font-extrabold tracking-tight">Sapphire</span>
+                </div>
+                <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                    The Notch, Reimagined. 
+<br> An all-in one utillity app for mac os.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Product</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/subscribe" class="hover:text-[var(--color-text-primary)] transition-colors">Subscription Plans</a></li>
+                    <li><a href="https://sapphire-app.tech/portal" class="hover:text-[var(--color-text-primary)] transition-colors">Manage License & Portal</a></li>
+                    <li><a href="/changelog" class="hover:text-[var(--color-text-primary)] transition-colors">Release Changelog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Support & Community</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/faq" class="hover:text-[var(--color-text-primary)] transition-colors">Frequently Asked Questions</a></li>
+                    <li><a href="/issues" class="hover:text-[var(--color-text-primary)] transition-colors">Issue Tracker</a></li>
+                    <li><a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">Discord Server</a></li>
+                    <li><a href="mailto:shariq.charolia@gmail.com" class="hover:text-[var(--color-text-primary)] transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Resources</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">GitHub Repository</a></li>
+                    <li><a href="/privacy" class="hover:text-[var(--color-text-primary)] transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="py-6 border-t border-[var(--color-border-color)] text-center text-xs text-[var(--color-text-muted)]">
+            <p>© 2026 Shariq Charolia. All rights reserved. Sapphire for macOS.</p>
+        </div>
+    </footer>
+
+    <!-- Standalone Client-Side Direct GitHub API Script -->
+    <script>
+        const REPO_URL = 'https://api.github.com/repos/cshariq/Sapphire';
+        const issuesList = document.getElementById('issues-list');
+        const issueForm = document.getElementById('issue-form');
+        const feedbackDiv = document.getElementById('form-feedback');
+        const submitBtn = document.getElementById('submit-issue-btn');
+        const openModalBtn = document.getElementById('open-issue-modal-btn');
+        const closeModalBtn = document.getElementById('close-issue-modal-btn');
+        const modalOverlay = document.getElementById('issue-modal-overlay');
+        const modalContent = document.getElementById('issue-modal-content');
+
+        // Fetch Open Issues Directly Client-Side
+        async function fetchIssues() {
+            try {
+                const response = await fetch(`${REPO_URL}/issues?state=open&per_page=25`);
+                if (!response.ok) throw new Error('GitHub API response was not ok');
+                const issues = await response.json();
+                
+                issuesList.innerHTML = ''; 
+                if (!Array.isArray(issues) || issues.length === 0) {
+                    issuesList.innerHTML = '<div class="p-10 text-center text-xs font-medium text-[var(--color-text-secondary)] issues-glass-panel">No open issues found. Everything is running smoothly!</div>';
+                    return;
+                }
+
+                issues.forEach(issue => {
+                    // Filter out pull requests
+                    if (issue.pull_request) return;
+
+                    const issueCard = document.createElement('a');
+                    issueCard.href = issue.html_url;
+                    issueCard.target = '_blank';
+                    issueCard.rel = 'noopener noreferrer';
+                    issueCard.className = 'issue-card';
+                    
+                    const labelsHtml = (issue.labels || []).map(label => {
+                        const color = label.color || '888888';
+                        return `<span class="label-badge" style="background-color: #${color}22; color: #${color}; border: 1px solid #${color}44;">${escapeHtml(label.name)}</span>`;
+                    }).join(' ');
+
+                    const updatedDate = new Date(issue.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                    issueCard.innerHTML = `
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-bold text-sm text-[var(--color-text-primary)] hover:text-blue-400 transition-colors tracking-tight truncate">${escapeHtml(issue.title)}</h3>
+                                <p class="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">#${issue.number} opened on ${updatedDate} by ${escapeHtml(issue.user.login)}</p>
+                            </div>
+                            <span class="text-xs font-mono font-bold text-[var(--color-text-secondary)] shrink-0">#${issue.number}</span>
+                        </div>
+                        ${labelsHtml ? `<div class="flex gap-1.5 mt-3 flex-wrap">${labelsHtml}</div>` : ''}
+                    `;
+                    issuesList.appendChild(issueCard);
+                });
+            } catch (error) {
+                console.warn('Direct GitHub API fetch fallback:', error);
+                issuesList.innerHTML = `
+                    <div class="p-8 text-center space-y-3 issues-glass-panel">
+                        <p class="text-xs font-medium text-[var(--color-text-secondary)]">Unable to load live issue stream from GitHub (API Rate Limit reached or offline).</p>
+                        <a href="https://github.com/cshariq/Sapphire/issues" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:underline">
+                            View issues directly on GitHub <span class="material-symbols-outlined text-sm">open_in_new</span>
+                        </a>
+                    </div>
+                `;
+            }
+        }
+        
+        // Fetch Repository Stats Directly Client-Side
+        async function fetchRepoStats() {
+            try {
+                const response = await fetch(REPO_URL);
+                if (!response.ok) throw new Error('Repository stats fetch failed');
+                const repo = await response.json();
+                
+                const starsFormatted = repo.stargazers_count >= 1000 ? (repo.stargazers_count / 1000).toFixed(1) + 'k' : repo.stargazers_count;
+                const forksFormatted = repo.forks_count >= 1000 ? (repo.forks_count / 1000).toFixed(1) + 'k' : repo.forks_count;
+
+                ['stats-stars', 'stats-stars-mobile'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = starsFormatted;
+                });
+                ['stats-forks', 'stats-forks-mobile'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = forksFormatted;
+                });
+                ['stats-issues', 'stats-issues-mobile'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = repo.open_issues_count;
+                });
+
+                const releaseResponse = await fetch(`${REPO_URL}/releases/latest`);
+                if (releaseResponse.ok) {
+                    const latestRelease = await releaseResponse.json();
+                    ['stats-latest-release', 'stats-latest-release-mobile'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.textContent = latestRelease.tag_name || 'v2.0.0';
+                            el.href = latestRelease.html_url || 'https://github.com/cshariq/Sapphire/releases/latest';
+                        }
+                    });
+                }
+            } catch (error) {
+                ['stats-stars', 'stats-stars-mobile'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '100+'; });
+                ['stats-forks', 'stats-forks-mobile'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '12'; });
+                ['stats-issues', 'stats-issues-mobile'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '0'; });
+                ['stats-latest-release', 'stats-latest-release-mobile'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = 'v2.0.0'; });
+            }
+        }
+
+        // Handle Serverless Modal Submission (Pre-fills GitHub Issue Creator)
+        issueForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('issue-title').value.trim();
+            const body = document.getElementById('issue-body').value.trim();
+
+            if (!title || !body) return;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Opening GitHub...';
+            feedbackDiv.textContent = 'Opening GitHub with your issue details...';
+
+            const githubIssueUrl = `https://github.com/cshariq/Sapphire/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+
+            setTimeout(() => {
+                window.open(githubIssueUrl, '_blank', 'noopener,noreferrer');
+                closeModal();
+                issueForm.reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Continue to GitHub';
+                feedbackDiv.textContent = '';
+            }, 600);
+        });
+
+        function openModal() {
+            modalOverlay.classList.remove('pointer-events-none');
+            modalOverlay.style.opacity = '1';
+            modalContent.style.opacity = '1';
+            modalContent.style.transform = 'scale(1)';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modalOverlay.style.opacity = '0';
+            modalContent.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                modalOverlay.classList.add('pointer-events-none');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        openModalBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        fetchIssues();
+        fetchRepoStats();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

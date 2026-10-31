@@ -1,0 +1,622 @@
+{
+  "index.html": {
+    "source": "https://sapphire-app.tech/",
+    "upstream": "https://sapphire-app.tech/",
+    "source_sha256": "26087b5720e13dddf9621dcf7f1e66acb3195079d034363af3469b1e09ecaac5",
+    "bytes": 64790,
+    "deployed_sha256": "49c0e4fa201f279f51933de9352af5b23906658fc40c632bbab8a36d642ca78e",
+    "deployed_bytes": 19064
+  },
+  "subscribe.html": {
+    "source": "https://sapphire-app.tech/subscribe",
+    "upstream": "https://sapphire-app.tech/subscribe",
+    "source_sha256": "0c39cc891d7f29f0cae56d4d59ece8898ab3e159e332566b9c96f3375db05d0b",
+    "bytes": 38784,
+    "deployed_sha256": "f00a53f9a6d30e5bde6a53e0c5c3b30a7fcaaa543844a0f03ad3bc9a83593124",
+    "deployed_bytes": 10972
+  },
+  "faq.html": {
+    "source": "https://sapphire-app.tech/faq",
+    "upstream": "https://sapphire-app.tech/faq",
+    "source_sha256": "51de9e1e8fb9648a46f80a0bd20be068086930ed3e4f58e2d7e2ad0a8e2d5f69",
+    "bytes": 21517,
+    "deployed_sha256": "8cf7609b020c0ce420aa708a3bfa75210efde6bbf1a394c2fd0ddf0fc5202b7e",
+    "deployed_bytes": 13562
+  },
+  "changelog.html": {
+    "source": "https://sapphire-app.tech/changelog",
+    "upstream": "https://sapphire-app.tech/changelog",
+    "source_sha256": "34039d8b554aa4b2659440380f6acede993192ccc457866832a464b69934053a",
+    "bytes": 16060,
+    "deployed_sha256": "15e34e99a63f878255dffe68001675c2e03f36cfb866a028990b9bf26c28a25b",
+    "deployed_bytes": 14343
+  },
+  "issues.html": {
+    "source": "https://sapphire-app.tech/issues",
+    "upstream": "https://sapphire-app.tech/issues",
+    "source_sha256": "ca0766986cd7af57b56499d6b6b2660a0da4b687542c2a15ca38b811262a56c3",
+    "bytes": 34704,
+    "deployed_sha256": "2abf12d099b09a173472a5c65dcfc46f693b401c1bd491819e80125d26fc27fe",
+    "deployed_bytes": 33235
+  },
+  "privacy.html": {
+    "source": "https://sapphire-app.tech/privacy",
+    "upstream": "https://sapphire-app.tech/privacy",
+    "source_sha256": "db9bac5525164944d9ed01a1388ac91e660c4aff5c1307a225bb948d26357680",
+    "bytes": 18040,
+    "deployed_sha256": "a0bd41f4558f4fd5ea3f8558ea8787d60085c9efa7eddb217160d2d85de2178b",
+    "deployed_bytes": 10675
+  },
+  "style.css": {
+    "source": "https://sapphire-app.tech/style.css",
+    "upstream": "https://sapphire-app.tech/style.css",
+    "source_sha256": "d5c7a423b7cd8b2348d3e2a1529b7f29f287899fc420f8b994359cb46978c373",
+    "bytes": 28868,
+    "deployed_sha256": "953e7a358b9f65abde1bca20f825af157aa4b504dee5a757db7a2f888bfecb6a",
+    "deployed_bytes": 28738
+  },
+  "script.js": {
+    "source": "https://sapphire-app.tech/script.js",
+    "upstream": "https://sapphire-app.tech/script.js",
+    "source_sha256": "5b9b6c008dfba14120b7b7658c528ceb8f1b285d48d64968935d9525368ba4f5",
+    "bytes": 45765,
+    "deployed_sha256": "df9afb941e3b4f402ad5ec307ec643385a2f75294edadc84ea1f0293492e16e0",
+    "deployed_bytes": 31971
+  },
+  "favicon.svg": {
+    "source": "https://sapphire-app.tech/favicon.svg",
+    "upstream": "https://sapphire-app.tech/favicon.svg",
+    "source_sha256": "77c0cd27e695d6e6a40ca4983f4a9b63053e630c679e505189d84d722acbc2c4",
+    "bytes": 73497,
+    "deployed_sha256": "77c0cd27e695d6e6a40ca4983f4a9b63053e630c679e505189d84d722acbc2c4",
+    "deployed_bytes": 73497
+  },
+  "sapphire-light.png": {
+    "source": "https://sapphire-app.tech/sapphire-light.png",
+    "upstream": "https://sapphire-app.tech/sapphire-light.png",
+    "source_sha256": "a18f23d73455c7dc7ffd63efedba3bbd9a2e11d96c71abd86d7bf794a14fb69a",
+    "bytes": 487793,
+    "deployed_sha256": "a18f23d73455c7dc7ffd63efedba3bbd9a2e11d96c71abd86d7bf794a14fb69a",
+    "deployed_bytes": 487793
+  },
+  "sapphire-dark.png": {
+    "source": "https://sapphire-app.tech/sapphire-dark.png",
+    "upstream": "https://sapphire-app.tech/sapphire-dark.png",
+    "source_sha256": "0b225383be0db64a4543a477c07a6956b9555dcc08fa229c722584954ca6f198",
+    "bytes": 459149,
+    "deployed_sha256": "0b225383be0db64a4543a477c07a6956b9555dcc08fa229c722584954ca6f198",
+    "deployed_bytes": 459149
+  },
+  "assets/app-icons/blender.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/blender.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/blender.svg",
+    "source_sha256": "3dbe41a83742d520e7caa7470bafc2d832e30f01fa48a032e8cf5747be972411",
+    "bytes": 277,
+    "deployed_sha256": "3dbe41a83742d520e7caa7470bafc2d832e30f01fa48a032e8cf5747be972411",
+    "deployed_bytes": 277
+  },
+  "assets/app-icons/photoshop.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/photoshop.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/photoshop.svg",
+    "source_sha256": "7cde791af9ab2c6843d3094dc24f6d922b6f3faa21dc607f895184997f3cfc30",
+    "bytes": 2189,
+    "deployed_sha256": "7cde791af9ab2c6843d3094dc24f6d922b6f3faa21dc607f895184997f3cfc30",
+    "deployed_bytes": 2189
+  },
+  "assets/app-icons/illustrator.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/illustrator.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/illustrator.svg",
+    "source_sha256": "effa5a719a72d4ffd13f3de08e1c5b292e6a719a2585ce328b4232b1fd4975f5",
+    "bytes": 1168,
+    "deployed_sha256": "effa5a719a72d4ffd13f3de08e1c5b292e6a719a2585ce328b4232b1fd4975f5",
+    "deployed_bytes": 1168
+  },
+  "assets/app-icons/firefox.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/firefox.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/firefox.svg",
+    "source_sha256": "f3a75fc7ad418420cb5f586d14459fc015e95f708421f65a727e82f79f8e4cd9",
+    "bytes": 11954,
+    "deployed_sha256": "f3a75fc7ad418420cb5f586d14459fc015e95f708421f65a727e82f79f8e4cd9",
+    "deployed_bytes": 11954
+  },
+  "assets/app-icons/chrome.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/chrome.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/chrome.svg",
+    "source_sha256": "3f3ddd6cad44213e08e1c4e444f48c78cf683f2519147b52ef3f1de26570ba3c",
+    "bytes": 1003,
+    "deployed_sha256": "3f3ddd6cad44213e08e1c4e444f48c78cf683f2519147b52ef3f1de26570ba3c",
+    "deployed_bytes": 1003
+  },
+  "assets/Multi-Audio.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Multi-Audio.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Multi-Audio.mp4",
+    "source_sha256": "22a52f3b7a26a48cf60621816ed46bf23ec00d06a60fc191cf45759759a3cf97",
+    "bytes": 2389170,
+    "deployed_sha256": "22a52f3b7a26a48cf60621816ed46bf23ec00d06a60fc191cf45759759a3cf97",
+    "deployed_bytes": 2389170
+  },
+  "assets/app-icons/notion.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/notion.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/notion.svg",
+    "source_sha256": "84e90b26739159510ec39ef34254df634ba176ec5612db71085dfb5b174f141f",
+    "bytes": 1526,
+    "deployed_sha256": "84e90b26739159510ec39ef34254df634ba176ec5612db71085dfb5b174f141f",
+    "deployed_bytes": 1526
+  },
+  "assets/Blip.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Blip.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Blip.mp4",
+    "source_sha256": "e2788fb5199c2759471924143cc0e8d90e0c07370068ddfe9d707c94c5264e94",
+    "bytes": 3772370,
+    "deployed_sha256": "e2788fb5199c2759471924143cc0e8d90e0c07370068ddfe9d707c94c5264e94",
+    "deployed_bytes": 3772370
+  },
+  "assets/app-icons/finder.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/finder.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/finder.png",
+    "source_sha256": "3431545cb9420baead5aaf0056315445a35906fd315578ef4f87c3db8e282305",
+    "bytes": 688629,
+    "deployed_sha256": "3431545cb9420baead5aaf0056315445a35906fd315578ef4f87c3db8e282305",
+    "deployed_bytes": 688629
+  },
+  "assets/Face-ID.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Face-ID.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Face-ID.mp4",
+    "source_sha256": "90239682794e542e61412f20c0ff1197804f1a5ed8e49dd6e7e436baeae4666a",
+    "bytes": 710743,
+    "deployed_sha256": "90239682794e542e61412f20c0ff1197804f1a5ed8e49dd6e7e436baeae4666a",
+    "deployed_bytes": 710743
+  },
+  "assets/app-icons/discord.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/discord.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/discord.svg",
+    "source_sha256": "d06eaa51e78a9984ebbd3fbc82f0245ac2ecb5bf0150f537204397c1da5c7bd8",
+    "bytes": 1242,
+    "deployed_sha256": "d06eaa51e78a9984ebbd3fbc82f0245ac2ecb5bf0150f537204397c1da5c7bd8",
+    "deployed_bytes": 1242
+  },
+  "assets/app-icons/notes.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/notes.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/notes.svg",
+    "source_sha256": "6aff06c4351d16a8ef00820c9fd8514514a5b7a7f270f00bdc436f3cec508f0d",
+    "bytes": 406,
+    "deployed_sha256": "6aff06c4351d16a8ef00820c9fd8514514a5b7a7f270f00bdc436f3cec508f0d",
+    "deployed_bytes": 406
+  },
+  "assets/Nearby-Share.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Nearby-Share.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Nearby-Share.mp4",
+    "source_sha256": "aa34a98e5eac94260b2781ec78e9118119297c0d20add2adde14eda8156cc194",
+    "bytes": 499898,
+    "deployed_sha256": "aa34a98e5eac94260b2781ec78e9118119297c0d20add2adde14eda8156cc194",
+    "deployed_bytes": 499898
+  },
+  "assets/app-icons/youtube.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/youtube.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/youtube.png",
+    "source_sha256": "1027b1b0517727adb9697155a270744381c3ce9b047b1c8bd8a9389dc7d07a83",
+    "bytes": 16687,
+    "deployed_sha256": "1027b1b0517727adb9697155a270744381c3ce9b047b1c8bd8a9389dc7d07a83",
+    "deployed_bytes": 16687
+  },
+  "assets/app-icons/slack.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/slack.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/slack.svg",
+    "source_sha256": "322a8feca7856681bd81e278a471ab1d1646a0286083012d94ca10509a3e3705",
+    "bytes": 1252,
+    "deployed_sha256": "322a8feca7856681bd81e278a471ab1d1646a0286083012d94ca10509a3e3705",
+    "deployed_bytes": 1252
+  },
+  "assets/Search.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Search.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Search.mp4",
+    "source_sha256": "65e36a2d268fa6c359a246d179e3b67ae04039f012e0ed7f3b585e4ec30839d5",
+    "bytes": 889750,
+    "deployed_sha256": "65e36a2d268fa6c359a246d179e3b67ae04039f012e0ed7f3b585e4ec30839d5",
+    "deployed_bytes": 889750
+  },
+  "assets/app-icons/photos.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/photos.svg",
+    "source_sha256": "30b0157f6cd7d33f794d0fc95763b6023076b543dda97f3363f3bab020098c46",
+    "bytes": 221,
+    "deployed_sha256": "30b0157f6cd7d33f794d0fc95763b6023076b543dda97f3363f3bab020098c46",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/xcode.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/xcode.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/xcode.svg",
+    "source_sha256": "c014833bd55362e604dd6b7541e98e6f0716a776cb72e24aaf78389ccb48b851",
+    "bytes": 25075,
+    "deployed_sha256": "c014833bd55362e604dd6b7541e98e6f0716a776cb72e24aaf78389ccb48b851",
+    "deployed_bytes": 25075
+  },
+  "assets/app-icons/safari.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/safari.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/safari.svg",
+    "source_sha256": "0065d7a7f36348f353b30dbba29e6a07eacac3222e684554520051611ff4e9d0",
+    "bytes": 35637,
+    "deployed_sha256": "0065d7a7f36348f353b30dbba29e6a07eacac3222e684554520051611ff4e9d0",
+    "deployed_bytes": 35637
+  },
+  "assets/Music.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Music.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Music.mp4",
+    "source_sha256": "9d4c6ddadf1cd37129ff9f851d7de441cfc86f4a90adab3d07171f5908936348",
+    "bytes": 1752658,
+    "deployed_sha256": "9d4c6ddadf1cd37129ff9f851d7de441cfc86f4a90adab3d07171f5908936348",
+    "deployed_bytes": 1752658
+  },
+  "assets/app-icons/appstore.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/appstore.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/appstore.svg",
+    "source_sha256": "6b9c9c29de1f8d5b404e440d3b92d96cc3e789835791f9630575d472575791ab",
+    "bytes": 1519,
+    "deployed_sha256": "6b9c9c29de1f8d5b404e440d3b92d96cc3e789835791f9630575d472575791ab",
+    "deployed_bytes": 1519
+  },
+  "assets/app-icons/finalcut.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/finalcut.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/finalcut.png",
+    "source_sha256": "ba08449ff80d6962075abf0f7ea6120e98adde44330ea474d04c3bfc31b78d3c",
+    "bytes": 426713,
+    "deployed_sha256": "ba08449ff80d6962075abf0f7ea6120e98adde44330ea474d04c3bfc31b78d3c",
+    "deployed_bytes": 426713
+  },
+  "assets/HUD.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/HUD.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/HUD.mp4",
+    "source_sha256": "7c849a4acec859b9fabe93f64d5c54de964dcc639f9ed3956cf82950e3e4bac2",
+    "bytes": 1751764,
+    "deployed_sha256": "7c849a4acec859b9fabe93f64d5c54de964dcc639f9ed3956cf82950e3e4bac2",
+    "deployed_bytes": 1751764
+  },
+  "assets/Snap-Zones.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Snap-Zones.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Snap-Zones.mp4",
+    "source_sha256": "8c06a674860735511e4c5dc2ac0d7289feeaf110437b2557b91115c0695bf860",
+    "bytes": 455058,
+    "deployed_sha256": "8c06a674860735511e4c5dc2ac0d7289feeaf110437b2557b91115c0695bf860",
+    "deployed_bytes": 455058
+  },
+  "assets/Blip-Live.mov": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Blip-Live.mov",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Blip-Live.mov",
+    "source_sha256": "34e6b9d2dff2bcbb1fb8263562c3870e7c64a53484920879b72fdb606af979f3",
+    "bytes": 1503330,
+    "deployed_sha256": "34e6b9d2dff2bcbb1fb8263562c3870e7c64a53484920879b72fdb606af979f3",
+    "deployed_bytes": 1503330
+  },
+  "assets/app-icons/voicememos.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/voicememos.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/voicememos.png",
+    "source_sha256": "db1c2a534189c61a8d94436994bae49fee65fdec0bd31db2a41827d55345fa41",
+    "bytes": 24077,
+    "deployed_sha256": "db1c2a534189c61a8d94436994bae49fee65fdec0bd31db2a41827d55345fa41",
+    "deployed_bytes": 24077
+  },
+  "assets/Sports-Live.mov": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Sports-Live.mov",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Sports-Live.mov",
+    "source_sha256": "704ea5b96242c37c8c33f304d1a81d53a3254eba610221b95a82cace52d24824",
+    "bytes": 1819795,
+    "deployed_sha256": "704ea5b96242c37c8c33f304d1a81d53a3254eba610221b95a82cace52d24824",
+    "deployed_bytes": 1819795
+  },
+  "assets/app-icons/figma.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/figma.svg",
+    "source_sha256": "335c530cddd90bc757a0fb9e0bd7d28bdb94ee0afb33a898ed6dd207bc805432",
+    "bytes": 221,
+    "deployed_sha256": "335c530cddd90bc757a0fb9e0bd7d28bdb94ee0afb33a898ed6dd207bc805432",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/shortcuts.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/shortcuts.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/shortcuts.png",
+    "source_sha256": "73e620f68975eaf1839ae700fef253e8dd65b0c0ea696e3748456bd2fab1418b",
+    "bytes": 55908,
+    "deployed_sha256": "73e620f68975eaf1839ae700fef253e8dd65b0c0ea696e3748456bd2fab1418b",
+    "deployed_bytes": 55908
+  },
+  "assets/app-icons/maps.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/maps.svg",
+    "source_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "bytes": 221,
+    "deployed_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "deployed_bytes": 221
+  },
+  "assets/Sports-Widget.mov": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Sports-Widget.mov",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Sports-Widget.mov",
+    "source_sha256": "e835ddf630d316a5947243f446a9085d40c8bc711a2f0d9be87658461ce70893",
+    "bytes": 642233,
+    "deployed_sha256": "e835ddf630d316a5947243f446a9085d40c8bc711a2f0d9be87658461ce70893",
+    "deployed_bytes": 642233
+  },
+  "assets/app-icons/settings.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/settings.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/settings.png",
+    "source_sha256": "f5a3f56b04d368443fbbc7e4e3ed82d3a0ea77f5ea10f3109d1138320d366737",
+    "bytes": 55130,
+    "deployed_sha256": "f5a3f56b04d368443fbbc7e4e3ed82d3a0ea77f5ea10f3109d1138320d366737",
+    "deployed_bytes": 55130
+  },
+  "assets/Battery.mov": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Battery.mov",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Battery.mov",
+    "source_sha256": "a6149ea277afe59ea147581f650611dd688aedfaf97b29015926262aeb91252d",
+    "bytes": 4078220,
+    "deployed_sha256": "a6149ea277afe59ea147581f650611dd688aedfaf97b29015926262aeb91252d",
+    "deployed_bytes": 4078220
+  },
+  "assets/app-icons/music.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/music.svg",
+    "source_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "bytes": 221,
+    "deployed_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/excel.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/excel.svg",
+    "source_sha256": "71ab62dac5b2cdbeec5d5c307ebe458fca2ffcbacea1770821e6eed60d78a28b",
+    "bytes": 221,
+    "deployed_sha256": "71ab62dac5b2cdbeec5d5c307ebe458fca2ffcbacea1770821e6eed60d78a28b",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/facetime.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/facetime.svg",
+    "source_sha256": "335c530cddd90bc757a0fb9e0bd7d28bdb94ee0afb33a898ed6dd207bc805432",
+    "bytes": 221,
+    "deployed_sha256": "335c530cddd90bc757a0fb9e0bd7d28bdb94ee0afb33a898ed6dd207bc805432",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/spotify.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/spotify.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/spotify.svg",
+    "source_sha256": "a96a4fd05d504ed8e6dd1138d548f459c4c60ecf29be42d443613cf185eb6ac9",
+    "bytes": 3674,
+    "deployed_sha256": "a96a4fd05d504ed8e6dd1138d548f459c4c60ecf29be42d443613cf185eb6ac9",
+    "deployed_bytes": 3674
+  },
+  "assets/File-Drop.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/File-Drop.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/File-Drop.mp4",
+    "source_sha256": "b73f049a0adedf383c77ec52f123c4847850b4c61b509b999f8c9531aa7ef15a",
+    "bytes": 1419377,
+    "deployed_sha256": "b73f049a0adedf383c77ec52f123c4847850b4c61b509b999f8c9531aa7ef15a",
+    "deployed_bytes": 1419377
+  },
+  "assets/Lockscreen.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Lockscreen.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Lockscreen.mp4",
+    "source_sha256": "c0145807e44601b39f270b8e4696b32ae0ba9535308c1cb20587cfb218d1497c",
+    "bytes": 606977,
+    "deployed_sha256": "c0145807e44601b39f270b8e4696b32ae0ba9535308c1cb20587cfb218d1497c",
+    "deployed_bytes": 606977
+  },
+  "assets/app-icons/logicpro.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/logicpro.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/logicpro.png",
+    "source_sha256": "c88298a8cac36107e6ad9b226c3737359249f48feb5fa24d184ec8a2f5245ee8",
+    "bytes": 89877,
+    "deployed_sha256": "c88298a8cac36107e6ad9b226c3737359249f48feb5fa24d184ec8a2f5245ee8",
+    "deployed_bytes": 89877
+  },
+  "assets/app-icons/messages.svg": {
+    "source": "generated fallback; upstream returns 404",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/messages.svg",
+    "source_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "bytes": 221,
+    "deployed_sha256": "0fa0235b00a1f92b7a2711cf35bc3b216a1980c6c53c46c834026faee068a9e7",
+    "deployed_bytes": 221
+  },
+  "assets/app-icons/mail.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/mail.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/mail.png",
+    "source_sha256": "5743bbc9cf1d216d03714d76b57ccfb1ba83327ccf18de459799a78fb407aee4",
+    "bytes": 32018,
+    "deployed_sha256": "5743bbc9cf1d216d03714d76b57ccfb1ba83327ccf18de459799a78fb407aee4",
+    "deployed_bytes": 32018
+  },
+  "vendor/gsap.min.js": {
+    "source": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js",
+    "upstream": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js",
+    "source_sha256": "28033e449a31ebcc396e5be8b13b63152bf03094288fb5867034321927bce087",
+    "bytes": 72214,
+    "deployed_sha256": "28033e449a31ebcc396e5be8b13b63152bf03094288fb5867034321927bce087",
+    "deployed_bytes": 72214
+  },
+  "assets/app-icons/netflix.svg": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/netflix.svg",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/netflix.svg",
+    "source_sha256": "42acbe90a682c278459d9e0186a3b35943a17fe46765b85ae4b5ff46d1e08e3a",
+    "bytes": 1924,
+    "deployed_sha256": "42acbe90a682c278459d9e0186a3b35943a17fe46765b85ae4b5ff46d1e08e3a",
+    "deployed_bytes": 1924
+  },
+  "assets/app-icons/calendar.png": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/calendar.png",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/app-icons/calendar.png",
+    "source_sha256": "b3d327318a53410e3d31a845a63acd238decc5bc04650f3cd4c6918da6cbe030",
+    "bytes": 406364,
+    "deployed_sha256": "b3d327318a53410e3d31a845a63acd238decc5bc04650f3cd4c6918da6cbe030",
+    "deployed_bytes": 406364
+  },
+  "assets/Finance.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Finance.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/Finance.mp4",
+    "source_sha256": "b274be1455c445f76b4662806cae72021a37328174b173c6f8c4d8c4d796a1ac",
+    "bytes": 1017271,
+    "deployed_sha256": "b274be1455c445f76b4662806cae72021a37328174b173c6f8c4d8c4d796a1ac",
+    "deployed_bytes": 1017271
+  },
+  "vendor/ScrollTrigger.min.js": {
+    "source": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js",
+    "upstream": "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js",
+    "source_sha256": "ad33c2df9ada8a663c2147357828f980d0b7ca731ef33eb3c6e4f327c3b2cda5",
+    "bytes": 43380,
+    "deployed_sha256": "ad33c2df9ada8a663c2147357828f980d0b7ca731ef33eb3c6e4f327c3b2cda5",
+    "deployed_bytes": 43380
+  },
+  "vendor/tailwind.js": {
+    "source": "https://cdn.tailwindcss.com",
+    "upstream": "https://cdn.tailwindcss.com",
+    "source_sha256": "176e894661aa9cdc9a5cba6c720044cbbf7b8bd80d1c9a142a7c24b1b6c50d15",
+    "bytes": 407279,
+    "deployed_sha256": "176e894661aa9cdc9a5cba6c720044cbbf7b8bd80d1c9a142a7c24b1b6c50d15",
+    "deployed_bytes": 407279
+  },
+  "vendor/marked.min.js": {
+    "source": "https://cdn.jsdelivr.net/npm/marked/marked.min.js",
+    "upstream": "https://cdn.jsdelivr.net/npm/marked/marked.min.js",
+    "source_sha256": "3e7e7d7feb3e5d58cb6c804f68ab5c24cc7e5eb6270fd6e5cbb9124739217d0c",
+    "bytes": 39903,
+    "deployed_sha256": "3e7e7d7feb3e5d58cb6c804f68ab5c24cc7e5eb6270fd6e5cbb9124739217d0c",
+    "deployed_bytes": 39903
+  },
+  "vendor/lenis.min.js": {
+    "source": "https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js",
+    "upstream": "https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js",
+    "source_sha256": "7949f2d87aa5eaa05baa6ba843ad2eeae786d9e09954a41a1b282ac023eabae8",
+    "bytes": 11635,
+    "deployed_sha256": "7949f2d87aa5eaa05baa6ba843ad2eeae786d9e09954a41a1b282ac023eabae8",
+    "deployed_bytes": 11635
+  },
+  "assets/sapphire-demo.mp4": {
+    "source": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/sapphire-demo.mp4",
+    "upstream": "https://raw.githubusercontent.com/cshariq/Sapphire/main/Assets/sapphire-demo.mp4",
+    "source_sha256": "20f36c961f4b61fee7e8a9b7f30cff3769b9514fc43afc195f43f6a96955659d",
+    "bytes": 32383897,
+    "deployed_sha256": "20f36c961f4b61fee7e8a9b7f30cff3769b9514fc43afc195f43f6a96955659d",
+    "deployed_bytes": 32383897
+  },
+  "vendor/fonts.css": {
+    "source": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap",
+    "upstream": "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap",
+    "source_sha256": "7c08d2b25214fedabb23838e603997be245fea5b8e456defd4b8a6d4fbbd0aa3",
+    "bytes": 2464,
+    "deployed_sha256": "a6a2fe92df952c2c512498899a6c768fc8a6281bf6f379a05b617b72fc7dc487",
+    "deployed_bytes": 1808
+  },
+  "vendor/fonts/6d83b1a12212ea9e.ttf": {
+    "source": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+    "upstream": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKxjPQ.ttf",
+    "source_sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3",
+    "bytes": 112172,
+    "deployed_sha256": "44ce4a84f20d60f24539bd0cef11f79c29e38609e0f8adf18551c9794a5d9dc3",
+    "deployed_bytes": 112172
+  },
+  "vendor/fonts/43adbc7c773ef89f.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_qU7NSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_qU7NSg.ttf",
+    "source_sha256": "076831b98043f50f829b6c91db3be4a844641f1c95bccff5c886ed87c661a852",
+    "bytes": 63336,
+    "deployed_sha256": "076831b98043f50f829b6c91db3be4a844641f1c95bccff5c886ed87c661a852",
+    "deployed_bytes": 63336
+  },
+  "vendor/fonts/0ee86126fb55b4c6.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_d0nNSg.ttf",
+    "source_sha256": "50357df108c5d297ec4ece76aeddf49561f3794f67af077cfc2c711b7a75b439",
+    "bytes": 63412,
+    "deployed_sha256": "50357df108c5d297ec4ece76aeddf49561f3794f67af077cfc2c711b7a75b439",
+    "deployed_bytes": 63412
+  },
+  "vendor/fonts/4439f89a418f4ec5.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_907NSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_907NSg.ttf",
+    "source_sha256": "c96871f21917248bceb319a3d52a452bbec760c6ea8f7b9a0448572274f1d5b8",
+    "bytes": 63372,
+    "deployed_sha256": "c96871f21917248bceb319a3d52a452bbec760c6ea8f7b9a0448572274f1d5b8",
+    "deployed_bytes": 63372
+  },
+  "vendor/fonts/f2374e6da2f0a833.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_m07NSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_m07NSg.ttf",
+    "source_sha256": "b4fc14ec283d54236fd302cdb92546f98ae0ff061ca5ee23453a02bdf4628791",
+    "bytes": 63404,
+    "deployed_sha256": "b4fc14ec283d54236fd302cdb92546f98ae0ff061ca5ee23453a02bdf4628791",
+    "deployed_bytes": 63404
+  },
+  "vendor/fonts/655ecee898b68ff3.ttf": {
+    "source": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8-qxjPQ.ttf",
+    "upstream": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8-qxjPQ.ttf",
+    "source_sha256": "3386a05f6ece969e4537de6be894170d20558e82f7d56c8c5d332972ef172160",
+    "bytes": 112204,
+    "deployed_sha256": "3386a05f6ece969e4537de6be894170d20558e82f7d56c8c5d332972ef172160",
+    "deployed_bytes": 112204
+  },
+  "vendor/fonts/c1c656933a1f4b14.ttf": {
+    "source": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+    "upstream": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8L6tjPQ.ttf",
+    "source_sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a",
+    "bytes": 112092,
+    "deployed_sha256": "a1d92abc6b02a87faed23d98067ab1027e8e95242fd7c9978a072ea383b89d1a",
+    "deployed_bytes": 112092
+  },
+  "vendor/fonts/9c0e6cce7702efbb.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_KUnNSg.ttf",
+    "source_sha256": "d9e0ddb4a15a0054ad84b4ded3b4b9f354a0b7df426e21a1363d6933728da9d5",
+    "bytes": 63372,
+    "deployed_sha256": "d9e0ddb4a15a0054ad84b4ded3b4b9f354a0b7df426e21a1363d6933728da9d5",
+    "deployed_bytes": 63372
+  },
+  "vendor/fonts/cbf4f5937e04d9a0.ttf": {
+    "source": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf",
+    "upstream": "https://fonts.gstatic.com/s/plusjakartasans/v12/LDIbaomQNQcsA88c7O9yZ4KMCoOg4IA6-91aHEjcWuA_TknNSg.ttf",
+    "source_sha256": "32971ad7976930539a11c79ce91ce84092df7f25c5be716b594601842f10a7ae",
+    "bytes": 63336,
+    "deployed_sha256": "32971ad7976930539a11c79ce91ce84092df7f25c5be716b594601842f10a7ae",
+    "deployed_bytes": 63336
+  },
+  "vendor/fonts/32bf30e94c6c5d0b.ttf": {
+    "source": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8SKtjPQ.ttf",
+    "upstream": "https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbY2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8SKtjPQ.ttf",
+    "source_sha256": "bc31e0b0583e8530795907883e768597bf7bdb4e47a65861dc393b4411439e22",
+    "bytes": 112088,
+    "deployed_sha256": "bc31e0b0583e8530795907883e768597bf7bdb4e47a65861dc393b4411439e22",
+    "deployed_bytes": 112088
+  },
+  "vendor/symbols.css": {
+    "source": "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0",
+    "upstream": "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0",
+    "source_sha256": "ed49f3eaf865ecd2ea1bc580e45c1687441c53dbf484a458a688bc6b6afaeca8",
+    "bytes": 602,
+    "deployed_sha256": "a760d78b4e50e06ef396c22c17ebcff251895db9e47508a006d3a896f3654b47",
+    "deployed_bytes": 463
+  },
+  "vendor/fonts/1a319d4bb48858f6.ttf": {
+    "source": "https://fonts.gstatic.com/s/materialsymbolsoutlined/v382/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOem.ttf",
+    "upstream": "https://fonts.gstatic.com/s/materialsymbolsoutlined/v382/kJF1BvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzByHX9rA6RzaxHMPdY43zj-jCxv3fzvRNU22ZXGJpEpjC_1v-p_4MrImHCIJIZrDCvHOem.ttf",
+    "source_sha256": "69b4db8f8971c5206adb2d3891787c33eee828271fa56209e05ee0e3202729dd",
+    "bytes": 972520,
+    "deployed_sha256": "69b4db8f8971c5206adb2d3891787c33eee828271fa56209e05ee0e3202729dd",
+    "deployed_bytes": 972520
+  },
+  "download.html": {
+    "source": "current Sapphire-CN project",
+    "deployed_sha256": "f00a53f9a6d30e5bde6a53e0c5c3b30a7fcaaa543844a0f03ad3bc9a83593124",
+    "deployed_bytes": 10972
+  },
+  "project-releases.json": {
+    "source": "current Sapphire-CN project",
+    "deployed_sha256": "a96817e19b6701f6546c5d741b6ef33376630c2bd93dbcc4d3e14e13c1dd279f",
+    "deployed_bytes": 3589
+  },
+  "assets/notch-overview.png": {
+    "source": "current Sapphire-CN project",
+    "deployed_sha256": "484300cf2de9b2b49d098e393913402208eb9db0f839ac660a204cfccc67b3cf",
+    "deployed_bytes": 345045
+  },
+  "assets/clipboard-history.png": {
+    "source": "current Sapphire-CN project",
+    "deployed_sha256": "a9040057401a429cf4b57be6f99156bc73b51fc1b5152094c09255da8ff8f0c1",
+    "deployed_bytes": 410058
+  }
+}

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-dark">
+<head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sapphire - The Notch, Reimagined for macOS</title>
+    <meta name="description" content="Sapphire transforms the camera notch on modern MacBooks into an interactive component — Blip Agent, Face ID on Mac, live sports & market telemetry, and more." />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Sapphire" />
+    <meta property="og:title" content="Sapphire - The Notch, Reimagined for macOS" />
+    <meta property="og:description" content="Sapphire transforms the camera notch on modern MacBooks into an interactive component — Blip Agent, Face ID on Mac, live sports & market telemetry, and more." />
+    <meta property="og:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <meta property="og:image:width" content="630" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://sapphire-app.tech/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sapphire - The Notch, Reimagined for macOS" />
+    <meta name="twitter:description" content="Sapphire transforms the camera notch on modern MacBooks into an interactive component — Blip Agent, Face ID on Mac, live sports & market telemetry, and more." />
+    <meta name="twitter:image" content="https://sapphire-app.tech/sapphire-light.png" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preload" href="./style.css" as="style">
+    <link rel="preload" href="./script.js" as="script">
+    <link rel="preload" href="./sapphire-light.png" as="image">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Dependencies: Tailwind, Material Icons, GSAP & ScrollTrigger, Lenis Smooth Scroll -->
+    <script src="/vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="/vendor/symbols.css" />
+    <link rel="canonical" href="https://sapphire-app.tech/" />
+    <script src="/vendor/gsap.min.js"></script>
+    <script src="/vendor/ScrollTrigger.min.js"></script>
+    <script src="/vendor/lenis.min.js"></script>
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Sapphire",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "macOS",
+      "description": "Sapphire transforms the camera notch on modern MacBooks into an interactive component with Blip Agent, Face ID on Mac, live sports & market telemetry, and more.",
+      "url": "https://sapphire-app.tech",
+      "downloadUrl": "https://github.com/cshariq/Sapphire/releases/latest",
+      "softwareVersion": "2.0.0",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Shariq Charolia"
+      }
+    }
+    </script>
+</head>
+<body class="bg-[var(--color-background)] text-[var(--color-text-primary)] relative selection:bg-blue-500/30">
+
+    <!-- Custom Floating Cursor -->
+    <div id="custom-cursor"></div>
+    
+    <!-- Dynamic Spotlight Dot Matrix -->
+    <div id="dark-mode-gradient"></div>
+    <div id="dot-container">
+        <div id="dot-base" class="bg-dot-pattern"></div>
+        <div id="dot-spotlight"></div>
+    </div>
+
+    <!-- MAIN HEADER NAVBAR -->
+    <div class="fixed top-0 left-0 right-0 z-50 flex justify-center pt-5 px-4 pointer-events-none">
+        <header id="main-header" class="header-glass-capsule flex items-center justify-between gap-4 w-full max-w-5xl mx-auto pointer-events-auto">
+            
+            <!-- Left: Logo & Core Nav -->
+            <div class="flex items-center gap-6">
+                <a href="/" class="flex items-center space-x-2.5 whitespace-nowrap pl-2">
+                    <img id="sapphire-icon" src="./sapphire-light.png" alt="Sapphire Logo" class="h-6 w-auto" />
+                    <span class="text-base font-extrabold tracking-tight text-[var(--color-text-primary)] hidden sm:block">Sapphire</span>
+                </a>
+
+                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="/changelog" class="header-nav-link">Changelog</a>
+                    <a href="/issues" class="header-nav-link">Issues</a>
+                    <a href="/faq" class="header-nav-link">FAQ</a>
+                    <a href="https://sapphire-app.tech/portal" class="header-nav-link flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">account_circle</span> Account</a>
+                </nav>
+            </div>
+
+            <!-- Right: Controls & CTAs -->
+            <div class="flex items-center gap-3">
+                <!-- Theme Switcher: Colorful, Dark, Light -->
+                <div id="theme-switcher" class="theme-switcher-container hidden md:inline-flex">
+                    <input type="radio" id="theme-radio-colorful" name="theme" value="colorful" class="switch-radio">
+                    <label for="theme-radio-colorful" class="switch-label" title="Colorful"><span class="material-symbols-outlined">palette</span></label>
+                    <input type="radio" id="theme-radio-dark" name="theme" value="dark" class="switch-radio" checked>
+                    <label for="theme-radio-dark" class="switch-label" title="Dark Mode"><span class="material-symbols-outlined">dark_mode</span></label>
+                    <input type="radio" id="theme-radio-light" name="theme" value="light" class="switch-radio">
+                    <label for="theme-radio-light" class="switch-label" title="Light Mode"><span class="material-symbols-outlined">light_mode</span></label>
+                    <div class="switch-puck"></div>
+                </div>
+
+                <div class="h-5 w-[1px] bg-[var(--color-border-color)] hidden md:block mx-1"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2">
+                    <a href="/subscribe" class="header-btn header-btn-subscribe">
+                        <span class="material-symbols-outlined text-[16px]">workspace_premium</span> Subscribe
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="header-btn header-btn-download hidden sm:inline-flex">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Download
+                    </a>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN SCROLL CINEMA -->
+    <main class="relative z-10">
+
+        <!-- HERO INTRO -->
+        <section id="hero-section" class="min-h-screen relative flex flex-col items-center justify-center pt-40 pb-24 px-6 max-w-7xl mx-auto">
+            <div class="text-center max-w-4xl mx-auto space-y-6">
+
+                <h1 class="hero-title apple-headline tracking-tighter text-gradient-apple">
+                    The Notch,<br />Reimagined.
+                </h1>
+
+                <p class="apple-scrub-text apple-subheadline max-w-2xl mx-auto text-[var(--color-text-secondary)]">
+                    Sapphire neatly displays current activities around the notch on newer MacBooks and includes a suite of convenient features to enhance your productivity and well-being.
+                </p>
+
+                <!-- Hero CTAs with Frosted Glass & Inlined SVGs -->
+                <div class="hero-cta flex flex-wrap items-center justify-center gap-4 pt-4">
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="apple-cta-btn w-full sm:w-auto">
+                        <span class="material-symbols-outlined">download</span> Download for macOS
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="apple-secondary-btn w-full sm:w-auto">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        View on GitHub
+                    </a>
+                    <a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="apple-icon-btn" aria-label="Join Discord">
+                        <svg class="w-5 h-5 text-[#5865F2]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.947 2.418-2.157 2.418z"/></svg>
+                    </a>
+                </div>
+
+                <!-- GitHub Stats -->
+                <div id="hero-stats" class="hidden items-center justify-center gap-6 pt-2 text-xs font-semibold text-[var(--color-text-secondary)]">
+                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-amber-400 text-sm">star</span> <span id="hero-stats-stars">0</span> stars</span>
+                    <span class="w-1 h-1 rounded-full bg-[var(--color-border-color)]"></span>
+                    <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-blue-400 text-sm">download</span> <span id="hero-stats-downloads">0</span> downloads</span>
+                </div>
+            </div>
+
+            <div class="hero-video-frame mt-16 w-full max-w-5xl rounded-3xl p-3 bg-[var(--color-secondary)] border border-[var(--color-card-border)] shadow-2xl gpu-layer">
+                <div class="relative rounded-2xl overflow-hidden bg-black aspect-video border border-white/5 flex items-center justify-center">
+                    <video src="/assets/sapphire-demo.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 1. BLIP AGENT (PRO & ULTRA FEATURE) - PURE TEXT HORIZONTAL RUNWAY -> SQUIGGLY HEADLINE -> UNCROPPED 85VW VIDEO -->
+        <section id="feature-blip-agent" class="force-dark relative w-full min-h-[550vh] bg-black">
+            <div class="blip-sticky-stage sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-6">
+                
+                <!-- Stage A: PURE TEXT RUNWAY WITH ROTATING BACKGROUND GEOMETRIC SHAPES -->
+                <div class="blip-runway-viewport">
+                    <div class="blip-bg-shapes-layer">
+                        <div class="bg-geo-shape bg-shape-square left-[15%] top-[20%]">
+                            <svg width="110" height="110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="90" height="90" rx="18" stroke="rgba(192, 132, 252, 0.4)" stroke-width="2.5" fill="rgba(192, 132, 252, 0.04)" /></svg>
+                        </div>
+                        <div class="bg-geo-shape bg-shape-triangle left-[45%] top-[60%]">
+                            <svg width="120" height="110" viewBox="0 0 100 90" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,85 5,85" stroke="rgba(56, 189, 248, 0.4)" stroke-width="2.5" fill="rgba(56, 189, 248, 0.04)" /></svg>
+                        </div>
+                        <div class="bg-geo-shape bg-shape-circle left-[75%] top-[25%]">
+                            <svg width="110" height="110" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="42" stroke="rgba(244, 114, 182, 0.4)" stroke-width="2.5" fill="rgba(244, 114, 182, 0.04)" /></svg>
+                        </div>
+                        <div class="bg-geo-shape bg-shape-diamond left-[88%] top-[65%]">
+                            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="50,5 95,50 50,95 5,50" stroke="rgba(74, 222, 128, 0.4)" stroke-width="2.5" fill="rgba(74, 222, 128, 0.04)" /></svg>
+                        </div>
+                    </div>
+
+                    <div class="blip-runway-track" id="blip-runway-track">
+                        <span class="runway-text-item">THE <span class="text-gradient-purple">VERSATILE</span> AGENT THAT IS ENGINEERED TO BE <span class="text-gradient-cyan">FAST</span>, <span style="background: linear-gradient(135deg, #fda4af 0%, #fb7185 50%, #f472b6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">PRECISE</span> AND <span class="text-gradient-emerald">SEAMLESS</span></span>
+                        <span class="runway-text-item text-gradient-cyan"></span>
+                        <span class="runway-text-item text-gradient-purple">INTRODUCING BLIP</span>
+                    </div>
+                </div>
+
+                <!-- Stage B: Text & Animated Multi-Wave Squiggly Underline -->
+                <div class="blip-intro-text absolute inset-0 flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-6 z-10 space-y-6 opacity-0 pointer-events-none">
+                    <div>
+                        <span class="tier-pill-pro"><span class="material-symbols-outlined text-xs">workspace_premium</span> Pro & Ultra Feature</span>
+                    </div>
+
+                    <h2 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.35] sm:leading-[1.3]">
+                        It can do 
+                        <span class="animated-squiggly-wrapper text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">
+                            anything
+                            <svg class="animated-squiggly-svg" viewBox="0 0 400 18" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path class="animated-squiggly-path" d="M 2 12 Q 10 2 18 12 T 34 12 T 50 12 T 66 12 T 82 12 T 98 12 T 114 12 T 130 12 T 146 12 T 162 12 T 178 12 T 194 12 T 210 12 T 226 12 T 242 12 T 258 12 T 274 12 T 290 12 T 306 12 T 322 12 T 338 12 T 354 12 T 370 12 T 386 12 T 398 12" stroke="url(#purple-grad-squig)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+                                <defs><linearGradient id="purple-grad-squig" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c084fc" /><stop offset="50%" stop-color="#f472b6" /><stop offset="100%" stop-color="#38bdf8" /></linearGradient></defs>
+                            </svg>
+                        </span>
+                        you ask on your Mac.
+                    </h2>
+
+                    <p class="apple-scrub-text apple-subheadline max-w-2xl mx-auto pt-2">
+                        From writing emails to finding files, give it a prompt and watch it execute across your apps automatically.
+                    </p>
+                </div>
+
+                <!-- Stage C: Dedicated 85vw Video Frame (Uncropped) -->
+                <div class="blip-85vw-video-frame relative z-20 opacity-0">
+                    <video src="/assets/Blip.mp4" autoplay loop muted playsinline defaultPlaybackRate="2.5" class="blip-video-element"></video>
+                </div>
+                <p class="blip-video-caption">Demo shown at 2.5&times; speed</p>
+
+            </div>
+        </section>
+
+
+        <!-- 1B. FULLSCREEN GUIDED PINNED STAGE: CENTERED SLOT DRUM -> PROGRESSIVE APP MATRIX -->
+        <section id="feature-blip-actions-showcase" class="force-dark relative w-full min-h-[400vh] bg-black border-t border-[var(--color-border-color)]">
+            <div class="blip-actions-sticky-stage sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden px-4">
+                
+                <!-- Stage 1: Dead-Centered Drum Reel Container -->
+                <div class="slot-reel-stage-center absolute inset-0 flex flex-col items-center justify-center text-center w-full px-6 z-10">
+                    <div class="slot-reel-container flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full max-w-5xl">
+                        <!-- Pure White "Blip is built to" Phrase -->
+                        <div class="slot-phrase-wrap shrink-0 text-center md:text-right">
+                            <h3 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight whitespace-nowrap">
+                                Blip is built to
+                            </h3>
+                        </div>
+
+                        <!-- 270px Viewport with 90px Slot Lines -->
+                        <div class="slot-reel-viewport w-full">
+                            <div class="slot-reel-strip" id="slot-reel-strip">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stage 2: Dead-Centered Parallax App Ecosystem Columns (Scroll-Revealed inside Pin) -->
+                <div id="blip-apps-showcase-matrix" class="absolute inset-0 flex flex-col items-center justify-center text-center w-full max-w-6xl mx-auto px-4 opacity-0 pointer-events-none z-20">
+                    <div class="flex flex-col items-center justify-center w-full h-full pt-16 pb-8">
+                        <div class="text-center space-y-2 shrink-0 px-4">
+                            <h4 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Supports all of your Apps.</h4>
+                            <p class="text-sm text-white/60 max-w-lg mx-auto">Native integration across developer tools, creative suites, office workflows, and other apps.</p>
+                        </div>
+
+                        <!-- 3 Vertical Parallax Scrolling App Columns -->
+                        <div class="app-columns-wrapper flex-1 w-full flex justify-center">
+                            <div class="flex justify-center gap-4 sm:gap-6 w-full max-w-full">
+                                <div class="app-column col-up shrink-0" id="app-col-1"></div>
+                                <div class="app-column col-down shrink-0" id="app-col-2"></div>
+                                <div class="app-column col-up shrink-0 hidden sm:flex" id="app-col-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 2. BLIP LIVE (BASIC, PRO & ULTRA FEATURE) -->
+        <section id="feature-blip-live" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-basic"><span class="material-symbols-outlined text-xs">workspace_premium</span> Basic, Pro & Ultra Feature</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-cyan">Blip Live.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Have a natural conversation regarding what is on your screen.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Point at complicated code architectures, design mockups, or full-screen video timelines. Blip sees exactly what you're referencing and talks you through solutions.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Blip-Live.mov" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. FACE ID ON MAC (FLAGSHIP BOLD SHOWCASE - FREE FEATURE) -->
+        <section id="feature-face-id" class="min-h-screen py-32 px-6 border-t border-[var(--color-border-color)]">
+
+            <div class="max-w-7xl mx-auto space-y-20">
+                
+                <!-- Headline Header & Authentic Apple-Style Face ID Biometric Glyph -->
+                <div class="text-center max-w-4xl mx-auto space-y-6">
+                    <div class="flex items-center justify-center gap-3">
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+
+                    <h2 class="apple-headline text-gradient-purple">
+                        Face ID on Mac.<br />Look. You’re in.
+                    </h2>
+
+                    <p class="apple-scrub-text apple-subheadline max-w-3xl mx-auto">
+                        Bringing camera based facial recognition to modern MacBooks.
+                    </p>
+                </div>
+
+                <!-- Flagship Cinematic Showcase Frame with Laser Scanner Sweep -->
+                <div class="relative w-full max-w-5xl mx-auto">
+                    <div class="clean-video-frame relative overflow-hidden">
+                        <video src="/assets/Face-ID.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <!-- 3 Updated Exact Security Pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                    <div class="security-pillar-card space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl">shield</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-primary)]">Anti-Spoof Neural Model</h4>
+                        <p class="apple-scrub-text text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                            A proprietary state of the art spoof model is used to prevent impersonaters from unlocking your mac.
+                        </p>
+                    </div>
+
+                    <div class="security-pillar-card space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl">key</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-primary)]">Apple Keychain Storage</h4>
+                        <p class="apple-scrub-text text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                            All information is stored in the keychain, the same place where apple stores your passwords.
+                        </p>
+                    </div>
+
+                    <div class="security-pillar-card space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl">verified_user</span>
+                        </div>
+                        <h4 class="text-lg font-bold text-[var(--color-text-primary)]">Class 2 Biometric Standard</h4>
+                        <p class="apple-scrub-text text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                            Matches samsung's class 2 based facial recognition on their flagship devices.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 4. CIRCLE TO SEARCH (PRO & ULTRA FEATURE) -->
+        <section id="feature-circle-search" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-pro"><span class="material-symbols-outlined text-xs">workspace_premium</span> Pro & Ultra Feature</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-apple">Circle to Search.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Circle anything on your display to get relevant results.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Press your set hotkey and draw a circle around code, video frames, or unknown products. Sapphire gets relevant results imediately.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Search.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5. SPORTS LIVE ACTIVITY (PRO & ULTRA FEATURE) -->
+        <section id="feature-sports-live" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 order-2 lg:order-1">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Sports-Live.mov" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+                    <div>
+                        <span class="tier-pill-pro"><span class="material-symbols-outlined text-xs">workspace_premium</span> Pro & Ultra Feature</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-emerald">Sports Live Activity.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Real-time scores streamed directly in the notch.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Get sports information displayed in the live activity to keep tabs on the score of your favorite teams without interrupting your work.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 6. SPORTS WIDGET (ULTRA EXCLUSIVE FEATURE) -->
+        <section id="feature-sports-widget" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-ultra"><span class="material-symbols-outlined text-xs">workspace_premium</span> Ultra Exclusive Feature</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-purple">Sports Widget.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Full-detail interactive multi-league sports dashboard.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Expand the notch into a dedicated multi-game sports widget with live box scores, team standings, play-by-play timelines, and player statistics across all of your favorite sports.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Sports-Widget.mov" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 7. FINANCE WIDGET & LIVE ACTIVITY (ULTRA EXCLUSIVE FEATURE) -->
+        <section id="feature-finance" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 order-2 lg:order-1">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Finance.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+                    <div>
+                        <span class="tier-pill-ultra"><span class="material-symbols-outlined text-xs">workspace_premium</span> Ultra Exclusive Feature</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-cyan">Finance Widget & Live Activity.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Tick-by-tick market telemetry and live portfolio charts.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Watch real-time stock information for stocks you are interested in and have invested in within the notch and expanded widgets.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 8. CUSTOM HUD WITH 60% EXTRA BRIGHTNESS & SPOTIFY IN VOLUME HUD (FREE FEATURE) -->
+        <section id="feature-hud" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="space-y-12">
+                <div class="text-center max-w-4xl mx-auto space-y-6">
+                    <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    <h2 class="apple-headline text-gradient-gold">60% Extra Brightness Boost & Spotify in the Volume HUD.</h2>
+                    <p class="apple-scrub-text apple-subheadline max-w-3xl mx-auto">
+                        Unlock 1,600-nit XDR peak brightness headroom for direct sunlight work, with Spotify playback controls built directly into the volume HUD.
+                    </p>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="w-full max-w-3xl">
+                        <div class="clean-video-frame">
+                            <video src="/assets/HUD.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 9. PRO AUDIO MANAGEMENT (FREE FEATURE) -->
+        <section id="feature-audio" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-apple">Multi Audio Features.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Per-app volume, per-app EQ, device EQ, and multi-device routing.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Lower Spotify while raising Logic Pro. Apply custom 10-band EQ curves tailored to individual apps, and stream audio to multiple Bluetooth devices simultaneously.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Multi-Audio.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 10. BATTERY MANAGEMENT (FREE FEATURE) -->
+        <section id="feature-battery" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 order-2 lg:order-1">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Battery.mov" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-emerald">Battery Management.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Smart charge limits that protect hardware longevity.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Prevent battery wear and chemical degradation during prolonged desk use by locking power thresholds to 80% and tracking cycle wear.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 11. SNAP ZONES (FREE FEATURE) -->
+        <section id="feature-snap-zones" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-apple">Snap Zones.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Arrange windows effectively with fluid snap templates.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Customize grid layouts, create custom layouts and organize complex coding and video editing setups with a single hotkey.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Snap-Zones.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 12. FILE DROP AND FILE SHELF (FREE FEATURE) -->
+        <section id="feature-file-shelf" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 order-2 lg:order-1">
+                    <div class="clean-video-frame">
+                        <video src="/assets/File-Drop.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-gold">File Shelf</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Drag files into the notch. Drop them anywhere later.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Drag photos, documents, and archives directly into the top notch curve to shelf them. Switch desktop spaces and drag them right back out.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 13. ANDROID NEARBY SHARE (FREE FEATURE) -->
+        <section id="feature-nearby-share" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-emerald">Android Nearby Share.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Seamless wireless sharing built directly into macOS.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Send and receive full-resolution photos, 4K video clips, zip archives, and clipboard text wirelessly between your Mac and Android devices without cables.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Nearby-Share.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 14. MUSIC WIDGET AND LIVE ACTIVITY (FREE FEATURE) -->
+        <section id="feature-music-widget" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 order-2 lg:order-1">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Music.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-purple">Music Widget.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Interactive audio waveforms and lyrics in your notch.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Next songs, recommended tracks,track scrubbing, quick playback controls and more embedded into the notch.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 15. LOCK SCREEN WIDGETS & CAFFEINATE (FREE FEATURE) -->
+        <section id="feature-caffeinate" class="min-h-screen py-32 px-6 max-w-7xl mx-auto flex flex-col justify-center border-t border-[var(--color-border-color)]">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-6 space-y-6">
+                    <div>
+                        <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> Included Free in Sapphire</span>
+                    </div>
+                    <h2 class="apple-headline text-gradient-gold">Caffeinate & Lock Screen.</h2>
+                    <p class="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)] leading-snug">
+                        Prevent sleep with 1 click, and add lock screen widgets.
+                    </p>
+                    <p class="apple-scrub-text apple-subheadline">
+                        Keep long render tasks and file transfers running without the device turning off, while controlling music, sports updates, and weather from the lock screen.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <div class="clean-video-frame">
+                        <video src="/assets/Lockscreen.mp4" autoplay loop muted playsinline class="clean-video-element"></video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 16. AND MUCH MORE (SEAMLESS INFINITE MARQUEE SHOWCASE) -->
+        <section id="feature-more" class="py-32 overflow-hidden border-t border-[var(--color-border-color)] bg-[var(--color-surface)]">
+            <div class="text-center max-w-4xl mx-auto mb-16 px-6 space-y-4">
+                <div>
+                    <span class="tier-pill-free"><span class="material-symbols-outlined text-xs">check_circle</span> All Included Free in Sapphire</span>
+                </div>
+                <h2 class="apple-headline text-gradient-apple">And so much more.</h2>
+                <p class="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto font-medium">
+                    Every utility you ever wished macOS had, built right into the notch.
+                </p>
+            </div>
+
+            <!-- Seamless Infinite Track 1 (10 Items Duplicated) -->
+            <div class="marquee-container mb-6">
+                <div class="marquee-track">
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-blue-400">edit_note</span> <span class="font-bold text-sm">Quick Notch Notes</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-purple-400">content_paste</span> <span class="font-bold text-sm">Infinite Clipboard History</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">calendar_month</span> <span class="font-bold text-sm">Interactive Calendar Grid</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-amber-400">camera_front</span> <span class="font-bold text-sm">Quick Mirror Camera</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-cyan-400">cloud</span> <span class="font-bold text-sm">Persistent Live Weather</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-pink-400">bluetooth</span> <span class="font-bold text-sm">Bluetooth Fast Connect</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-red-400">notifications_active</span> <span class="font-bold text-sm">Notch Banner Notifications</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-yellow-400">bolt</span> <span class="font-bold text-sm">Shortcuts & Automation</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">visibility</span> <span class="font-bold text-sm">20-20-20 Eye Break Reminders</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-indigo-400">dashboard_customize</span> <span class="font-bold text-sm">Menubar Customization</span></div>
+
+                    <!-- Duplicate for Infinite Loop -->
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-blue-400">edit_note</span> <span class="font-bold text-sm">Quick Notch Notes</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-purple-400">content_paste</span> <span class="font-bold text-sm">Infinite Clipboard History</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">calendar_month</span> <span class="font-bold text-sm">Interactive Calendar Grid</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-amber-400">camera_front</span> <span class="font-bold text-sm">Quick Mirror Camera</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-cyan-400">cloud</span> <span class="font-bold text-sm">Persistent Live Weather</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-pink-400">bluetooth</span> <span class="font-bold text-sm">Bluetooth Fast Connect</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-red-400">notifications_active</span> <span class="font-bold text-sm">Notch Banner Notifications</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-yellow-400">bolt</span> <span class="font-bold text-sm">Shortcuts & Automation</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">visibility</span> <span class="font-bold text-sm">20-20-20 Eye Break Reminders</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-indigo-400">dashboard_customize</span> <span class="font-bold text-sm">Menubar Customization</span></div>
+                </div>
+            </div>
+
+            <!-- Seamless Infinite Track 2 (Reverse) -->
+            <div class="marquee-container pb-24">
+                <div class="marquee-track reverse">
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-indigo-400">dashboard_customize</span> <span class="font-bold text-sm">Menubar Customization</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">visibility</span> <span class="font-bold text-sm">20-20-20 Eye Break Reminders</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-yellow-400">bolt</span> <span class="font-bold text-sm">Shortcuts & Automation</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-red-400">notifications_active</span> <span class="font-bold text-sm">Notch Banner Notifications</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-pink-400">bluetooth</span> <span class="font-bold text-sm">Bluetooth Fast Connect</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-cyan-400">cloud</span> <span class="font-bold text-sm">Persistent Live Weather</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-amber-400">camera_front</span> <span class="font-bold text-sm">Quick Mirror Camera</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">calendar_month</span> <span class="font-bold text-sm">Interactive Calendar Grid</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-purple-400">content_paste</span> <span class="font-bold text-sm">Infinite Clipboard History</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-blue-400">edit_note</span> <span class="font-bold text-sm">Quick Notch Notes</span></div>
+
+                    <!-- Duplicate for Infinite Loop -->
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-indigo-400">dashboard_customize</span> <span class="font-bold text-sm">Menubar Customization</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">visibility</span> <span class="font-bold text-sm">20-20-20 Eye Break Reminders</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-yellow-400">bolt</span> <span class="font-bold text-sm">Shortcuts & Automation</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-red-400">notifications_active</span> <span class="font-bold text-sm">Notch Banner Notifications</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-pink-400">bluetooth</span> <span class="font-bold text-sm">Bluetooth Fast Connect</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-cyan-400">cloud</span> <span class="font-bold text-sm">Persistent Live Weather</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-amber-400">camera_front</span> <span class="font-bold text-sm">Quick Mirror Camera</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-emerald-400">calendar_month</span> <span class="font-bold text-sm">Interactive Calendar Grid</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-purple-400">content_paste</span> <span class="font-bold text-sm">Infinite Clipboard History</span></div>
+                    <div class="apple-glass rounded-2xl px-6 py-4 flex items-center gap-3"><span class="material-symbols-outlined text-blue-400">edit_note</span> <span class="font-bold text-sm">Quick Notch Notes</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 17. FINAL CALL TO ACTION STAGE -->
+        <section id="final-cta-section" class="py-32 px-6 border-t border-[var(--color-border-color)] bg-[var(--color-surface)] flex flex-col items-center justify-center">
+            <div class="text-center max-w-4xl mx-auto space-y-6">
+                <h2 class="apple-headline text-gradient-apple">Ready to reimagine your workspace?</h2>
+                <p class="apple-subheadline max-w-2xl mx-auto text-[var(--color-text-secondary)]">
+                    Experience Sapphire today. Available free for macOS.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center gap-4 pt-6">
+                    <a href="https://github.com/cshariq/Sapphire/releases/latest/download/Sapphire.pkg" class="apple-cta-btn w-full sm:w-auto">
+                        <span class="material-symbols-outlined">download</span> Download for macOS
+                    </a>
+                    <a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="apple-secondary-btn w-full sm:w-auto">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                        View on GitHub
+                    </a>
+                    <a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="apple-icon-btn" aria-label="Join Discord">
+                        <svg class="w-5 h-5 text-[#5865F2]" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.947 2.418-2.157 2.418z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- STREAMLINED COMPACT FLOATING DOCK -->
+    <nav class="apple-dock" id="section-dock" aria-label="Section Navigation">
+        <a href="#hero-section" class="dock-pill is-active" data-section="hero-section"><span class="material-symbols-outlined text-xs">home</span> Overview</a>
+        <a href="#feature-blip-agent" class="dock-pill" data-section="feature-blip-agent"><span class="material-symbols-outlined text-xs">robot_2</span> Agent</a>
+        <a href="#feature-blip-actions-showcase" class="dock-pill" data-section="feature-blip-actions-showcase"><span class="material-symbols-outlined text-xs">bolt</span> Actions</a>
+        <a href="#feature-blip-live" class="dock-pill" data-section="feature-blip-live"><span class="material-symbols-outlined text-xs">mic_double</span> Live</a>
+        <a href="#feature-face-id" class="dock-pill" data-section="feature-face-id"><span class="material-symbols-outlined text-xs">face</span> Face ID</a>
+        <a href="#feature-circle-search" class="dock-pill" data-section="feature-circle-search"><span class="material-symbols-outlined text-xs">image_search</span> Circle</a>
+        <a href="#feature-sports-live" class="dock-pill" data-section="feature-sports-live"><span class="material-symbols-outlined text-xs">sports_soccer</span> Sports</a>
+        <a href="#feature-finance" class="dock-pill" data-section="feature-finance"><span class="material-symbols-outlined text-xs">show_chart</span> Finance</a>
+        <a href="#feature-hud" class="dock-pill" data-section="feature-hud"><span class="material-symbols-outlined text-xs">wb_sunny</span> HUD</a>
+        <a href="#feature-audio" class="dock-pill" data-section="feature-audio"><span class="material-symbols-outlined text-xs">tune</span> Audio</a>
+        <a href="#feature-battery" class="dock-pill" data-section="feature-battery"><span class="material-symbols-outlined text-xs">battery_charging_full</span> Battery</a>
+        <a href="#feature-snap-zones" class="dock-pill" data-section="feature-snap-zones"><span class="material-symbols-outlined text-xs">grid_view</span> Snap</a>
+        <a href="#feature-file-shelf" class="dock-pill" data-section="feature-file-shelf"><span class="material-symbols-outlined text-xs">folder_open</span> Shelf</a>
+        <a href="#feature-nearby-share" class="dock-pill" data-section="feature-nearby-share"><span class="material-symbols-outlined text-xs">share</span> Nearby</a>
+        <a href="#feature-music-widget" class="dock-pill" data-section="feature-music-widget"><span class="material-symbols-outlined text-xs">music_note</span> Music</a>
+        <a href="#feature-caffeinate" class="dock-pill" data-section="feature-caffeinate"><span class="material-symbols-outlined text-xs">coffee</span> Caffeinate</a>
+    </nav>
+
+    <!-- FOOTER -->
+    <footer class="main-footer border-t border-[var(--color-border-color)] bg-[var(--color-surface)] relative z-10">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <img id="footer-logo" src="./sapphire-light.png" alt="Sapphire Logo" class="h-8 w-auto" />
+                    <span class="text-xl font-extrabold tracking-tight">Sapphire</span>
+                </div>
+                <p class="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                    The Notch, Reimagined. 
+<br> An all-in one utillity app for mac os.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Product</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/subscribe" class="hover:text-[var(--color-text-primary)] transition-colors">Subscription Plans</a></li>
+                    <li><a href="https://sapphire-app.tech/portal" class="hover:text-[var(--color-text-primary)] transition-colors">Manage License & Portal</a></li>
+                    <li><a href="/changelog" class="hover:text-[var(--color-text-primary)] transition-colors">Release Changelog</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Support & Community</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="/faq" class="hover:text-[var(--color-text-primary)] transition-colors">Frequently Asked Questions</a></li>
+                    <li><a href="/issues" class="hover:text-[var(--color-text-primary)] transition-colors">Issue Tracker</a></li>
+                    <li><a href="https://discord.gg/Ryuea8vM2h" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">Discord Server</a></li>
+                    <li><a href="mailto:shariq.charolia@gmail.com" class="hover:text-[var(--color-text-primary)] transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-primary)] mb-4">Resources</h4>
+                <ul class="space-y-2 text-xs text-[var(--color-text-secondary)]">
+                    <li><a href="https://github.com/cshariq/Sapphire" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--color-text-primary)] transition-colors">GitHub Repository</a></li>
+                    <li><a href="/privacy" class="hover:text-[var(--color-text-primary)] transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="py-6 border-t border-[var(--color-border-color)] text-center text-xs text-[var(--color-text-muted)]">
+            <p>© 2026 Shariq Charolia. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

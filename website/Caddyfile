@@ -1,0 +1,16 @@
+{
+    admin off
+    auto_https off
+}
+
+http://127.0.0.1:8787 {
+    root * /srv
+    encode zstd gzip
+    redir /portal /download 302
+    redir /checkout.html /download 302
+    try_files {path} {path}.html {path}/index.html
+    @assets path /assets/* /vendor/* *.png *.svg *.css *.js
+    header @assets Cache-Control "public, max-age=86400"
+    header X-Content-Type-Options nosniff
+    file_server
+}
