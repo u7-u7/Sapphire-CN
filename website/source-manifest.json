@@ -4,32 +4,32 @@
     "upstream": "https://sapphire-app.tech/",
     "source_sha256": "26087b5720e13dddf9621dcf7f1e66acb3195079d034363af3469b1e09ecaac5",
     "bytes": 64790,
-    "deployed_sha256": "67bc7818927936c7c28a63546c81cbd56744c0a87462daf981909bf0c69de49f",
-    "deployed_bytes": 19339
+    "deployed_sha256": "e1128921923a4752320dbfd86879c23fb6933a9e3cb4aff0a9fc93389c1d7acf",
+    "deployed_bytes": 19531
   },
   "subscribe.html": {
     "source": "https://sapphire-app.tech/subscribe",
     "upstream": "https://sapphire-app.tech/subscribe",
     "source_sha256": "0c39cc891d7f29f0cae56d4d59ece8898ab3e159e332566b9c96f3375db05d0b",
     "bytes": 38784,
-    "deployed_sha256": "394851b9f834a0746a41d97b559e13b03eab23570a78cd3c528446f72d31c4e7",
-    "deployed_bytes": 11096
+    "deployed_sha256": "940aa8527060aa6bb695bd602852437557984ede4409db2560c504ed89c981dc",
+    "deployed_bytes": 12195
   },
   "faq.html": {
     "source": "https://sapphire-app.tech/faq",
     "upstream": "https://sapphire-app.tech/faq",
     "source_sha256": "51de9e1e8fb9648a46f80a0bd20be068086930ed3e4f58e2d7e2ad0a8e2d5f69",
     "bytes": 21517,
-    "deployed_sha256": "62292a9e8251c818517feeafb9ac418426ece902f7880f8f205934c76a7157e2",
-    "deployed_bytes": 13686
+    "deployed_sha256": "58eb3d2ef0be9392d49bc305e1da13a3ce03ff71a8efbf53d854dd5a6eda7619",
+    "deployed_bytes": 14235
   },
   "changelog.html": {
     "source": "https://sapphire-app.tech/changelog",
     "upstream": "https://sapphire-app.tech/changelog",
     "source_sha256": "34039d8b554aa4b2659440380f6acede993192ccc457866832a464b69934053a",
     "bytes": 16060,
-    "deployed_sha256": "110da1a5d6971120b28a4ad5d51b7f133c5f358b8f8c6ee45b567314778987a3",
-    "deployed_bytes": 14467
+    "deployed_sha256": "b6bd578af57ee492bcb95e28710150e5ee39c272b051641398d8e7ee1a85b4c5",
+    "deployed_bytes": 15566
   },
   "issues.html": {
     "source": "https://sapphire-app.tech/issues",
@@ -601,8 +601,8 @@
   },
   "download.html": {
     "source": "current Sapphire-CN project",
-    "deployed_sha256": "394851b9f834a0746a41d97b559e13b03eab23570a78cd3c528446f72d31c4e7",
-    "deployed_bytes": 11096
+    "deployed_sha256": "940aa8527060aa6bb695bd602852437557984ede4409db2560c504ed89c981dc",
+    "deployed_bytes": 12195
   },
   "project-releases.json": {
     "source": "current Sapphire-CN project",

@@ -7,7 +7,8 @@
 ## 内容来源与构建
 
 - `../README.md`：功能范围、安装方法、权限与兼容性。
-- `../updates/releases.json`：当前版本 CN4 和发行说明，包含预发布；不使用可能遗漏预发布的 GitHub latest 下载地址。
+- `../updates/releases.json`：保留 CN4 同团队签名更新通道；不使用可能遗漏预发布的 GitHub latest 下载地址。
+- CN5 `v3.0-cn.5-ui-test`：独立显示临时签名测试版入口和限制说明，不写入上述应用内更新清单；首页主下载仍保留 CN4。
 - `../docs/images/`：真实刘海与剪贴板截图；界面读数仅作示例。
 - `content/project-faq.json`：根据当前项目整理的 FAQ。
 - `templates/`：原站公开 HTML、CSS 与 JavaScript 视觉模板。

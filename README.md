@@ -14,6 +14,8 @@
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
+> **CN5 中文界面测试版（临时签名）**：补齐 160 条中文翻译并修复设置选项漏翻。[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.5-ui-test/Sapphire-CN-3.0-cn.5-ui-test-arm64.dmg) · [ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.5-ui-test/Sapphire-CN-3.0-cn.5-ui-test-arm64.zip) · [限制与校验说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.5-ui-test)。本测试版未公证，Helper、系统扩展和应用内升级可能不可用，仅供界面测试；安装前备份原应用。测试版不进入自动更新清单，需要完整功能请使用上方 CN4。
+
 ## 能做什么
 
 | | 功能 |
