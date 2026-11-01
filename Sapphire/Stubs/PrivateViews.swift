@@ -26,7 +26,26 @@ struct FinanceSettingsView: View {
 }
 
 struct AccountSettingsView: View {
-    var body: some View { UnavailableFeatureView(name: "Account management") }
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "person.crop.circle")
+                .font(.system(size: 56, weight: .light))
+                .foregroundStyle(.secondary)
+
+            Text("账户登录暂不可用")
+                .font(.title2.bold())
+
+            Text("当前开源构建未包含账户登录与订阅管理功能。")
+                .foregroundStyle(.secondary)
+
+            Text("你正在以访客身份使用 Sapphire-CN，可从左侧选择其他设置。")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+        }
+        .multilineTextAlignment(.center)
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
 }
 
 struct BetaBlockerView: View {
