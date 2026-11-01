@@ -6,15 +6,16 @@
 
 本项目由 `u7-u7/Sapphire-CN` 独立维护，非上游官方网站或官方中文版；保留 Shariq Charolia 与上游贡献者署名，许可证见 [LICENSE](LICENSE)。
 
-📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/Sapphire-CN-3.0-cn.4-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.4-preview)
+📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.6-preview/Sapphire-CN-3.0-cn.6-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.6-preview/Sapphire-CN-3.0-cn.6-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.6-preview)
 
-**`v3.0-cn.4-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+**`v3.0-cn.6-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
 
-🛠️ 本版接入 Sapphire-CN 自有 GitHub 应用内更新，并保留上一版已实测的验证码修复。
+🛠️ CN6 补齐 160 条中文翻译、修复动态设置选项漏翻，并切换新团队签名。
+
+> **旧用户需手动安装一次 CN6**：本版更换为开发团队 `462JAMGP66` 签名。CN4 及更早版本、CN5 临时签名版均无法直接自动升级到本版。请先退出并备份原应用，再手动安装；如 Helper 连接失败，在“设置 → 电池 → 配置”中重新配置辅助服务，并检查系统后台运行及相关权限。完成迁移后，后续同一新团队签名版本可继续使用应用内更新。
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
-> **CN5 中文界面测试版（临时签名）**：补齐 160 条中文翻译并修复设置选项漏翻。[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.5-ui-test/Sapphire-CN-3.0-cn.5-ui-test-arm64.dmg) · [ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.5-ui-test/Sapphire-CN-3.0-cn.5-ui-test-arm64.zip) · [限制与校验说明](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.5-ui-test)。本测试版未公证，Helper、系统扩展和应用内升级可能不可用，仅供界面测试；安装前备份原应用。测试版不进入自动更新清单，需要完整功能请使用上方 CN4。
 
 ## 能做什么
 
@@ -40,7 +41,7 @@
 4. **切换中文**：「系统设置 → 通用 → 语言与地区 → 应用程序」添加 Sapphire，选择「简体中文」并重启应用。
 5. **打开面板**：按住 **⌘ Command 点击刘海**，点击 ⚙️ 进入设置；默认未开启悬停展开。
 
-安装者无需开发者会员或自行编译。应用显示 `3.0-cn.4-preview`，系统版本为 `3.0 (4)`，发布标签为 `v3.0-cn.4-preview`。
+安装者无需开发者会员或自行编译。应用显示 `3.0-cn.6-preview`，系统版本为 `3.0 (6)`，发布标签为 `v3.0-cn.6-preview`。
 
 ### 首次打开被系统拦截
 
@@ -56,7 +57,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.4-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.6-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -166,7 +167,7 @@ Claude Code 当前使用 DeepSeek 时会自动识别，也可手动配置。Code
 
 从 **CN4 换源版**开始，「设置 → 关于 → Sapphire 更新」从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)检测和下载，包含本仓库的公开预发布，不再接收上游原版更新。
 
-**CN1–CN3 用户需要首次手动安装一次 CN4 或更高换源版**：旧程序写死上游地址，不能仅靠 GitHub 发版远程换源。完成一次手动迁移后，后续可在应用内更新。
+**升级到 CN6：所有旧版本用户需手动安装一次。** CN1–CN3 需要迁移更新源；CN4 使用旧团队签名，CN5 使用临时签名，都无法通过校验直接自动升级至 CN6。手动安装 CN6 后，后续同一新团队签名版本可在应用内更新。
 
 应用内下载使用仅包含完整应用的 `-update.zip`；下载后仍需本人点击「安装并重新启动」。自动检查、后台下载和更新通知可在「关于」按需配置。
 

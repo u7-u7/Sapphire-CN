@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>SapphireCNReleaseVersion</key>
-	<string>3.0-cn.4-preview</string>
+	<string>3.0-cn.6-preview</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>

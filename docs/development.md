@@ -165,3 +165,10 @@ xcrun swiftc -swift-version 5 -parse-as-library \
 - 已发 CN1–CN3 的检查地址写死上游，用户首次需要手动安装包含新源的版本，不能声称旧二进制可仅靠远端发版自动换源。
 
 - Release 公开且资产上传完成后，运行 `python3 scripts/update-cn-release-feed.py v3.0-cn.N-preview`，再提交并推送 `updates/releases.json` 到 `main`。脚本从真实 release 提取资产大小和 GitHub SHA-256，拒绝草稿、未完成上传或缺摘要的资产；不要手写测试版本或把草稿地址放进正式清单。
+
+
+### CN6 新团队签名迁移
+
+CN6 起发布签名团队为 `462JAMGP66`，主应用 build 为 6。旧 CN4 团队为 `9CN6NKVEFU`；CN4 及更早版本和 CN5 临时签名版均需手动安装一次 CN6。后续同一新团队签名版本沿用现有应用内更新，不放宽签名检查。构建、打包、验证边界见 [CN6 发行记录](releases/3.0-cn.6-preview.md)。
+
+本次先用 `CODE_SIGNING_ALLOWED=NO` 完成 Debug arm64 编译，再由内向外用新证书统一签名所有代码。权限声明以已发布 CN4 各组件为对照保留，Helper 使用工程内空权限声明；安全时间戳启用。主应用采用 CN4 安装包已有的权限范围，不声称获得系统扩展等未配置能力。发布前对解包产物执行真实 Security framework 严格验签并核对团队、标识、版本及摘要。

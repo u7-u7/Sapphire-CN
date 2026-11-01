@@ -19,13 +19,8 @@ VERSION = LATEST['tag_name']
 DOWNLOAD_BASE = f'{REPO}/releases/download/{VERSION}/'
 DMG = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64.dmg'
 ZIP = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64-update.zip'
-UI_TEST_TAG = 'v3.0-cn.5-ui-test'
-UI_TEST_RELEASE = f'{REPO}/releases/tag/{UI_TEST_TAG}'
-UI_TEST_BASE = f'{REPO}/releases/download/{UI_TEST_TAG}/Sapphire-CN-{UI_TEST_TAG[1:]}-arm64'
-
-
-def ui_test_card():
-    return f'''<div class="cn-card"><h2 class="!mt-0">CN5 中文界面测试版 · 临时签名</h2><p>补齐 160 条中文翻译，修复设置选项、滑块与访客信息的英文残留。Apple 芯片 arm64 · macOS 14.6 起。</p><p><strong>本版使用 ad-hoc 临时签名，未公证。Helper、系统扩展和应用内升级可能不可用，部分权限可能需要重新授权。仅建议测试中文界面；需要完整功能请继续使用下方 CN4。</strong></p><p>安装前先退出并备份原应用。本版需手动安装，不进入应用内更新清单。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-secondary-btn" href="{UI_TEST_BASE}.dmg">下载 CN5 测试版 DMG</a><a class="apple-secondary-btn" href="{UI_TEST_BASE}.zip">测试版 ZIP</a><a class="apple-secondary-btn" href="{UI_TEST_RELEASE}">限制说明与校验文件</a></div></div>'''
+def migration_card():
+    return '<div class="cn-card"><h2 class="!mt-0">旧用户需要手动安装一次 CN6</h2><p><strong>CN6 更换为新开发团队签名（462JAMGP66）。CN4 及更早版本、CN5 临时签名版用户，均需先退出应用、备份原应用，再手动安装 CN6；旧版本无法通过同团队签名校验自动升级到 CN6。</strong></p><p>手动迁移后，后续同一新团队签名版本可继续使用应用内更新。签名校验保持启用。若后台辅助服务仍属于旧团队，请在设置 → 电池 → 配置中重新配置辅助服务，并检查系统设置中的后台运行和相关权限。</p><p>本版为 Apple Development 签名、未公证的开发预览。公开源码中的系统扩展等占位功能不会因重新签名而变为完整实现。</p></div>'
 
 
 def footer():
@@ -87,7 +82,7 @@ def homepage():
     source = source.replace('bg-black aspect-video border', 'bg-black border')
     source = source.replace('<!-- GitHub Stats -->', f'<p class="cn-note pt-2">{VERSION} · Apple 芯片 arm64 · macOS 14.6 起<br>未公证开发预览 · <a href="/download" class="underline">安装说明</a> · 截图读数为示例</p><!-- GitHub Stats -->')
     source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">基于 Sapphire 的独立中文增强分支，非上游官方版本 · <a href="/about" class="underline">了解二开内容</a></p><!-- GitHub Stats -->')
-    source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">CN5 中文界面测试版已发布（临时签名，Helper 等功能受限，需手动安装）· <a href="/download" class="underline">查看测试版与 CN4 下载</a></p><!-- GitHub Stats -->')
+    source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">CN6 已切换新团队签名，旧版本用户需要手动安装一次· <a href="/download" class="underline">查看 CN6 下载与迁移说明</a></p><!-- GitHub Stats -->')
     start = source.index('        <!-- 1. BLIP AGENT')
     end = source.index('    </main>', start)
     sections = [
@@ -96,7 +91,7 @@ def homepage():
         feature('music', '刘海组件', '音乐与日历，<br>各就其位。', '播放信息、日历与专注组件集中展示。按住 ⌘ 点击刘海即可展开，在设置中启用所需组件、调整可见性和顺序。', 'Music.mp4'),
         feature('snap-zones', '桌面窗口管理', '窗口有序，<br>思路更清晰。', '使用窗口管理与布局工具安排桌面，配合文件托盘和剪贴板，整理日常多窗口工作。', 'Snap-Zones.mp4', True),
         feature('battery', 'Helper 连接修复', '后台连接，<br>更从容一些。', '中文分支修复 Helper 启动连接，保留首次握手等待，减少短超时反复重连。电池管理需要按应用提示安装辅助服务并批准后台运行。', 'Battery.mov'),
-        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN4 接入本项目的 GitHub 应用内更新，并保留验证码通知修复。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
+        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN6 补齐 160 条中文翻译并切换新团队签名；旧用户需手动安装一次，后续同团队版本支持应用内更新。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
         f'''<section id="final-cta-section" class="py-32 px-6 text-center"><h2 class="apple-headline text-4xl md:text-6xl mb-6">让刘海，多一点可能。</h2><p class="apple-subheadline mb-10">下载当前项目的 Sapphire-CN 开发预览版。</p><div class="flex flex-wrap justify-center gap-4"><a class="apple-cta-btn" href="{DMG}"><span class="material-symbols-outlined">download</span>下载 macOS 版</a><a class="apple-secondary-btn" href="{REPO}">在 GitHub 查看</a></div></section>'''
     ]
     source = source[:start] + '\n'.join(sections) + '\n' + source[end:]
@@ -144,8 +139,8 @@ def main():
     (DIST / 'faq.html').write_text(content_page('faq.html','常见问题','从当前项目文档整理，帮助你安装和配置 Sapphire-CN。',faq_html))
     install = f'''<div class="cn-card"><h2 class="!mt-0">{VERSION}</h2><p>Apple 芯片 arm64 · macOS 14.6 起 · 无需 Xcode。当前为 Apple Development 签名、未公证开发预览，无 Intel 安装包。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-cta-btn !text-white" href="{DMG}">下载 DMG</a><a class="apple-secondary-btn" href="{ZIP}">ZIP 备用包</a><a class="apple-secondary-btn" href="{DOWNLOAD_BASE}SHA256SUMS.txt">校验文件</a></div></div>
     <div class="cn-card"><h2 class="!mt-0">安装与首次打开</h2><ol><li>下载 DMG，把 Sapphire.app 拖入 Applications；如已安装旧版，先退出并备份。</li><li>打开应用。如被系统拦截，请核对来源和 SHA256，按 <a href="https://support.apple.com/zh-cn/102445">Apple 官方说明</a>在隐私与安全性中由本人允许打开。</li><li>在系统设置 → 通用 → 语言与地区 → 应用程序中，为 Sapphire 选择简体中文。</li><li>按住 ⌘ 点击刘海，在设置中启用所需组件和 AI 额度。按功能提示开启辅助功能和后台运行等权限。</li></ol></div>
-    <div class="cn-card"><h2 class="!mt-0">CN1–CN3 首次迁移</h2><p>先手动安装一次 CN4 或更高换源版，再通过设置 → 关于 → Sapphire 更新检测后续版本；下载后仍需本人确认安装。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
-    download = content_page('subscribe.html','安装与下载','下载本项目的中文增强版本。',ui_test_card() + install)
+    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>手动安装 CN6 后，可通过设置 → 关于 → Sapphire 更新检测后续同一新团队签名版本；下载后仍需本人确认安装。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
+    download = content_page('subscribe.html','安装与下载','下载本项目的中文增强版本。',migration_card() + install)
     (DIST / 'download.html').write_text(download)
     (DIST / 'subscribe.html').write_text(download)
     privacy = f'''<div class="cn-card"><h2 class="!mt-0">静态项目网站</h2><p>本站提供项目介绍、安装说明和公开更新记录，不提供账户注册或收款表单。源码、安装包与问题反馈均连接本项目 GitHub。</p><h2>额度查询与本地凭据</h2><p>应用按你配置的官方订阅或第三方平台接口查询数据。独立查询密钥通过应用的“保存查询密钥”存入 macOS 钥匙串；测试查询不会自动保存。不要在网站反馈中提交访问令牌、密钥或验证码。</p><h2>权限与功能</h2><p>辅助功能、后台运行、日历、通知、位置、蓝牙等权限按实际使用的功能授权。详细行为以 <a href="{REPO}">当前项目源码和使用教程</a>为准。</p><h2>外部服务</h2><p>下载和问题反馈访问 GitHub；应用中的第三方额度查询访问你配置的供应商服务。相应服务自行处理收到的请求。</p></div>'''
@@ -153,7 +148,7 @@ def main():
     for name in ['issues.html','changelog.html']:
         page = shared((TEMPLATES / name).read_text())
         if name == 'changelog.html':
-            page = re.sub(r'(<main\b[^>]*>)', lambda m: m[1] + ui_test_card(), page, count=1)
+            page = re.sub(r'(<main\b[^>]*>)', lambda m: m[1] + migration_card(), page, count=1)
         for old,new in [('Release 更新记录','更新记录'),('Latest Stable Release','当前版本'),('Beta Preview Channel','开发预览'),('Previous Releases','历史版本'),('Discover new features, performance refinements, and software updates for Sapphire-CN on macOS.','本项目的发行说明、功能改进与中文增强版本。')]:
             page=page.replace(old,new)
         page=page.replace('Basic, Pro & Ultra Exclusive','公开开发预览')
