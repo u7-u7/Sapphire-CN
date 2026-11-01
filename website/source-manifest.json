@@ -4,39 +4,39 @@
     "upstream": "https://sapphire-app.tech/",
     "source_sha256": "26087b5720e13dddf9621dcf7f1e66acb3195079d034363af3469b1e09ecaac5",
     "bytes": 64790,
-    "deployed_sha256": "e1128921923a4752320dbfd86879c23fb6933a9e3cb4aff0a9fc93389c1d7acf",
-    "deployed_bytes": 19531
+    "deployed_sha256": "43b0bdd579867e354d60f6e9fbf18547267a68a865f14cb5ffb3dff43b384f47",
+    "deployed_bytes": 19563
   },
   "subscribe.html": {
     "source": "https://sapphire-app.tech/subscribe",
     "upstream": "https://sapphire-app.tech/subscribe",
     "source_sha256": "0c39cc891d7f29f0cae56d4d59ece8898ab3e159e332566b9c96f3375db05d0b",
     "bytes": 38784,
-    "deployed_sha256": "940aa8527060aa6bb695bd602852437557984ede4409db2560c504ed89c981dc",
-    "deployed_bytes": 12195
+    "deployed_sha256": "dfff9c1fbfe13e77fe7508452c126b681b96a8495814d16069252ac8ac3ef6ae",
+    "deployed_bytes": 11882
   },
   "faq.html": {
     "source": "https://sapphire-app.tech/faq",
     "upstream": "https://sapphire-app.tech/faq",
     "source_sha256": "51de9e1e8fb9648a46f80a0bd20be068086930ed3e4f58e2d7e2ad0a8e2d5f69",
     "bytes": 21517,
-    "deployed_sha256": "58eb3d2ef0be9392d49bc305e1da13a3ce03ff71a8efbf53d854dd5a6eda7619",
-    "deployed_bytes": 14235
+    "deployed_sha256": "e5ada4b4954540c7087576429b36b605c0c300b1ffce7567b0e2bd7ac0adcb57",
+    "deployed_bytes": 14413
   },
   "changelog.html": {
     "source": "https://sapphire-app.tech/changelog",
     "upstream": "https://sapphire-app.tech/changelog",
     "source_sha256": "34039d8b554aa4b2659440380f6acede993192ccc457866832a464b69934053a",
     "bytes": 16060,
-    "deployed_sha256": "b6bd578af57ee492bcb95e28710150e5ee39c272b051641398d8e7ee1a85b4c5",
-    "deployed_bytes": 15566
+    "deployed_sha256": "bf7d110d8fc58482786ccae5951f4183d5cefe306d4b8dc5ccfaa76f163bd6bf",
+    "deployed_bytes": 15251
   },
   "issues.html": {
     "source": "https://sapphire-app.tech/issues",
     "upstream": "https://sapphire-app.tech/issues",
     "source_sha256": "ca0766986cd7af57b56499d6b6b2660a0da4b687542c2a15ca38b811262a56c3",
     "bytes": 34704,
-    "deployed_sha256": "d5b0a7f3a841896ea86a171fda3436d0b1add6f89c6d65ac4eb29df82c3524ba",
+    "deployed_sha256": "d453156097929f25b4736d96565e82b08b9b7b308c49c17637c3e1d577021a8d",
     "deployed_bytes": 33359
   },
   "privacy.html": {
@@ -44,7 +44,7 @@
     "upstream": "https://sapphire-app.tech/privacy",
     "source_sha256": "db9bac5525164944d9ed01a1388ac91e660c4aff5c1307a225bb948d26357680",
     "bytes": 18040,
-    "deployed_sha256": "60f091a58e7303f0340be684b40aec49bddb3ae596d8270d2af34d2ab60b7597",
+    "deployed_sha256": "0bb16f380ff18fd4cbc1a44cbf4ddc1639db4713af9b14f4d4040021bff57b4e",
     "deployed_bytes": 10799
   },
   "style.css": {
@@ -60,7 +60,7 @@
     "upstream": "https://sapphire-app.tech/script.js",
     "source_sha256": "5b9b6c008dfba14120b7b7658c528ceb8f1b285d48d64968935d9525368ba4f5",
     "bytes": 45765,
-    "deployed_sha256": "df9afb941e3b4f402ad5ec307ec643385a2f75294edadc84ea1f0293492e16e0",
+    "deployed_sha256": "20970481b67b8efe08aaa2d8f51c68b2811754308bffe908dc76041a32256065",
     "deployed_bytes": 31971
   },
   "favicon.svg": {
@@ -601,13 +601,13 @@
   },
   "download.html": {
     "source": "current Sapphire-CN project",
-    "deployed_sha256": "940aa8527060aa6bb695bd602852437557984ede4409db2560c504ed89c981dc",
-    "deployed_bytes": 12195
+    "deployed_sha256": "dfff9c1fbfe13e77fe7508452c126b681b96a8495814d16069252ac8ac3ef6ae",
+    "deployed_bytes": 11882
   },
   "project-releases.json": {
     "source": "current Sapphire-CN project",
-    "deployed_sha256": "a96817e19b6701f6546c5d741b6ef33376630c2bd93dbcc4d3e14e13c1dd279f",
-    "deployed_bytes": 3589
+    "deployed_sha256": "58e33b35719d108b25fe0efbc44eebd01ffd1033bb1c893137ac5b5beb99c274",
+    "deployed_bytes": 8132
   },
   "assets/notch-overview.png": {
     "source": "current Sapphire-CN project",
@@ -621,7 +621,7 @@
   },
   "about.html": {
     "source": "current Sapphire-CN project",
-    "deployed_sha256": "be57c6fa56078a5d0b67008be0da829621c0a5e70562edf4483f63d7e251e2f2",
+    "deployed_sha256": "227c88cc9cc4d9bfdf20d67563f0e2fa3061212adf3c1a23d066e8fd8bd4fba6",
     "deployed_bytes": 12454
   }
 }
