@@ -278,7 +278,7 @@ struct NotchAppearanceEditorView: View {
                 Spacer()
                 Picker("", selection: $appearance.mode) {
                     ForEach(NotchAppearanceMode.allCases) { mode in
-                        Text(mode.displayName).tag(mode)
+                        Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                     }
                 }
                 .labelsHidden()
@@ -315,7 +315,7 @@ struct NotchAppearanceEditorView: View {
                     Spacer()
                     Picker("", selection: $appearance.backgroundStyle) {
                         ForEach(NotchBackgroundStyle.allCases) { style in
-                            Text(style.displayName).tag(style)
+                            Text(NSLocalizedString(style.displayName, comment: "Settings option")).tag(style)
                         }
                     }.labelsHidden().frame(width: 150)
                 }.padding()
@@ -1629,7 +1629,7 @@ struct GeneralSettingsView: View {
                         Spacer()
                         Picker("", selection: $settings.settings.notchDisplayTarget) {
                             ForEach(NotchDisplayTarget.allCases) { target in
-                                Text(target.displayName).tag(target)
+                                Text(NSLocalizedString(target.displayName, comment: "Settings option")).tag(target)
                             }
                         }.labelsHidden().frame(width: 200)
                     }.padding()
@@ -1704,7 +1704,7 @@ struct GeneralSettingsView: View {
 
                     Picker("Animation Profile", selection: $settings.settings.animationProfile) {
                         ForEach(AnimationProfile.allCases) { profile in
-                            Text(profile.displayName).tag(profile)
+                            Text(NSLocalizedString(profile.displayName, comment: "Settings option")).tag(profile)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -2673,7 +2673,7 @@ struct MirrorSettingsView: View {
                         Spacer()
                         Picker("", selection: $settings.settings.mirrorRotationMode) {
                             ForEach(MirrorRotationMode.allCases) { mode in
-                                Text(mode.displayName).tag(mode)
+                                Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                             }
                         }
                         .labelsHidden()
@@ -3842,7 +3842,7 @@ struct LockScreenSettingsView: View {
                             Spacer()
                             Picker("Scaling", selection: $settings.settings.liveWallpaperScaling) {
                                 ForEach(WallpaperScaling.allCases) { scaling in
-                                    Text(scaling.displayName).tag(scaling)
+                                    Text(NSLocalizedString(scaling.displayName, comment: "Settings option")).tag(scaling)
                                 }
                             }
                             .labelsHidden()
@@ -3863,7 +3863,7 @@ struct LockScreenSettingsView: View {
                             Spacer()
                             Picker("Video Playback", selection: $settings.settings.liveWallpaperPlaybackMode) {
                                 ForEach(LiveWallpaperPlaybackMode.allCases) { mode in
-                                    Text(mode.displayName).tag(mode)
+                                    Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                                 }
                             }
                             .labelsHidden()
@@ -4239,7 +4239,7 @@ struct SnapZonesSettingsView: View {
                             Spacer()
                             Picker("Reposition & Resize", selection: $settings.settings.snapWindowAnimation) {
                                 ForEach(SnapWindowAnimation.allCases) { animation in
-                                    Text(animation.displayName).tag(animation)
+                                    Text(NSLocalizedString(animation.displayName, comment: "Settings option")).tag(animation)
                                 }
                             }
                             .pickerStyle(.segmented)
@@ -4262,7 +4262,7 @@ struct SnapZonesSettingsView: View {
                         Spacer()
                         Picker("Widget View Style", selection: $settings.settings.snapZoneViewMode) {
                             ForEach(SnapZoneViewMode.allCases) { mode in
-                                Text(mode.displayName).tag(mode)
+                                Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                             }
                         }
                         .pickerStyle(.segmented)
@@ -5418,7 +5418,7 @@ struct ProximityUnlockSettingsView: View {
 
             Picker("Face ID works", selection: $settings.settings.faceIDLocationPolicy) {
                 ForEach(FaceIDLocationPolicy.allCases) { policy in
-                    Text(policy.displayName).tag(policy)
+                    Text(NSLocalizedString(policy.displayName, comment: "Settings option")).tag(policy)
                 }
             }
             .pickerStyle(.segmented)
@@ -8300,7 +8300,7 @@ struct TaskRowView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(task.action.displayName).font(.headline)
+                Text(NSLocalizedString(task.action.displayName, comment: "Settings option")).font(.headline)
 
                 switch task.action {
                 case .setChargeLimit, .dischargeTo:
@@ -8337,7 +8337,7 @@ struct AddTaskView: View {
 
             VStack(spacing: 15) {
                 Picker("Action:", selection: $newTask.action) {
-                    ForEach(TaskAction.allCases) { Text($0.displayName).tag($0) }
+                    ForEach(TaskAction.allCases) { Text(NSLocalizedString($0.displayName, comment: "Settings option")).tag($0) }
                 }
                 .onChange(of: newTask.action) {
                     if newTask.action == .setFanSensorBased, newTask.sensorKey.isEmpty {
@@ -8373,7 +8373,7 @@ struct AddTaskView: View {
                 }
 
                 Picker("Repeat:", selection: $newTask.repeatInterval) {
-                    ForEach(RepeatInterval.allCases) { Text($0.displayName).tag($0) }
+                    ForEach(RepeatInterval.allCases) { Text(NSLocalizedString($0.displayName, comment: "Settings option")).tag($0) }
                 }
 
                 DatePicker("Time:", selection: $newTask.startTime, displayedComponents: .hourAndMinute)
@@ -9171,7 +9171,7 @@ fileprivate struct MusicLongPressActionPickerRow: View {
             Spacer()
             Picker("", selection: selection) {
                 ForEach(target.pickerOptions) { action in
-                    Text(action.displayName).tag(action)
+                    Text(NSLocalizedString(action.displayName, comment: "Settings option")).tag(action)
                 }
             }
             .labelsHidden()
@@ -9201,7 +9201,7 @@ fileprivate struct PlayerButtonSettingsRow: View {
                 .font(.system(size: 16, weight: .medium))
                 .frame(width: 30)
 
-            Text(buttonType.displayName)
+            Text(NSLocalizedString(buttonType.displayName, comment: "Settings option"))
                 .font(.system(size: 14, weight: .medium))
 
             Spacer()
@@ -10932,7 +10932,7 @@ fileprivate struct NotchButtonRowView: View {
                     .font(.system(size: 16, weight: .medium))
                     .frame(width: 30)
 
-                Text(buttonType.displayName)
+                Text(NSLocalizedString(buttonType.displayName, comment: "Settings option"))
                     .font(.system(size: 14, weight: .medium))
             }
 
@@ -11444,7 +11444,7 @@ private struct MenuBarRevealConditionEditor: View {
         HStack(spacing: 8) {
             Picker("", selection: $condition.kind) {
                 ForEach(MenuBarRevealConditionKind.allCases) { kind in
-                    Text(kind.displayName).tag(kind)
+                    Text(NSLocalizedString(kind.displayName, comment: "Settings option")).tag(kind)
                 }
             }
             .pickerStyle(.menu)
@@ -12034,7 +12034,7 @@ struct ControlItemIconPreview: View {
                         )
                 )
 
-            Text(iconStyle.displayName)
+            Text(NSLocalizedString(iconStyle.displayName, comment: "Settings option"))
                 .font(.system(size: 11, weight: isSelected ? .semibold : .regular))
                 .foregroundColor(isSelected ? .primary : .secondary)
                 .lineLimit(2)
@@ -12543,7 +12543,7 @@ struct FocusSessionSettingsView: View {
                 Divider().opacity(0.3).padding(.horizontal, 16)
                 Picker("Blocking mode", selection: $settings.settings.focusBlockingMode) {
                     ForEach(FocusBlockingMode.allCases) { mode in
-                        Text(mode.displayName).tag(mode)
+                        Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 10)
@@ -12589,7 +12589,7 @@ struct FocusSessionSettingsView: View {
                                 .padding(.top, 2)
                             VStack(alignment: .leading, spacing: 2) {
                                 HStack(spacing: 6) {
-                                    Text(level.displayName)
+                                    Text(NSLocalizedString(level.displayName, comment: "Settings option"))
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundColor(.primary)
                                     if settings.settings.focusIntensity == level {
@@ -12878,7 +12878,7 @@ struct FocusSessionSettingsView: View {
                 Divider().opacity(0.3).padding(.horizontal, 16)
                 Picker("Sync mode", selection: $settings.settings.focusShortcutSyncMode) {
                     ForEach(FocusShortcutSyncMode.allCases) { mode in
-                        Text(mode.displayName).tag(mode)
+                        Text(NSLocalizedString(mode.displayName, comment: "Settings option")).tag(mode)
                     }
                 }
                 .padding(.horizontal, 16).padding(.vertical, 10)
@@ -13140,7 +13140,7 @@ private struct AddFocusScheduleView: View {
 
                 Picker("Repeat:", selection: $repeatInterval) {
                     ForEach(FocusScheduleRepeat.allCases) { interval in
-                        Text(interval.displayName).tag(interval)
+                        Text(NSLocalizedString(interval.displayName, comment: "Settings option")).tag(interval)
                     }
                 }
 

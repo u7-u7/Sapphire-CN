@@ -20,7 +20,7 @@ struct InfoContainer: View {
                 .foregroundColor(color)
                 .padding(.top, 2)
 
-            Text(text)
+            Text(NSLocalizedString(text, comment: "Settings information"))
                 .font(.system(size: 13))
                 .foregroundStyle(.white.opacity(0.8))
                 .lineSpacing(4)
@@ -207,7 +207,7 @@ struct WidgetRowView: View {
         Group {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(widgetType.displayName)
+                    Text(NSLocalizedString(widgetType.displayName, comment: "Settings option"))
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(.white)
                     if isAtCapacity {
@@ -262,7 +262,7 @@ struct LiveActivityRowView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(activityType.displayName)
+                Text(NSLocalizedString(activityType.displayName, comment: "Settings option"))
                     .font(.system(size: 14, weight: .medium))
                 Spacer()
                 SettingsSwitch(isOn: baseEnabledBinding.lockedOff(when: isPremiumLocked))
@@ -629,7 +629,7 @@ struct CustomSliderRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(label)
+                Text(NSLocalizedString(label, comment: "Settings slider label"))
                 Spacer()
                 Text(String(format: specifier, draft))
             }
@@ -987,7 +987,7 @@ struct LiquidGlassStylePickerRow: View {
                 stepButton(systemName: "chevron.left", help: "Previous Style", offset: -1)
                 Picker("", selection: $selection) {
                     ForEach(LiquidGlassMaterial.allCases) { style in
-                        Text(style.displayName).tag(style)
+                        Text(NSLocalizedString(style.displayName, comment: "Settings option")).tag(style)
                     }
                 }
                 .labelsHidden()

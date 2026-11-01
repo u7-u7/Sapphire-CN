@@ -68,7 +68,7 @@ public final class SubscriptionManager: ObservableObject {
 
     public var tierGradientColors: [Color] { [.gray, .gray.opacity(0.6)] }
     public var userInitials: String { "G" }
-    public var tierLabel: String { "Free" }
+    public var tierLabel: String { NSLocalizedString("Free", comment: "Free subscription tier") }
 
     @Published public private(set) var entitlements: SubscriptionEntitlements = .free
     @Published public private(set) var accessibleFeatures: Set<AppFeature> = []
@@ -78,7 +78,7 @@ public final class SubscriptionManager: ObservableObject {
     public var activeTier: SubscriptionTier { entitlements.tier }
     public var hasCorePlan: Bool { activeTier == .core }
     public var isSignedIn: Bool { false }
-    public var userDisplayName: String { "Guest" }
+    public var userDisplayName: String { NSLocalizedString("Guest", comment: "Guest account name") }
     public var hasBetaSoftwareAccess: Bool { false }
 
     public func hasAccess(to feature: AppFeature) -> Bool { SubscriptionAccess.hasAccess(to: feature) }
