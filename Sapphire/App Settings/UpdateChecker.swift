@@ -18,8 +18,11 @@ let currentAppVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortV
 enum SapphireUpdateSource {
     static let repositoryURL = URL(string: "https://github.com/u7-u7/Sapphire-CN")!
     static let releasesURL = repositoryURL.appendingPathComponent("releases")
-    // 发布时由真实 GitHub Release 生成此清单，经 CDN 分发，不消耗用户的未登录 API 配额。
-    static let metadataURL = URL(string: "https://raw.githubusercontent.com/u7-u7/Sapphire-CN/main/updates/releases.json")!
+    // OSS 优先；GitHub 保留同一份兼容清单，让 CN6–CN8 仍能升级。
+    static let mirrorBaseURL = URL(string: "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com")!
+    static let metadataURL = mirrorBaseURL.appendingPathComponent("updates/releases.json")
+    static let githubMetadataURL = URL(string: "https://raw.githubusercontent.com/u7-u7/Sapphire-CN/main/updates/releases.json")!
+    static let metadataURLs = [metadataURL, githubMetadataURL]
     static let bundleIdentifier = "com.cshariq.sapphire"
 
     static var currentReleaseVersion: String {
@@ -43,6 +46,32 @@ enum SapphireUpdateSource {
             && url.user == nil && url.password == nil
             && (url.port == nil || url.port == 443)
             && url.path.hasPrefix("/u7-u7/Sapphire-CN/releases/download/")
+    }
+
+    static func downloadURLs(for asset: GitHubReleaseAsset) -> [URL] {
+        guard isReleaseAssetURL(asset.browserDownloadUrl) else { return [] }
+        let github = asset.browserDownloadUrl
+        let parts = github.path.split(separator: "/")
+        // 镜像只能指向同一发行、同一文件，不能把任意 OSS 对象加入信任范围。
+        guard parts.count == 6, parts.last.map(String.init) == asset.name,
+              isCNVersion(String(parts[4]).replacingOccurrences(of: "^v", with: "", options: .regularExpression)),
+              let mirror = asset.mirrorDownloadUrl,
+              mirror == mirrorBaseURL.appendingPathComponent("releases")
+                .appendingPathComponent(String(parts[4])).appendingPathComponent(asset.name),
+              asset.digest?.range(of: #"^sha256:[0-9a-f]{64}$"#, options: .regularExpression) != nil else {
+            return [github]
+        }
+        return [mirror, github]
+    }
+
+    static func isTrustedDownloadURL(_ url: URL, for asset: GitHubReleaseAsset) -> Bool {
+        guard url.scheme?.lowercased() == "https", let host = url.host?.lowercased(),
+              url.user == nil, url.password == nil, url.port == nil || url.port == 443 else { return false }
+        if host == mirrorBaseURL.host {
+            return downloadURLs(for: asset).first == url && url != asset.browserDownloadUrl
+        }
+        return host == "github.com" || host == "objects.githubusercontent.com"
+            || host.hasSuffix(".githubusercontent.com")
     }
 }
 
@@ -191,10 +220,20 @@ struct GitHubReleaseAsset: Codable, Equatable, Sendable {
     let size: Int64?
     let digest: String?
     let contentType: String?
+    let mirrorDownloadUrl: URL?
+    init(name: String, browserDownloadUrl: URL, size: Int64?, digest: String?, contentType: String?, mirrorDownloadUrl: URL? = nil) {
+        self.name = name
+        self.browserDownloadUrl = browserDownloadUrl
+        self.size = size
+        self.digest = digest
+        self.contentType = contentType
+        self.mirrorDownloadUrl = mirrorDownloadUrl
+    }
     enum CodingKeys: String, CodingKey {
         case name, size, digest
         case browserDownloadUrl = "browser_download_url"
         case contentType = "content_type"
+        case mirrorDownloadUrl = "mirror_download_url"
     }
 }
 
@@ -329,6 +368,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     private var pendingDownloadVersion: String?
     private var downloadPolicyFailure: String?
     private var downloadGeneration: UInt64 = 0
+    private var remainingDownloadURLs: [URL] = []
     private var timer: Timer?
     private var wakeObserver: NSObjectProtocol?
     private var activationObserver: NSObjectProtocol?
@@ -337,10 +377,11 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     private let networkMonitorQueue = DispatchQueue(label: "com.cshariq.sapphire.update-network", qos: .utility)
     private var periodicCheckInterval: TimeInterval = 5 * 60 * 60
     // 换源后不能从上游缓存恢复候选、ETag 或旧检查调度。
-    private let persistedAvailableUpdateKey = "SapphireCNFeedV1PersistedAvailableUpdate"
-    private let releasesCacheKey = "SapphireCNFeedV1ReleasesCache"
-    private let releasesCacheETagKey = "SapphireCNFeedV1ReleasesCacheETag"
-    private let releasesCacheDateKey = "SapphireCNFeedV1ReleasesCacheDate"
+    private let persistedAvailableUpdateKey = "SapphireCNFeedV2OSSPersistedAvailableUpdate"
+    private let releasesCacheKey = "SapphireCNFeedV2OSSReleasesCache"
+    private let releasesCacheETagKey = "SapphireCNFeedV2OSSReleasesCacheETag"
+    private let releasesCacheDateKey = "SapphireCNFeedV2OSSReleasesCacheDate"
+    private let releasesCacheSourceKey = "SapphireCNFeedV2OSSReleasesCacheSource"
     private let lastSuccessfulCheckKey = "SapphireCNFeedV1UpdateLastSuccessfulCheck"
     private let nextScheduledCheckKey = "SapphireCNFeedV1UpdateNextScheduledCheck"
     private let failureCountKey = "SapphireCNFeedV1UpdateFailureCount"
@@ -557,12 +598,22 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
     }
 
     private func fetchReleases(useConditionalRequest: Bool = true) async throws -> FetchedGitHubReleases {
-        var request = URLRequest(url: SapphireUpdateSource.metadataURL)
+        var lastError: Error = UpdateMetadataError.invalidResponse
+        for source in SapphireUpdateSource.metadataURLs {
+            do { return try await fetchReleases(from: source, useConditionalRequest: useConditionalRequest) }
+            catch { lastError = error }
+        }
+        throw lastError
+    }
+
+    private func fetchReleases(from source: URL, useConditionalRequest: Bool) async throws -> FetchedGitHubReleases {
+        var request = URLRequest(url: source)
         request.timeoutInterval = 25
         request.cachePolicy = .reloadIgnoringLocalCacheData
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
         request.setValue("Sapphire/\(currentAppVersion)", forHTTPHeaderField: "User-Agent")
         if useConditionalRequest,
+           UserDefaults.standard.string(forKey: releasesCacheSourceKey) == source.absoluteString,
            let etag = UserDefaults.standard.string(forKey: releasesCacheETagKey) {
             request.setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
@@ -574,8 +625,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         let (data, response) = try await URLSession(configuration: configuration).data(for: request)
         guard let http = response as? HTTPURLResponse,
               http.url?.scheme == "https",
-              http.url?.host?.lowercased() == SapphireUpdateSource.metadataURL.host?.lowercased(),
-              http.url?.path == SapphireUpdateSource.metadataURL.path else {
+              http.url == source else {
             throw UpdateMetadataError.insecureRedirect
         }
 
@@ -585,6 +635,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
             let releases = try decodeReleases(data)
             UserDefaults.standard.set(data, forKey: releasesCacheKey)
             UserDefaults.standard.set(Date(), forKey: releasesCacheDateKey)
+            UserDefaults.standard.set(source.absoluteString, forKey: releasesCacheSourceKey)
             if let etag = http.value(forHTTPHeaderField: "ETag") {
                 UserDefaults.standard.set(etag, forKey: releasesCacheETagKey)
             } else {
@@ -592,7 +643,10 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
             }
             return FetchedGitHubReleases(releases: releases, usedCache: false, retryNotBefore: nil)
         case 304:
-            guard useConditionalRequest else { throw UpdateMetadataError.invalidResponse }
+            guard useConditionalRequest,
+                  UserDefaults.standard.string(forKey: releasesCacheSourceKey) == source.absoluteString else {
+                throw UpdateMetadataError.invalidResponse
+            }
             do {
                 let releases = try cachedReleasesRegardlessOfAge()
                 UserDefaults.standard.set(Date(), forKey: releasesCacheDateKey)
@@ -604,7 +658,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
                 UserDefaults.standard.removeObject(forKey: releasesCacheKey)
                 UserDefaults.standard.removeObject(forKey: releasesCacheDateKey)
                 UserDefaults.standard.removeObject(forKey: releasesCacheETagKey)
-                return try await fetchReleases(useConditionalRequest: false)
+                return try await fetchReleases(from: source, useConditionalRequest: false)
             }
         case 403, 429:
             let resetDate = http.value(forHTTPHeaderField: "X-RateLimit-Reset")
@@ -743,13 +797,6 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
                 userInfo: [NSLocalizedDescriptionKey: "This update cannot run natively on this Mac."]
             )
         }
-    }
-
-    nonisolated private static func isTrustedDownloadURL(_ url: URL) -> Bool {
-        guard url.scheme?.lowercased() == "https", let host = url.host?.lowercased() else { return false }
-        return host == "github.com"
-            || host == "objects.githubusercontent.com"
-            || host.hasSuffix(".githubusercontent.com")
     }
 
     nonisolated private static func isSafeReleaseAssetName(_ name: String) -> Bool {
@@ -983,6 +1030,13 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         pendingDownloadVersion = version
         downloadPolicyFailure = nil
         downloadGeneration &+= 1
+        remainingDownloadURLs = SapphireUpdateSource.downloadURLs(for: asset)
+        startNextDownload()
+    }
+
+    private func startNextDownload() {
+        guard !remainingDownloadURLs.isEmpty else { return }
+        let url = remainingDownloadURLs.removeFirst()
         let configuration = URLSessionConfiguration.ephemeral
         configuration.waitsForConnectivity = true
         configuration.timeoutIntervalForRequest = 60
@@ -990,7 +1044,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: .main)
         downloadSession = session
-        var request = URLRequest(url: asset.browserDownloadUrl)
+        var request = URLRequest(url: url)
         request.setValue("application/octet-stream", forHTTPHeaderField: "Accept")
         request.setValue("Sapphire/\(currentAppVersion)", forHTTPHeaderField: "User-Agent")
         downloadTask = session.downloadTask(with: request)
@@ -1004,8 +1058,9 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         guard let response = downloadTask.response as? HTTPURLResponse,
               (200..<300).contains(response.statusCode),
               let finalURL = response.url,
-              Self.isTrustedDownloadURL(finalURL),
-              let asset = pendingDownloadAsset else {
+              let asset = pendingDownloadAsset,
+              SapphireUpdateSource.isTrustedDownloadURL(finalURL, for: asset) else {
+            if retryDownloadFromFallback(session) { return }
             applyStatus(.error("The update download returned an invalid response."))
             return
         }
@@ -1065,7 +1120,8 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         newRequest request: URLRequest,
         completionHandler: @escaping (URLRequest?) -> Void
     ) {
-        guard let url = request.url, Self.isTrustedDownloadURL(url) else {
+        guard let url = request.url, let asset = pendingDownloadAsset,
+              SapphireUpdateSource.isTrustedDownloadURL(url, for: asset) else {
             completionHandler(nil)
             return
         }
@@ -1625,8 +1681,11 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
         }
         defer {
             session.finishTasksAndInvalidate()
-            downloadSession = nil
-            downloadTask = nil
+            // 回退已创建新 session 时，旧回调不能清除新下载。
+            if downloadSession === session {
+                downloadSession = nil
+                downloadTask = nil
+            }
         }
         if let error {
             if (error as NSError).code == NSURLErrorCancelled {
@@ -1637,9 +1696,18 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
                     restoreAvailableDownloadState()
                 }
             } else {
+                if retryDownloadFromFallback(session) { return }
                 applyStatus(.error("Download failed: \(error.localizedDescription)"))
             }
         }
+    }
+
+    private func retryDownloadFromFallback(_ session: URLSession) -> Bool {
+        guard downloadSession === session, downloadPolicyFailure == nil,
+              !remainingDownloadURLs.isEmpty, case .downloading = status else { return false }
+        session.finishTasksAndInvalidate()
+        startNextDownload()
+        return true
     }
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
@@ -1659,6 +1727,7 @@ class UpdateChecker: NSObject, ObservableObject, @preconcurrency URLSessionDownl
 
     func cancelDownload() {
         downloadGeneration &+= 1
+        remainingDownloadURLs = []
         downloadPolicyFailure = nil
         downloadTask?.cancel()
         downloadTask = nil

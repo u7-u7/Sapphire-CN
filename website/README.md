@@ -8,7 +8,7 @@
 
 - `../README.md`：功能范围、安装方法、权限与兼容性。
 - `../updates/releases.json`：CN6 起使用新团队 462JAMGP66 签名更新通道；不使用可能遗漏预发布的 GitHub latest 下载地址。
-- 主下载切换 CN8；首页、下载页、FAQ 和更新记录说明 Codex 内置 CLI 路径识别修复、CN6/CN7 可应用内更新，以及旧团队/临时签名版本需手动迁移一次。CN5 临时签名测试版保留在 GitHub 历史发布，不加入应用内更新清单。
+- 主下载切换 CN9；首页、下载页、FAQ 和更新记录说明 OSS 优先更新、GitHub 回退，CN6/CN7/CN8 升级本次仍走 GitHub，旧团队/临时签名版本需手动迁移一次。CN5 临时签名测试版保留在 GitHub 历史发布，不加入应用内更新清单。
 - `../docs/images/`：真实刘海与剪贴板截图；界面读数仅作示例。
 - `content/project-faq.json`：根据当前项目整理的 FAQ。
 - `templates/`：原站公开 HTML、CSS 与 JavaScript 视觉模板。
@@ -31,7 +31,7 @@
 - 后续发布：`python3 scripts/deploy-update.py`，与远端清单比对后仅上传变化文件，先备份再逐文件原子替换，并校验所有哈希，不重启服务。
 - 回退资料：`/opt/sapphire-site/backups/` 下保存 Caddy 配置和每次增量发布前的旧文件。原始完整发布包保留在 `/tmp/sapphire-20261031T163401Z.tar.gz`。
 
-正式域名使用 `sapphire.u7u7.top`，解析至上述阿里云 ECS；权威 DNS 由 Cloudflare 托管。旧 sslip.io 临时域名迁移后重定向到正式域名。网站安装包主下载使用阿里云 OSS 杭州镜像，保留 GitHub 备用入口；现有客户端应用内更新仍由 GitHub 下载。未复制上游 OTP、Stripe 或其他私有业务后台；网站不显示其付费计划。
+正式域名使用 `sapphire.u7u7.top`，解析至上述阿里云 ECS；权威 DNS 由 Cloudflare 托管。旧 sslip.io 临时域名迁移后重定向到正式域名。网站安装包主下载使用阿里云 OSS 杭州镜像，保留 GitHub 备用入口；CN9 起应用内更新清单与安装包优先使用 OSS，连接或 HTTP 失败时回退 GitHub；旧客户端升级 CN9 本次仍通过 GitHub。未复制上游 OTP、Stripe 或其他私有业务后台；网站不显示其付费计划。
 
 
 ## 安装包 OSS 镜像
@@ -45,12 +45,15 @@
 每次 GitHub Release 公开且附件上传完成后，在仓库根目录运行（将 tag 和本地附件目录替换为实际值）：
 
 ```sh
-python3 scripts/mirror-cn-release.py v3.0-cn.8-preview --asset-directory /path/to/release --stage-only
-python3 scripts/mirror-cn-release.py v3.0-cn.8-preview --asset-directory /path/to/release
+python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --asset-directory /path/to/release --stage-only
+python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --asset-directory /path/to/release
+python3 scripts/update-cn-release-feed.py v3.0-cn.9-preview
+python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --publish-feed-only
+# 提交并推送兼容清单与镜像清单到 GitHub，再生成、增量部署网站
 python3 website/scripts/adapt-project.py
 python3 website/scripts/deploy-update.py
 ```
 
 `--stage-only` 只私有上传并核对，不改变对象权限或网站链接。发布模式要求 Bucket 已允许公开对象，再把本次发行附件逐一设为公共只读，进行不带凭据的完整下载和 SHA-256 校验，全部通过才写入镜像清单。已有同路径不同内容会拒绝覆盖。没有本地附件时由 gh 下载原包。将镜像清单和更新后的网站来源清单提交到 GitHub。
 
-镜像清单缺少某版时，生成器自动使用该版 GitHub 下载地址；主下载需同时具有 DMG、更新 ZIP 和校验文件。网站专用 `project-releases.json` 可使用镜像，但 **`updates/releases.json` 必须保留 GitHub URL**，因为已发布客户端仍只信任 GitHub 下载域名。回退网站镜像可移除相应 release 的镜像清单条目并重新生成、增量部署，不必删除 OSS 对象或重启服务。
+镜像清单缺少某版时，生成器自动使用该版 GitHub 下载地址；主下载需同时具有 DMG、更新 ZIP 和校验文件。网站专用 `project-releases.json` 可使用镜像，但 **`updates/releases.json` 必须保留 GitHub URL**，供 CN6–CN8 继续升级。新增的 `mirror_download_url` 由真实镜像清单生成，CN9 会优先使用。OSS 的 `/updates/releases.json` 发布同一份兼容清单，缓存 60 秒；更新前把旧清单按 SHA-256 另存为私有历史对象。回退网站镜像可移除相应 release 的镜像清单条目并重新生成、增量部署，不必删除 OSS 对象或重启服务。

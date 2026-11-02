@@ -54,7 +54,7 @@ CHECKSUMS = PRIMARY_MIRRORS['SHA256SUMS.txt']['url'] if HAS_MIRROR else DOWNLOAD
 
 
 def migration_card():
-    return '<div class="cn-card"><h2 class="!mt-0">CN8 Codex 额度识别修复与升级说明</h2><p>新增识别 Codex / ChatGPT 桌面版的内置 CLI，兼容系统及当前用户的 Applications 目录，修复从图形界面启动时提示“未找到 Codex CLI”的问题。仍需有效登录凭据；Claude 登录独立处理。</p><p><strong>CN6、CN7 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN8。CN4 及更早版本、CN5 临时签名版用户需先备份原应用，再手动安装一次 CN8。</strong></p><p>本版沿用团队 462JAMGP66 签名，并保留 CN7 权限设置入口修复。跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行及相关权限。</p><p>仍为 Apple Development 签名、未公证开发预览。额度查询不发起模型任务，也不会替你登录或复制凭据；系统扩展等占位功能范围不变。</p></div>'
+    return '<div class="cn-card"><h2 class="!mt-0">CN9 应用内更新 OSS 加速</h2><p>CN9 起，更新检查和安装包优先使用阿里云 OSS，连接或 HTTP 失败时回退到 GitHub。保留大小、SHA-256、归档、版本及同团队签名校验。</p><p><strong>CN6、CN7、CN8 可通过“设置 → 关于 → Sapphire 更新”获取 CN9；这一次旧客户端仍走 GitHub。也可从下方 OSS 镜像手动安装。CN4 及更早版本、CN5 临时签名版需手动安装一次 CN9。</strong></p><p>沿用团队 462JAMGP66 签名。仍为 Apple Development 签名、未公证开发预览。跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行及相关权限。保留 CN8 的 Codex 内置 CLI 识别和 CN7 权限设置入口修复。</p></div>'
 
 
 def footer():
@@ -125,7 +125,7 @@ def homepage():
         feature('music', '刘海组件', '音乐与日历，<br>各就其位。', '播放信息、日历与专注组件集中展示。按住 ⌘ 点击刘海即可展开，在设置中启用所需组件、调整可见性和顺序。', 'Music.mp4'),
         feature('snap-zones', '桌面窗口管理', '窗口有序，<br>思路更清晰。', '使用窗口管理与布局工具安排桌面，配合文件托盘和剪贴板，整理日常多窗口工作。', 'Snap-Zones.mp4', True),
         feature('battery', 'Helper 连接修复', '后台连接，<br>更从容一些。', '中文分支修复 Helper 启动连接，保留首次握手等待，减少短超时反复重连。电池管理需要按应用提示安装辅助服务并批准后台运行。', 'Battery.mov'),
-        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN8 增强 Codex 内置 CLI 识别，并保留中文适配和 CN7 权限入口修复。CN6 / CN7 用户可应用内更新，更早的旧团队或临时签名版本需手动迁移一次。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
+        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN9 支持 OSS 优先的应用内更新，失败时回退 GitHub，保留中文适配、CN8 额度识别和 CN7 权限入口修复。CN6 / CN7 / CN8 用户可应用内更新，更早的旧团队或临时签名版本需手动迁移一次。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
         f'''<section id="final-cta-section" class="py-32 px-6 text-center"><h2 class="apple-headline text-4xl md:text-6xl mb-6">让刘海，多一点可能。</h2><p class="apple-subheadline mb-10">下载当前项目的 Sapphire-CN 开发预览版。</p><div class="flex flex-wrap justify-center gap-4"><a class="apple-cta-btn" href="{DMG}"><span class="material-symbols-outlined">download</span>下载 macOS 版</a><a class="apple-secondary-btn" href="{REPO}">在 GitHub 查看</a></div></section>'''
     ]
     source = source[:start] + '\n'.join(sections) + '\n' + source[end:]
@@ -175,11 +175,11 @@ def main():
     fallback = f'<a class="apple-secondary-btn" href="{GITHUB_DMG}">GitHub 备用 DMG</a><a class="apple-secondary-btn" href="{GITHUB_ZIP}">GitHub 备用 ZIP</a>' if HAS_MIRROR else ''
     install = f'''<div class="cn-card"><h2 class="!mt-0">{VERSION}</h2><p>Apple 芯片 arm64 · macOS 14.6 起 · 无需 Xcode。当前为 Apple Development 签名、未公证开发预览，无 Intel 安装包。</p><p class="cn-note mt-3">下载来源：{source_note}</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-cta-btn !text-white" href="{DMG}">下载 DMG</a><a class="apple-secondary-btn" href="{ZIP}">ZIP 安装包</a><a class="apple-secondary-btn" href="{CHECKSUMS}">校验文件</a>{fallback}</div></div>
     <div class="cn-card"><h2 class="!mt-0">安装与首次打开</h2><ol><li>下载 DMG，把 Sapphire.app 拖入 Applications；如已安装旧版，先退出并备份。</li><li>打开应用。如被系统拦截，请核对来源和 SHA256，按 <a href="https://support.apple.com/zh-cn/102445">Apple 官方说明</a>在隐私与安全性中由本人允许打开。</li><li>在系统设置 → 通用 → 语言与地区 → 应用程序中，为 Sapphire 选择简体中文。</li><li>按住 ⌘ 点击刘海，在设置中启用所需组件和 AI 额度。按功能提示开启辅助功能和后台运行等权限。</li></ol></div>
-    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6、CN7 可检测 CN8；旧团队及临时签名版本需手动安装一次 CN8。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。现有客户端的应用内更新仍使用 GitHub；网站下载优先使用 OSS 镜像。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
+    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6、CN7、CN8 可检测 CN9，本次旧客户端仍走 GitHub；也可手动下载 OSS 镜像。旧团队及临时签名版本需手动安装一次 CN9。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。CN9 起应用内更新优先使用 OSS，失败时回退 GitHub；网站下载也优先使用 OSS 镜像。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
     download = content_page('subscribe.html','安装与下载','下载本项目的中文增强版本。',migration_card() + install)
     (DIST / 'download.html').write_text(download)
     (DIST / 'subscribe.html').write_text(download)
-    privacy = f'''<div class="cn-card"><h2 class="!mt-0">静态项目网站</h2><p>本站提供项目介绍、安装说明和公开更新记录，不提供账户注册或收款表单。源码和问题反馈连接本项目 GitHub，安装包提供阿里云 OSS 镜像和 GitHub 备用下载。</p><h2>额度查询与本地凭据</h2><p>应用按你配置的官方订阅或第三方平台接口查询数据。独立查询密钥通过应用的“保存查询密钥”存入 macOS 钥匙串；测试查询不会自动保存。不要在网站反馈中提交访问令牌、密钥或验证码。</p><h2>权限与功能</h2><p>辅助功能、后台运行、日历、通知、位置、蓝牙等权限按实际使用的功能授权。详细行为以 <a href="{REPO}">当前项目源码和使用教程</a>为准。</p><h2>外部服务</h2><p>镜像下载访问阿里云 OSS，备用下载和问题反馈访问 GitHub；应用中的第三方额度查询访问你配置的供应商服务。相应服务自行处理收到的请求。已发布客户端的应用内更新仍使用 GitHub 下载通道。</p></div>'''
+    privacy = f'''<div class="cn-card"><h2 class="!mt-0">静态项目网站</h2><p>本站提供项目介绍、安装说明和公开更新记录，不提供账户注册或收款表单。源码和问题反馈连接本项目 GitHub，安装包提供阿里云 OSS 镜像和 GitHub 备用下载。</p><h2>额度查询与本地凭据</h2><p>应用按你配置的官方订阅或第三方平台接口查询数据。独立查询密钥通过应用的“保存查询密钥”存入 macOS 钥匙串；测试查询不会自动保存。不要在网站反馈中提交访问令牌、密钥或验证码。</p><h2>权限与功能</h2><p>辅助功能、后台运行、日历、通知、位置、蓝牙等权限按实际使用的功能授权。详细行为以 <a href="{REPO}">当前项目源码和使用教程</a>为准。</p><h2>外部服务</h2><p>镜像下载访问阿里云 OSS，备用下载和问题反馈访问 GitHub；应用中的第三方额度查询访问你配置的供应商服务。相应服务自行处理收到的请求。CN9 起应用内更新优先访问 OSS，失败时回退 GitHub；CN6–CN8 升级 CN9 本次仍从 GitHub 下载。</p></div>'''
     (DIST / 'privacy.html').write_text(content_page('privacy.html','数据与隐私','了解本站与应用的使用边界。',privacy))
     for name in ['issues.html','changelog.html']:
         page = shared((TEMPLATES / name).read_text())

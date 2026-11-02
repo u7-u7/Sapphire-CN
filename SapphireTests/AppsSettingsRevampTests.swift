@@ -247,14 +247,14 @@ final class AppsSettingsRevampTests: XCTestCase {
     func testSapphireUpdaterChoosesZipInsteadOfPackage() {
         let package = GitHubReleaseAsset(
             name: "Sapphire.pkg",
-            browserDownloadUrl: URL(string: "https://github.com/cshariq/Sapphire/releases/download/3.0/Sapphire.pkg")!,
+            browserDownloadUrl: URL(string: "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire.pkg")!,
             size: 1_000,
             digest: "sha256:" + String(repeating: "a", count: 64),
             contentType: "application/octet-stream"
         )
         let archive = GitHubReleaseAsset(
             name: "Sapphire.zip",
-            browserDownloadUrl: URL(string: "https://github.com/cshariq/Sapphire/releases/download/3.0/Sapphire.zip")!,
+            browserDownloadUrl: URL(string: "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire.zip")!,
             size: 1_000,
             digest: "sha256:" + String(repeating: "b", count: 64),
             contentType: "application/zip"

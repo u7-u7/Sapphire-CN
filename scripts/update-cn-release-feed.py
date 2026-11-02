@@ -9,6 +9,8 @@ import subprocess
 
 
 REPOSITORY = "u7-u7/Sapphire-CN"
+ROOT = Path(__file__).resolve().parents[1]
+MIRROR_BASE = "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/"
 VERSION = re.compile(r"^v?(\d+(?:\.\d+){1,2})-cn\.(\d+)(-preview)?$")
 
 
@@ -38,12 +40,30 @@ def release_metadata(tag):
 def validated_asset(asset, tag):
     prefix = f"https://github.com/{REPOSITORY}/releases/download/{tag}/"
     if (asset.get("state") != "uploaded"
-            or not asset.get("browser_download_url", "").startswith(prefix)
+            or asset.get("browser_download_url") != prefix + asset["name"]
             or not 0 < asset.get("size", 0) <= 1024 ** 3
             or not re.fullmatch(r"sha256:[0-9a-f]{64}", asset.get("digest") or "")):
         raise ValueError(f"Incomplete or unverified update asset: {asset['name']}")
     keys = ("name", "browser_download_url", "size", "digest", "content_type")
     return {key: asset.get(key) for key in keys}
+
+
+def add_verified_mirrors(releases, manifest):
+    # 保留旧客户端的 GitHub 字段；只有已校验且与同一资产匹配的镜像可进入更新清单。
+    for release in releases:
+        tag = release['tag_name']
+        mirrored = manifest.get('releases', {}).get(tag, {}).get('assets', {})
+        for asset in release['assets']:
+            asset.pop('mirror_download_url', None)
+            mirror = mirrored.get(asset['name'])
+            if mirror is None:
+                continue
+            if (mirror['url'] != MIRROR_BASE + tag + '/' + asset['name']
+                    or mirror['github_url'] != asset['browser_download_url']
+                    or mirror['size'] != asset['size'] or mirror['digest'] != asset['digest']):
+                raise ValueError(f"Mirror differs from GitHub asset: {tag}/{asset['name']}")
+            asset['mirror_download_url'] = mirror['url']
+    return releases
 
 
 def main():
@@ -52,10 +72,12 @@ def main():
     args = parser.parse_args()
     version_key(args.tag)
     release = release_metadata(args.tag)
-    destination = Path(__file__).resolve().parents[1] / "updates/releases.json"
+    destination = ROOT / "updates/releases.json"
     existing = json.loads(destination.read_text()) if destination.exists() else []
     releases = [release] + [item for item in existing if item["tag_name"] != args.tag]
     releases.sort(key=lambda item: version_key(item["tag_name"]), reverse=True)
+    mirror_file = ROOT / "website/content/download-mirrors.json"
+    add_verified_mirrors(releases, json.loads(mirror_file.read_text()) if mirror_file.exists() else {})
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary = destination.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(releases[:10], ensure_ascii=False, indent=2) + "\n")

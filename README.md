@@ -6,15 +6,15 @@
 
 本项目由 `u7-u7/Sapphire-CN` 独立维护，非上游官方网站或官方中文版；保留 Shariq Charolia 与上游贡献者署名，许可证见 [LICENSE](LICENSE)。
 
-📦 **[下载 DMG](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64.dmg)** · [ZIP 安装包](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.8-preview)
+📦 **[下载 DMG](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64.dmg)** · [ZIP 安装包](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.9-preview)
 
-下载优先使用阿里云 OSS 镜像，文件与 GitHub 原包 SHA-256 一致。[GitHub 备用 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64.dmg) · [GitHub 备用 ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip)。现有客户端的应用内更新继续使用 GitHub。
+下载优先使用阿里云 OSS 镜像，文件与 GitHub 原包 SHA-256 一致。[GitHub 备用 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64.dmg) · [GitHub 备用 ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip)。CN9 起应用内检查和下载更新优先使用 OSS，失败时回退 GitHub。CN6–CN8 升级 CN9 这一次仍走 GitHub，也可从镜像手动安装。
 
-**`v3.0-cn.8-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+**`v3.0-cn.9-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
 
-🛠️ CN8 修复 Codex 桌面版内置 CLI 未被识别、AI 额度无法刷新的问题，兼容系统和用户 Applications 目录。保留 CN7 的权限设置入口修复。
+🛠️ CN9 新增应用内更新 OSS 优先、GitHub 回退；保留 CN8 的桌面 Codex CLI 识别修复和 CN7 的权限设置入口修复。
 
-> **升级方式**：CN6、CN7 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN8。CN4 及更早版本、CN5 临时签名版用户需要先退出并备份原应用，再手动安装一次 CN8，迁移到团队 `462JAMGP66`；如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。
+> **升级方式**：CN6、CN7、CN8 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN9。CN4 及更早版本、CN5 临时签名版用户需要先退出并备份原应用，再手动安装一次 CN9，迁移到团队 `462JAMGP66`；如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
@@ -43,7 +43,7 @@
 4. **切换中文**：「系统设置 → 通用 → 语言与地区 → 应用程序」添加 Sapphire，选择「简体中文」并重启应用。
 5. **打开面板**：按住 **⌘ Command 点击刘海**，点击 ⚙️ 进入设置；默认未开启悬停展开。
 
-安装者无需开发者会员或自行编译。应用显示 `3.0-cn.8-preview`，系统版本为 `3.0 (8)`，发布标签为 `v3.0-cn.8-preview`。
+安装者无需开发者会员或自行编译。应用显示 `3.0-cn.9-preview`，系统版本为 `3.0 (9)`，发布标签为 `v3.0-cn.9-preview`。
 
 ### 首次打开被系统拦截
 
@@ -59,7 +59,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -167,9 +167,9 @@ Claude Code 当前使用 DeepSeek 时会自动识别，也可手动配置。Code
 
 ## 更新与卸载
 
-从 **CN4 换源版**开始，「设置 → 关于 → Sapphire 更新」从[本仓库 Releases](https://github.com/u7-u7/Sapphire-CN/releases)检测和下载，包含本仓库的公开预发布，不再接收上游原版更新。
+「设置 → 关于 → Sapphire 更新」只接收本仓库的公开版本和预发布。CN9 起优先从阿里云 OSS 检查并下载安装包，连接或 HTTP 失败时回退 GitHub；SHA-256、归档、版本和同团队签名校验保持启用。CN6–CN8 升级 CN9 时，旧客户端仍从 GitHub 下载一次。
 
-**CN6、CN7 → CN8 支持应用内更新。** CN4 及更早版本、CN5 临时签名版用户仍需手动安装一次 CN8，迁移更新源与签名团队。完成迁移后，后续同一新团队签名版本可在应用内更新。
+**CN6、CN7、CN8 → CN9 支持应用内更新。** CN4 及更早版本、CN5 临时签名版用户仍需手动安装一次 CN9，迁移更新源与签名团队。完成迁移后，后续同一新团队签名版本可在应用内更新。
 
 应用内下载使用仅包含完整应用的 `-update.zip`；下载后仍需本人点击「安装并重新启动」。自动检查、后台下载和更新通知可在「关于」按需配置。
 

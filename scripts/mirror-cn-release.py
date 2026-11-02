@@ -71,6 +71,58 @@ def verify_object(oss, key, path, digest):
         raise ValueError(f'Existing immutable mirror differs: {key}')
 
 
+def publish_update_feed(oss, tag):
+    if (oss.bucket, oss.region) != ('sapphire-cn', 'cn-hangzhou'):
+        raise ValueError('The client trusts only the dedicated Sapphire-CN bucket')
+    path = ROOT / 'updates/releases.json'
+    payload = path.read_bytes()
+    releases = json.loads(payload)
+    mirrors = json.loads((ROOT / 'website/content/download-mirrors.json').read_text())
+    if len(payload) > 5 * 1024 ** 2 or not releases or releases[0]['tag_name'] != tag:
+        raise ValueError('Expected the current compatible update feed')
+    for release in releases:
+        for asset in release['assets']:
+            github = f'https://github.com/{REPOSITORY}/releases/download/{release["tag_name"]}/{asset["name"]}'
+            if asset['browser_download_url'] != github:
+                raise ValueError('Keep GitHub URLs for older clients')
+            if 'mirror_download_url' not in asset:
+                if release is releases[0]:
+                    raise ValueError('Mirror the newest release before publishing the OSS feed')
+                continue
+            mirror = mirrors['releases'][release['tag_name']]['assets'][asset['name']]
+            expected = f'https://{oss.bucket}.oss-{oss.region}.aliyuncs.com/releases/{release["tag_name"]}/{asset["name"]}'
+            if (asset['mirror_download_url'] != expected or mirror['url'] != expected
+                    or mirror['size'] != asset['size'] or mirror['digest'] != asset['digest']
+                    or mirror['github_url'] != github):
+                raise ValueError('Feed mirror differs from verified release')
+    key = 'updates/releases.json'
+    url = f'https://{oss.bucket}.oss-{oss.region}.aliyuncs.com/{key}'
+    # 清单是可变对象；先保留上一份公开清单的私有快照，安装包仍保持不可变。
+    if oss.api('head-object', '--key', key, missing_ok=True):
+        with urllib.request.urlopen(url, timeout=30) as response:
+            previous = response.read(5 * 1024 ** 2 + 1)
+        previous_releases = json.loads(previous)
+        if (len(previous) > 5 * 1024 ** 2
+                or previous_releases[0]['tag_name'] not in [r['tag_name'] for r in releases]):
+            raise ValueError('Refusing to discard the previously published newest release')
+        digest = hashlib.sha256(previous).hexdigest()
+        backup_key = f'updates/history/{digest}.json'
+        if oss.api('head-object', '--key', backup_key, missing_ok=True) is None:
+            with tempfile.TemporaryDirectory(prefix='sapphire-feed-backup-') as directory:
+                backup = Path(directory) / 'releases.json'
+                backup.write_bytes(previous)
+                oss.api('put-object', '--key', backup_key, '--body', 'file://' + str(backup),
+                        '--object-acl', 'private', '--forbid-overwrite')
+    oss.api('put-object', '--key', key, '--body', 'file://' + str(path),
+            '--object-acl', 'public-read', '--content-type', 'application/json; charset=utf-8',
+            '--cache-control', 'public, max-age=60, must-revalidate',
+            '--metadata', 'sha256=' + hashlib.sha256(payload).hexdigest())
+    with urllib.request.urlopen(url, timeout=30) as response:
+        if response.geturl() != url or response.read(len(payload) + 1) != payload:
+            raise ValueError('Public OSS feed differs from the local compatible feed')
+    print(f'Published and verified OSS update feed: {url}')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('tag')
@@ -78,6 +130,7 @@ def main():
     parser.add_argument('--region', default='cn-hangzhou')
     parser.add_argument('--asset-directory', type=Path)
     parser.add_argument('--stage-only', action='store_true', help='Upload privately; do not publish links or change ACLs')
+    parser.add_argument('--publish-feed-only', action='store_true', help='Publish the compatible feed after release mirrors are verified')
     parser.add_argument('--manifest', type=Path, default=ROOT / 'website/content/download-mirrors.json')
     args = parser.parse_args()
     if not re.fullmatch(r'v\d+(?:\.\d+){1,2}-cn\.\d+(?:-preview)?', args.tag):
@@ -99,6 +152,11 @@ def main():
     if not required.issubset({a['name'] for a in assets}):
         raise ValueError('Release needs DMG, app-only update ZIP and checksums')
     oss = OSS(executable, args.bucket, args.region)
+    if args.publish_feed_only:
+        if args.stage_only:
+            raise ValueError('Feed publication cannot be combined with private staging')
+        publish_update_feed(oss, args.tag)
+        return
     if not args.stage_only:
         blocked = oss.api('get-bucket-public-access-block').get('BlockPublicAccess')
         if str(blocked).lower() == 'true':
