@@ -1,5 +1,24 @@
 [
   {
+    "name": "Sapphire-CN CN9 · OSS 应用内更新",
+    "tag_name": "v3.0-cn.9-preview",
+    "body": "# Sapphire-CN CN9：应用内更新优先使用 OSS\n\n标签：`v3.0-cn.9-preview`。Apple 芯片 arm64，macOS 14.6 起。系统版本 `3.0 (9)`，签名内发行标识 `3.0-cn.9-preview`。\n\n## 更新内容\n\n- 更新清单和安装包优先使用阿里云 OSS，连接或 HTTP 失败时回退 GitHub。\n- 镜像只接受 Sapphire-CN 专用 Bucket 的 HTTPS 地址，发行标签、文件名和摘要必须与原 GitHub 资产匹配；缓存与 ETag 绑定来源。\n- 取消下载不会触发自动换源，大小、SHA-256 或归档校验失败会报错。保留发行版本、build 单调递增、arm64 和真实同团队签名检查。\n- 保留 CN8 的 Codex 桌面版内置 CLI 识别和 CN7 权限设置入口修复。额度查询不发起模型任务，不替用户登录或复制凭据。\n\n## 升级方式\n\n**CN6、CN7、CN8 可通过设置 → 关于 → Sapphire 更新升级 CN9。旧客户端这一次仍从 GitHub 下载；安装 CN9 后，后续更新优先使用 OSS。也可从网站 OSS 镜像手动安装。**\n\nCN4 及更早版本、CN5 临时签名版需先退出并备份原应用，再手动安装一次 CN9 迁移到团队 `462JAMGP66`。跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。\n\n## 验证与边界\n\n- 完整 Debug arm64 构建通过；47 项离线更新路由、清单兼容、下载回退/取消检查通过。\n- 主应用与 Helper 沿用有效 Apple Development 证书和权限声明，安全时间戳签名；真实 Security framework 严格校验嵌套代码、标识与团队通过。\n- DMG 只读挂载与 ZIP 解包校验通过；ZIP 仅含完整应用，路径和软链检查通过；中文资源、主程序/Helper 摘要一致。\n- CN8 与 CN9 主应用和 Helper 的 designated requirement、权限声明一致，主应用 build 8 → 9。\n- 仍为未公证开发预览，完整自动安装、其他 Mac、整机重启与故障网络下的实际回退仍需安装后验收；系统扩展等占位功能范围不变。\n\n## 下载与摘要\n\n[安装与下载](https://sapphire.u7u7.top/download) · [GitHub 发布](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.9-preview)\n\n| 文件 | 字节数 | SHA-256 |\n| --- | --- | --- |\n| `Sapphire-CN-3.0-cn.9-preview-arm64.dmg` | 148318324 | `f5027657ce207cc948998ac726310fe28eba3c78514c6312dd3c54991ebf20b3` |\n| `Sapphire-CN-3.0-cn.9-preview-arm64-update.zip` | 137539587 | `c13e46fba0889e1ee6c67cb9d30576ad47e13eb96dd963ea389a6ee3a5805ec3` |\n| `INSTALL-NOTES.txt` | 1637 | `7552b8a2c46b257b2f10eac18d46df2628353dc230eae984e7dfbfbe3809ab43` |\n| `SHA256SUMS.txt` | 301 | `4398d834d2925a58df4398bfc42c58200014467eae598307d8f3d9c7b0974a86` |\n\n主程序 SHA-256：`60a6a7ce2b80175524ca3223dac5339cf61cbb3dd59e006de7ea92bb50d012c2`。Helper SHA-256：`66f99c774fe4cb68072c0211ce61de64366a561de25fb22137b7c3ef9ab97a0a`。\n\n源码提交：`0f76c7a93f530964fbecfa30dabdd560e8a87b99`。\n",
+    "html_url": "https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.9-preview",
+    "prerelease": true,
+    "draft": false,
+    "published_at": "2026-11-02T13:15:17Z",
+    "assets": [
+      {
+        "name": "Sapphire-CN-3.0-cn.9-preview-arm64-update.zip",
+        "browser_download_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip",
+        "size": 137539587,
+        "digest": "sha256:c13e46fba0889e1ee6c67cb9d30576ad47e13eb96dd963ea389a6ee3a5805ec3",
+        "content_type": "application/zip",
+        "mirror_download_url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip"
+      }
+    ]
+  },
+  {
     "name": "Sapphire-CN CN8：Codex 内置 CLI 额度识别修复",
     "tag_name": "v3.0-cn.8-preview",
     "body": "# Sapphire-CN CN8：Codex 桌面版内置 CLI 识别修复\n\n标签：`v3.0-cn.8-preview`。Apple 芯片 arm64，项目最低 macOS 14.6。系统版本 `3.0 (8)`，签名内发行标识 `3.0-cn.8-preview`。\n\n## 本版修复\n\n此前只安装桌面应用、未独立安装 CLI 的用户，从 Finder 启动 Sapphire 时可能遇到“未找到 Codex CLI”；即使桌面版已有有效登录，刷新额度也无法执行。\n\n- 增加 Codex / ChatGPT 桌面应用内置 CLI 的查找，覆盖 `/Applications` 与当前用户的 `~/Applications`。\n- 兼容原有 `Contents/Resources/codex` 布局及新版 `Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex` 布局。\n- 用户目录动态通过 `NSHomeDirectory()` 获取，不写死开发机器用户名。\n- 保留 `~/.local/bin` 与 Homebrew 入口的优先级，并继续支持 nvm 和 PATH 查找。\n- 更新后无需为本次路径问题手工创建软链；仍需有效登录。Claude 凭据独立处理，修复 Codex 路径不会自动登录 Claude。\n- 保留 CN7 权限设置入口修复。额度查询不创建模型任务，不复制或修改 CLI 凭据，也不绕过服务端限流及应用刷新冷却。\n\n## 升级方式\n\n**CN6、CN7 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN8，也可手动安装。** 本版继续使用团队 `462JAMGP66` 证书，主程序与 Helper 同团队签名。\n\n**CN4 及更早版本、CN5 临时签名版用户需手动安装一次 CN8。** 请先退出并备份原应用，再把完整应用安装到 `/Applications/Sapphire.app`。旧团队或临时签名无法直接通过同团队校验自动安装本版。\n\n跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。后续同团队版本沿用应用内更新，安装仍需本人确认。\n\n## 验证与边界\n\n- 完整 Debug arm64 构建通过，主应用 build 递增至 8。\n- 108 项离线 AI 额度检查通过，包含新增的 8 项可执行文件查找回归检查；覆盖缺少终端 PATH 的桌面 CLI 发现、系统/用户应用目录、旧布局、本地 bin 入口优先级与缺失文件。\n- 本机文件系统验证通过：使用精简 GUI PATH，并明确排除临时兼容软链，仍能解析到当前桌面版内置 CLI。路径检查不读取凭据或请求网络。\n- 先前同一修复代码通过本机内置 CLI 的只读额度查询取得额度窗口；不公开账户标识、凭据或个人额度读数。\n- 由内向外沿用 CN6 的有效证书及权限声明签名，使用安全时间戳，保留 Helper 空权限声明与 hardened runtime。\n- 使用真实 Security framework 严格检查主程序、Helper、证书链和嵌套代码，核对应用标识、团队、版本、arm64 架构及中文资源。\n- 校验 DMG、只读挂载后的应用、ZIP 路径和软链、解包签名以及主程序/Helper 摘要；核对 CN6/CN7 至 CN8 的签名要求一致与 build 单调递增。\n- 本版仍为 Apple Development 签名、未公证开发预览。完整自动安装、其他 Mac、整机重启及各账号的实际额度服务仍需安装后验收。未登录、冷却或服务错误不会显示伪造额度。\n\n## 下载\n\n[发布页及校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.8-preview)\n\n- `Sapphire-CN-3.0-cn.8-preview-arm64.dmg`：手动安装，含 Applications 外链和安装说明。\n- `Sapphire-CN-3.0-cn.8-preview-arm64-update.zip`：只含完整 `Sapphire.app`，供手动解压安装及同团队更新。\n- `SHA256SUMS.txt` 与 `INSTALL-NOTES.txt`：校验文件和升级说明。\n\n历史版本保留；CN5 临时签名测试版不加入应用内更新清单。\n\n## 归档摘要\n\n| 文件 | 字节数 | SHA-256 |\n| --- | --- | --- |\n| `Sapphire-CN-3.0-cn.8-preview-arm64.dmg` | 148313933 | `195b5a3b56f635bba0c078b2d8893ffb56b9166b08ffd32ca73c82d9b4ed9687` |\n| `Sapphire-CN-3.0-cn.8-preview-arm64-update.zip` | 137526807 | `22f1e885f22a618a56a7e0594001fc461137cb72a781254b5e490ef11dd3a190` |\n\n主程序 SHA-256：`f76734f3c97a49568a6da9eb1431e81fc8a95c63620763cf8710a9282af83478`。Helper SHA-256：`2c9dd27d54c4a082a47c52db3f5d65d8f9f7664cd9328833bd1e3581fc8b7313`。\n\n源码提交：`a5e35277c0f6f6582a0554d4ddd4e0fe431b2245`。\n",
@@ -13,7 +32,8 @@
         "browser_download_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip",
         "size": 137526807,
         "digest": "sha256:22f1e885f22a618a56a7e0594001fc461137cb72a781254b5e490ef11dd3a190",
-        "content_type": "application/zip"
+        "content_type": "application/zip",
+        "mirror_download_url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip"
       }
     ]
   },

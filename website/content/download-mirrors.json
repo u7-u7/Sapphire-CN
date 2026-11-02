@@ -31,6 +31,35 @@
           "github_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/SHA256SUMS.txt"
         }
       }
+    },
+    "v3.0-cn.9-preview": {
+      "verified_at": "2026-11-02T13:18:43.058188+00:00",
+      "assets": {
+        "INSTALL-NOTES.txt": {
+          "url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/INSTALL-NOTES.txt",
+          "size": 1637,
+          "digest": "sha256:7552b8a2c46b257b2f10eac18d46df2628353dc230eae984e7dfbfbe3809ab43",
+          "github_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/INSTALL-NOTES.txt"
+        },
+        "Sapphire-CN-3.0-cn.9-preview-arm64-update.zip": {
+          "url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip",
+          "size": 137539587,
+          "digest": "sha256:c13e46fba0889e1ee6c67cb9d30576ad47e13eb96dd963ea389a6ee3a5805ec3",
+          "github_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64-update.zip"
+        },
+        "Sapphire-CN-3.0-cn.9-preview-arm64.dmg": {
+          "url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64.dmg",
+          "size": 148318324,
+          "digest": "sha256:f5027657ce207cc948998ac726310fe28eba3c78514c6312dd3c54991ebf20b3",
+          "github_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/Sapphire-CN-3.0-cn.9-preview-arm64.dmg"
+        },
+        "SHA256SUMS.txt": {
+          "url": "https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.9-preview/SHA256SUMS.txt",
+          "size": 301,
+          "digest": "sha256:4398d834d2925a58df4398bfc42c58200014467eae598307d8f3d9c7b0974a86",
+          "github_url": "https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.9-preview/SHA256SUMS.txt"
+        }
+      }
     }
   }
 }
