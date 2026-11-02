@@ -71,15 +71,22 @@ enum CodexUsageClient {
         SHA256.hash(data: Data(string.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
-    static func executable(home: String = NSHomeDirectory(), environment: [String: String] = ProcessInfo.processInfo.environment) -> String? {
-        var candidates = ["\(home)/.local/bin/codex", "/opt/homebrew/bin/codex", "/usr/local/bin/codex",
-            "/Applications/Codex.app/Contents/Resources/codex", "\(home)/Applications/Codex.app/Contents/Resources/codex"]
+    static func executable(home: String = NSHomeDirectory(), environment: [String: String] = ProcessInfo.processInfo.environment,
+                           isExecutable: (String) -> Bool = { FileManager.default.isExecutableFile(atPath: $0) }) -> String? {
+        var candidates = ["\(home)/.local/bin/codex", "/opt/homebrew/bin/codex", "/usr/local/bin/codex"]
+        // Finder 启动的应用不会继承终端 PATH；兼容桌面版的独立二进制和内嵌 CLI 应用布局。
+        for directory in ["/Applications", "\(home)/Applications"] {
+            for name in ["Codex", "ChatGPT"] {
+                let resources = "\(directory)/\(name).app/Contents/Resources"
+                candidates += ["\(resources)/codex", "\(resources)/codex-cli/CodexCLI.app/Contents/MacOS/codex"]
+            }
+        }
         let versions = "\(home)/.nvm/versions/node"
         let versionNames = (try? FileManager.default.contentsOfDirectory(atPath: versions)) ?? []
         candidates += versionNames.sorted { $0.compare($1, options: .numeric) == .orderedDescending }
             .map { "\(versions)/\($0)/bin/codex" }
         candidates += (environment["PATH"] ?? "").split(separator: ":").map { "\($0)/codex" }
-        return candidates.first { FileManager.default.isExecutableFile(atPath: $0) }
+        return candidates.first(where: isExecutable)
     }
 }
 

@@ -177,3 +177,8 @@ CN6 起发布签名团队为 `462JAMGP66`，主应用 build 为 6。旧 CN4 团�
 ### CN7 权限入口修复
 
 CN7 继续使用团队 `462JAMGP66`，主应用 build 为 7。发布过程沿用 CN6 的签名和归档验证；额外核对 CN6 与 CN7 的标识、团队及 designated requirement 一致，build 单调递增。权限入口修复与验证范围见 [CN7 发行记录](releases/3.0-cn.7-preview.md)。
+
+
+### CN8 Codex 内置 CLI 识别修复
+
+CN8 主应用 build 为 8，继续使用团队 `462JAMGP66`。CLI 发现覆盖系统及用户 Applications 目录中的 Codex/ChatGPT 桌面应用布局；用户目录动态读取，本地 bin 与 Homebrew 优先级保留。108 项离线额度检查和排除兼容软链后的本机 GUI PATH 检查通过。发行验证范围见 [CN8 记录](releases/3.0-cn.8-preview.md)。

@@ -18,6 +18,7 @@ struct VerifyAIUsage {
 
     @MainActor
     static func main() async throws {
+        verifyCodexExecutableDiscovery()
         verifyParsing()
         verifyExpiryAndIdentity()
         verifyRequestGate()
@@ -28,6 +29,29 @@ struct VerifyAIUsage {
         await verifyServiceLifecycle()
         await verifyLateRateLimitAndCancellation()
         print("PASS: \(checks) AI usage fixture checks; no credential reads or real provider requests")
+    }
+
+    static func verifyCodexExecutableDiscovery() {
+        let guiEnvironment = ["PATH": "/usr/bin:/bin"]
+        for directory in ["/Applications", "/fixture/Applications"] {
+            for name in ["Codex", "ChatGPT"] {
+                let embedded = "\(directory)/\(name).app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS/codex"
+                expect(CodexUsageClient.executable(home: "/fixture", environment: guiEnvironment,
+                    isExecutable: { $0 == embedded }) == embedded,
+                    "GUI discovers nested desktop CLI without terminal PATH: \(directory)/\(name)")
+            }
+        }
+        let legacy = "/Applications/Codex.app/Contents/Resources/codex"
+        expect(CodexUsageClient.executable(home: "/fixture", environment: guiEnvironment,
+            isExecutable: { $0 == legacy }) == legacy, "legacy desktop layout remains supported")
+        let local = "/fixture/.local/bin/codex"
+        expect(CodexUsageClient.executable(home: "/fixture", environment: guiEnvironment,
+            isExecutable: { $0 == local || $0 == legacy }) == local, "user CLI keeps precedence over desktop fallback")
+        let custom = "/fixture/custom-bin/codex"
+        expect(CodexUsageClient.executable(home: "/fixture", environment: ["PATH": "/fixture/custom-bin"],
+            isExecutable: { $0 == custom }) == custom, "custom PATH remains supported")
+        expect(CodexUsageClient.executable(home: "/fixture", environment: guiEnvironment,
+            isExecutable: { _ in false }) == nil, "missing or nonexecutable candidates stay missing")
     }
 
     static func verifyParsing() {

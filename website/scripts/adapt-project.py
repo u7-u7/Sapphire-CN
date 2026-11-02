@@ -20,7 +20,7 @@ DOWNLOAD_BASE = f'{REPO}/releases/download/{VERSION}/'
 DMG = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64.dmg'
 ZIP = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64-update.zip'
 def migration_card():
-    return '<div class="cn-card"><h2 class="!mt-0">CN7 权限入口修复与升级说明</h2><p>修复屏幕录制、完全磁盘访问等权限未授权时只显示红叉的问题，增加“打开隐私设置”入口；屏幕录制请求后立即刷新状态。权限仍需由你在 macOS 中确认。</p><p><strong>CN6 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN7。CN4 及更早版本、CN5 临时签名版用户需先备份原应用，再手动安装一次 CN7。</strong></p><p>本版沿用 CN6 的团队 462JAMGP66 签名。同团队签名校验保持启用。跨团队迁移后如 Helper 连接失败，请在设置 → 电池 → 配置中重新配置辅助服务，并检查系统后台运行及相关权限。</p><p>本版仍为 Apple Development 签名、未公证开发预览，公开源码中的系统扩展等占位功能保持原有范围。</p></div>'
+    return '<div class="cn-card"><h2 class="!mt-0">CN8 Codex 额度识别修复与升级说明</h2><p>新增识别 Codex / ChatGPT 桌面版的内置 CLI，兼容系统及当前用户的 Applications 目录，修复从图形界面启动时提示“未找到 Codex CLI”的问题。仍需有效登录凭据；Claude 登录独立处理。</p><p><strong>CN6、CN7 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN8。CN4 及更早版本、CN5 临时签名版用户需先备份原应用，再手动安装一次 CN8。</strong></p><p>本版沿用团队 462JAMGP66 签名，并保留 CN7 权限设置入口修复。跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行及相关权限。</p><p>仍为 Apple Development 签名、未公证开发预览。额度查询不发起模型任务，也不会替你登录或复制凭据；系统扩展等占位功能范围不变。</p></div>'
 
 
 def footer():
@@ -82,7 +82,7 @@ def homepage():
     source = source.replace('bg-black aspect-video border', 'bg-black border')
     source = source.replace('<!-- GitHub Stats -->', f'<p class="cn-note pt-2">{VERSION} · Apple 芯片 arm64 · macOS 14.6 起<br>未公证开发预览 · <a href="/download" class="underline">安装说明</a> · 截图读数为示例</p><!-- GitHub Stats -->')
     source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">基于 Sapphire 的独立中文增强分支，非上游官方版本 · <a href="/about" class="underline">了解二开内容</a></p><!-- GitHub Stats -->')
-    source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">CN7 已修复权限设置入口，CN6 用户可应用内更新 · <a href="/download" class="underline">查看 CN7 下载与升级说明</a></p><!-- GitHub Stats -->')
+    source = source.replace('<!-- GitHub Stats -->', '<p class="cn-note">CN8 已修复 Codex 内置 CLI 识别，CN6 / CN7 用户可应用内更新 · <a href="/download" class="underline">查看 CN8 下载与升级说明</a></p><!-- GitHub Stats -->')
     start = source.index('        <!-- 1. BLIP AGENT')
     end = source.index('    </main>', start)
     sections = [
@@ -91,7 +91,7 @@ def homepage():
         feature('music', '刘海组件', '音乐与日历，<br>各就其位。', '播放信息、日历与专注组件集中展示。按住 ⌘ 点击刘海即可展开，在设置中启用所需组件、调整可见性和顺序。', 'Music.mp4'),
         feature('snap-zones', '桌面窗口管理', '窗口有序，<br>思路更清晰。', '使用窗口管理与布局工具安排桌面，配合文件托盘和剪贴板，整理日常多窗口工作。', 'Snap-Zones.mp4', True),
         feature('battery', 'Helper 连接修复', '后台连接，<br>更从容一些。', '中文分支修复 Helper 启动连接，保留首次握手等待，减少短超时反复重连。电池管理需要按应用提示安装辅助服务并批准后台运行。', 'Battery.mov'),
-        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN7 继承中文适配，并修复未授权权限缺少设置入口的问题。CN6 用户可应用内更新，更早的旧团队或临时签名版本需手动迁移一次。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
+        f'''<section id="feature-cn" class="py-28 px-6 max-w-5xl mx-auto text-center"><p class="text-purple-400 text-xs font-bold tracking-widest mb-6">为中文用户继续打磨</p><h2 class="apple-headline text-4xl md:text-6xl mb-8">熟悉的 Mac，<br>更顺手的中文体验。</h2><p class="apple-subheadline cn-copy text-lg max-w-3xl mx-auto">主要界面与权限说明汉化，保留少量英文提示。CN8 增强 Codex 内置 CLI 识别，并保留中文适配和 CN7 权限入口修复。CN6 / CN7 用户可应用内更新，更早的旧团队或临时签名版本需手动迁移一次。部分公开源码为占位实现，订阅和系统扩展等功能需要额外配置。</p><a href="/faq" class="apple-secondary-btn mt-8">了解使用与功能范围</a></section>''',
         f'''<section id="final-cta-section" class="py-32 px-6 text-center"><h2 class="apple-headline text-4xl md:text-6xl mb-6">让刘海，多一点可能。</h2><p class="apple-subheadline mb-10">下载当前项目的 Sapphire-CN 开发预览版。</p><div class="flex flex-wrap justify-center gap-4"><a class="apple-cta-btn" href="{DMG}"><span class="material-symbols-outlined">download</span>下载 macOS 版</a><a class="apple-secondary-btn" href="{REPO}">在 GitHub 查看</a></div></section>'''
     ]
     source = source[:start] + '\n'.join(sections) + '\n' + source[end:]
@@ -139,7 +139,7 @@ def main():
     (DIST / 'faq.html').write_text(content_page('faq.html','常见问题','从当前项目文档整理，帮助你安装和配置 Sapphire-CN。',faq_html))
     install = f'''<div class="cn-card"><h2 class="!mt-0">{VERSION}</h2><p>Apple 芯片 arm64 · macOS 14.6 起 · 无需 Xcode。当前为 Apple Development 签名、未公证开发预览，无 Intel 安装包。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-cta-btn !text-white" href="{DMG}">下载 DMG</a><a class="apple-secondary-btn" href="{ZIP}">ZIP 备用包</a><a class="apple-secondary-btn" href="{DOWNLOAD_BASE}SHA256SUMS.txt">校验文件</a></div></div>
     <div class="cn-card"><h2 class="!mt-0">安装与首次打开</h2><ol><li>下载 DMG，把 Sapphire.app 拖入 Applications；如已安装旧版，先退出并备份。</li><li>打开应用。如被系统拦截，请核对来源和 SHA256，按 <a href="https://support.apple.com/zh-cn/102445">Apple 官方说明</a>在隐私与安全性中由本人允许打开。</li><li>在系统设置 → 通用 → 语言与地区 → 应用程序中，为 Sapphire 选择简体中文。</li><li>按住 ⌘ 点击刘海，在设置中启用所需组件和 AI 额度。按功能提示开启辅助功能和后台运行等权限。</li></ol></div>
-    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6 可直接检测 CN7；旧团队及临时签名版本需手动安装一次 CN7。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
+    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6、CN7 可检测 CN8；旧团队及临时签名版本需手动安装一次 CN8。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
     download = content_page('subscribe.html','安装与下载','下载本项目的中文增强版本。',migration_card() + install)
     (DIST / 'download.html').write_text(download)
     (DIST / 'subscribe.html').write_text(download)
