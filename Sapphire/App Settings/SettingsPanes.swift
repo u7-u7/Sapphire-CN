@@ -189,7 +189,13 @@ struct PermissionStatusRowView: View {
             let status = permissionsManager.status(for: permission.type)
             switch status {
             case .granted: Image(systemName: "checkmark.circle.fill").font(.title2).foregroundColor(.green)
-            case .denied: Image(systemName: "xmark.circle.fill").font(.title2).foregroundColor(.red)
+            case .denied:
+                Image(systemName: "xmark.circle.fill").font(.title2).foregroundColor(.red)
+                Button("Open Privacy Settings") {
+                    permissionsManager.openPermissionSettings(permission.type)
+                }
+                .buttonStyle(.bordered)
+                .tint(.accentColor)
             case .notRequested: Button("Request") { permissionsManager.requestPermission(permission.type) }.buttonStyle(.bordered).tint(.accentColor)
             }
             PermissionFeatureInfoButton(permission: permission)

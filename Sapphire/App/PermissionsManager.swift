@@ -244,8 +244,9 @@ class PermissionsManager: NSObject, ObservableObject, @MainActor CLLocationManag
             openFullDiskAccessSettings()
 
         case .screenRecording:
-            CGRequestScreenCaptureAccess()
+            let granted = CGRequestScreenCaptureAccess()
             UserDefaults.standard.set(true, forKey: "screenRecordingRequested")
+            screenRecordingStatus = granted ? .granted : .denied
 
         case .automation:
             triggerAutomationPermissionRequest()
@@ -287,6 +288,25 @@ class PermissionsManager: NSObject, ObservableObject, @MainActor CLLocationManag
             INFocusStatusCenter.default.requestAuthorization { _ in
                 DispatchQueue.main.async { self.checkAllPermissions() }
             }
+        }
+    }
+
+    func openPermissionSettings(_ type: PermissionType) {
+        switch type {
+        case .accessibility:
+            SystemPreferencesPane.accessibility.open()
+        case .fullDiskAccess:
+            SystemPreferencesPane.allFiles.open()
+        case .screenRecording:
+            SystemPreferencesPane.screenCapture.open()
+        case .bluetooth:
+            SystemPreferencesPane.bluetooth.open()
+        case .notifications:
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                NSWorkspace.shared.open(url)
+            }
+        default:
+            SystemPreferencesPane.privacyRoot.open()
         }
     }
 

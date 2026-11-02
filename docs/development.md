@@ -172,3 +172,8 @@ xcrun swiftc -swift-version 5 -parse-as-library \
 CN6 起发布签名团队为 `462JAMGP66`，主应用 build 为 6。旧 CN4 团队为 `9CN6NKVEFU`；CN4 及更早版本和 CN5 临时签名版均需手动安装一次 CN6。后续同一新团队签名版本沿用现有应用内更新，不放宽签名检查。构建、打包、验证边界见 [CN6 发行记录](releases/3.0-cn.6-preview.md)。
 
 本次先用 `CODE_SIGNING_ALLOWED=NO` 完成 Debug arm64 编译，再由内向外用新证书统一签名所有代码。权限声明以已发布 CN4 各组件为对照保留，Helper 使用工程内空权限声明；安全时间戳启用。主应用采用 CN4 安装包已有的权限范围，不声称获得系统扩展等未配置能力。发布前对解包产物执行真实 Security framework 严格验签并核对团队、标识、版本及摘要。
+
+
+### CN7 权限入口修复
+
+CN7 继续使用团队 `462JAMGP66`，主应用 build 为 7。发布过程沿用 CN6 的签名和归档验证；额外核对 CN6 与 CN7 的标识、团队及 designated requirement 一致，build 单调递增。权限入口修复与验证范围见 [CN7 发行记录](releases/3.0-cn.7-preview.md)。
