@@ -6,6 +6,7 @@ import json
 import re
 import shutil
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = ROOT.parent
@@ -17,8 +18,41 @@ RELEASES = json.loads((PROJECT / 'updates/releases.json').read_text())
 LATEST = RELEASES[0]
 VERSION = LATEST['tag_name']
 DOWNLOAD_BASE = f'{REPO}/releases/download/{VERSION}/'
-DMG = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64.dmg'
-ZIP = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64-update.zip'
+GITHUB_DMG = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64.dmg'
+GITHUB_ZIP = DOWNLOAD_BASE + f'Sapphire-CN-{VERSION[1:]}-arm64-update.zip'
+MIRROR_FILE = ROOT / 'content/download-mirrors.json'
+MIRRORS = json.loads(MIRROR_FILE.read_text()) if MIRROR_FILE.exists() else {}
+
+
+def mirror_asset(tag, name, reference=None, mirrors=None):
+    data = MIRRORS if mirrors is None else mirrors
+    asset = data.get('releases', {}).get(tag, {}).get('assets', {}).get(name)
+    if not asset:
+        return None
+    host = f'{data.get("bucket")}.oss-{data.get("region")}.aliyuncs.com'
+    url = urlsplit(asset.get('url', ''))
+    if (url.scheme != 'https' or url.netloc != host
+            or url.path != f'/releases/{tag}/{name}' or url.query or url.fragment
+            or not re.fullmatch(r'sha256:[0-9a-f]{64}', asset.get('digest', ''))
+            or not isinstance(asset.get('size'), int) or not 0 < asset['size'] <= 1024 ** 3):
+        raise ValueError(f'Invalid mirror record: {tag}/{name}')
+    if reference and (asset['digest'] != reference.get('digest') or asset['size'] != reference.get('size')):
+        raise ValueError(f'Mirror does not match GitHub metadata: {tag}/{name}')
+    return asset
+
+
+DMG_NAME = f'Sapphire-CN-{VERSION[1:]}-arm64.dmg'
+ZIP_NAME = f'Sapphire-CN-{VERSION[1:]}-arm64-update.zip'
+PRIMARY_MIRRORS = {name: mirror_asset(VERSION, name) for name in [DMG_NAME, ZIP_NAME, 'SHA256SUMS.txt']}
+HAS_MIRROR = all(PRIMARY_MIRRORS.values())
+if HAS_MIRROR:
+    reference = next(asset for asset in LATEST['assets'] if asset['name'] == ZIP_NAME)
+    mirror_asset(VERSION, ZIP_NAME, reference)
+DMG = PRIMARY_MIRRORS[DMG_NAME]['url'] if HAS_MIRROR else GITHUB_DMG
+ZIP = PRIMARY_MIRRORS[ZIP_NAME]['url'] if HAS_MIRROR else GITHUB_ZIP
+CHECKSUMS = PRIMARY_MIRRORS['SHA256SUMS.txt']['url'] if HAS_MIRROR else DOWNLOAD_BASE + 'SHA256SUMS.txt'
+
+
 def migration_card():
     return '<div class="cn-card"><h2 class="!mt-0">CN8 Codex 额度识别修复与升级说明</h2><p>新增识别 Codex / ChatGPT 桌面版的内置 CLI，兼容系统及当前用户的 Applications 目录，修复从图形界面启动时提示“未找到 Codex CLI”的问题。仍需有效登录凭据；Claude 登录独立处理。</p><p><strong>CN6、CN7 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN8。CN4 及更早版本、CN5 临时签名版用户需先备份原应用，再手动安装一次 CN8。</strong></p><p>本版沿用团队 462JAMGP66 签名，并保留 CN7 权限设置入口修复。跨团队迁移后如 Helper 连接失败，请重新配置辅助服务并检查后台运行及相关权限。</p><p>仍为 Apple Development 签名、未公证开发预览。额度查询不发起模型任务，也不会替你登录或复制凭据；系统扩展等占位功能范围不变。</p></div>'
 
@@ -129,7 +163,7 @@ def main():
     script()
     about = f'''<div class="cn-card"><h2 class="!mt-0">项目来源</h2><p>Sapphire-CN 是基于 <a href="https://github.com/cshariq/Sapphire">Shariq Charolia 与贡献者开发的 Sapphire</a> 的独立二次开发分支，由 <a href="{REPO}">u7-u7/Sapphire-CN</a> 维护。本网站展示和提供下载的是中文增强分支，并非上游官方网站或官方中文版。</p></div>
     <div class="cn-card"><h2 class="!mt-0">本分支做了哪些改进？</h2><ul class="list-disc pl-6"><li>主要界面与权限说明中文适配。</li><li>Codex / Claude 官方订阅额度、同步状态与服务端重置时间展示。</li><li>DeepSeek、Sub2API、NewAPI 与自定义 JSON 平台余额查询。</li><li>Helper 启动连接与验证码通知修复。</li><li>本仓库 GitHub 应用内更新通道，包含公开 CN 预发布。</li></ul></div>
-    <div class="cn-card"><h2 class="!mt-0">下载与功能范围</h2><p>本站下载指向 Sapphire-CN 的 GitHub Release。上游原版安装包不包含本分支新增功能。部分公开源码为占位实现，订阅、系统扩展等功能需要额外配置；支持情况以 <a href="{REPO}/blob/main/README.md">本项目使用说明</a>和实际版本为准。</p></div>
+    <div class="cn-card"><h2 class="!mt-0">下载与功能范围</h2><p>本站提供 Sapphire-CN 的阿里云 OSS 安装包镜像，并保留 GitHub Release 备用下载。镜像与已发布附件逐文件核对大小和 SHA-256。上游原版安装包不包含本分支新增功能。部分公开源码为占位实现，订阅、系统扩展等功能需要额外配置；支持情况以 <a href="{REPO}/blob/main/README.md">本项目使用说明</a>和实际版本为准。</p></div>
     <div class="cn-card"><h2 class="!mt-0">致谢与源码</h2><p>感谢 Shariq Charolia 与 Sapphire 上游贡献者。网站视觉沿用上游设计，同类功能演示素材保留来源说明；中文分支截图来自本项目。原作者与贡献者署名予以保留，项目许可见 <a href="{REPO}/blob/main/LICENSE">仓库 LICENSE</a>，第三方资源遵循各自声明。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-secondary-btn" href="https://github.com/cshariq/Sapphire">上游项目</a><a class="apple-secondary-btn" href="{REPO}">Sapphire-CN 源码</a></div></div>'''
     about_page = content_page('faq.html','二次开发说明','独立维护的中文增强分支，保留上游署名与来源。',about)
     about_page = about_page.replace(f'{SITE}/faq', f'{SITE}/about').replace('href="/faq" class="header-nav-link is-active"', 'href="/faq" class="header-nav-link"')
@@ -137,13 +171,15 @@ def main():
     faq = json.loads((ROOT / 'content/project-faq.json').read_text())
     faq_html = '<div class="space-y-4">' + ''.join(f'<details class="cn-card" {"open" if i==0 else ""}><summary class="font-bold cursor-pointer">{html.escape(q["question"])}</summary><p class="mt-4">{html.escape(q["answer"])}</p></details>' for i,q in enumerate(faq)) + '</div>'
     (DIST / 'faq.html').write_text(content_page('faq.html','常见问题','从当前项目文档整理，帮助你安装和配置 Sapphire-CN。',faq_html))
-    install = f'''<div class="cn-card"><h2 class="!mt-0">{VERSION}</h2><p>Apple 芯片 arm64 · macOS 14.6 起 · 无需 Xcode。当前为 Apple Development 签名、未公证开发预览，无 Intel 安装包。</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-cta-btn !text-white" href="{DMG}">下载 DMG</a><a class="apple-secondary-btn" href="{ZIP}">ZIP 备用包</a><a class="apple-secondary-btn" href="{DOWNLOAD_BASE}SHA256SUMS.txt">校验文件</a></div></div>
+    source_note = '阿里云 OSS 国内镜像，与 GitHub 原包 SHA-256 一致。' if HAS_MIRROR else 'GitHub Releases。'
+    fallback = f'<a class="apple-secondary-btn" href="{GITHUB_DMG}">GitHub 备用 DMG</a><a class="apple-secondary-btn" href="{GITHUB_ZIP}">GitHub 备用 ZIP</a>' if HAS_MIRROR else ''
+    install = f'''<div class="cn-card"><h2 class="!mt-0">{VERSION}</h2><p>Apple 芯片 arm64 · macOS 14.6 起 · 无需 Xcode。当前为 Apple Development 签名、未公证开发预览，无 Intel 安装包。</p><p class="cn-note mt-3">下载来源：{source_note}</p><div class="flex flex-wrap gap-4 mt-6"><a class="apple-cta-btn !text-white" href="{DMG}">下载 DMG</a><a class="apple-secondary-btn" href="{ZIP}">ZIP 安装包</a><a class="apple-secondary-btn" href="{CHECKSUMS}">校验文件</a>{fallback}</div></div>
     <div class="cn-card"><h2 class="!mt-0">安装与首次打开</h2><ol><li>下载 DMG，把 Sapphire.app 拖入 Applications；如已安装旧版，先退出并备份。</li><li>打开应用。如被系统拦截，请核对来源和 SHA256，按 <a href="https://support.apple.com/zh-cn/102445">Apple 官方说明</a>在隐私与安全性中由本人允许打开。</li><li>在系统设置 → 通用 → 语言与地区 → 应用程序中，为 Sapphire 选择简体中文。</li><li>按住 ⌘ 点击刘海，在设置中启用所需组件和 AI 额度。按功能提示开启辅助功能和后台运行等权限。</li></ol></div>
-    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6、CN7 可检测 CN8；旧团队及临时签名版本需手动安装一次 CN8。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
+    <div class="cn-card"><h2 class="!mt-0">迁移后的应用内更新</h2><p>CN6、CN7 可检测 CN8；旧团队及临时签名版本需手动安装一次 CN8。之后通过设置 → 关于 → Sapphire 更新检测同团队新版本，安装仍需本人确认。现有客户端的应用内更新仍使用 GitHub；网站下载优先使用 OSS 镜像。<a href="{REPO}/blob/main/README.md">查看完整中文教程</a>。</p></div>'''
     download = content_page('subscribe.html','安装与下载','下载本项目的中文增强版本。',migration_card() + install)
     (DIST / 'download.html').write_text(download)
     (DIST / 'subscribe.html').write_text(download)
-    privacy = f'''<div class="cn-card"><h2 class="!mt-0">静态项目网站</h2><p>本站提供项目介绍、安装说明和公开更新记录，不提供账户注册或收款表单。源码、安装包与问题反馈均连接本项目 GitHub。</p><h2>额度查询与本地凭据</h2><p>应用按你配置的官方订阅或第三方平台接口查询数据。独立查询密钥通过应用的“保存查询密钥”存入 macOS 钥匙串；测试查询不会自动保存。不要在网站反馈中提交访问令牌、密钥或验证码。</p><h2>权限与功能</h2><p>辅助功能、后台运行、日历、通知、位置、蓝牙等权限按实际使用的功能授权。详细行为以 <a href="{REPO}">当前项目源码和使用教程</a>为准。</p><h2>外部服务</h2><p>下载和问题反馈访问 GitHub；应用中的第三方额度查询访问你配置的供应商服务。相应服务自行处理收到的请求。</p></div>'''
+    privacy = f'''<div class="cn-card"><h2 class="!mt-0">静态项目网站</h2><p>本站提供项目介绍、安装说明和公开更新记录，不提供账户注册或收款表单。源码和问题反馈连接本项目 GitHub，安装包提供阿里云 OSS 镜像和 GitHub 备用下载。</p><h2>额度查询与本地凭据</h2><p>应用按你配置的官方订阅或第三方平台接口查询数据。独立查询密钥通过应用的“保存查询密钥”存入 macOS 钥匙串；测试查询不会自动保存。不要在网站反馈中提交访问令牌、密钥或验证码。</p><h2>权限与功能</h2><p>辅助功能、后台运行、日历、通知、位置、蓝牙等权限按实际使用的功能授权。详细行为以 <a href="{REPO}">当前项目源码和使用教程</a>为准。</p><h2>外部服务</h2><p>镜像下载访问阿里云 OSS，备用下载和问题反馈访问 GitHub；应用中的第三方额度查询访问你配置的供应商服务。相应服务自行处理收到的请求。已发布客户端的应用内更新仍使用 GitHub 下载通道。</p></div>'''
     (DIST / 'privacy.html').write_text(content_page('privacy.html','数据与隐私','了解本站与应用的使用边界。',privacy))
     for name in ['issues.html','changelog.html']:
         page = shared((TEMPLATES / name).read_text())
@@ -153,7 +189,16 @@ def main():
             page=page.replace(old,new)
         page=page.replace('Basic, Pro & Ultra Exclusive','公开开发预览')
         (DIST / name).write_text(page)
-    (DIST / 'project-releases.json').write_text(json.dumps(RELEASES,ensure_ascii=False,indent=2)+'\n')
+    # Website-only download URLs. Keep updates/releases.json unchanged for older
+    # clients, whose trusted-host rules accept GitHub downloads only.
+    web_releases = json.loads(json.dumps(RELEASES))
+    for release in web_releases:
+        for asset in release['assets']:
+            mirror = mirror_asset(release['tag_name'], asset['name'], asset)
+            if mirror:
+                asset['github_download_url'] = asset['browser_download_url']
+                asset['browser_download_url'] = mirror['url']
+    (DIST / 'project-releases.json').write_text(json.dumps(web_releases,ensure_ascii=False,indent=2)+'\n')
     # 内容变化时更新脚本 URL，让已访问原复刻站的浏览器立即使用当前项目逻辑。
     digest = hashlib.sha256((DIST / 'script.js').read_bytes()).hexdigest()[:12]
     for page in DIST.glob('*.html'):

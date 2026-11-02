@@ -31,4 +31,26 @@
 - 后续发布：`python3 scripts/deploy-update.py`，与远端清单比对后仅上传变化文件，先备份再逐文件原子替换，并校验所有哈希，不重启服务。
 - 回退资料：`/opt/sapphire-site/backups/` 下保存 Caddy 配置和每次增量发布前的旧文件。原始完整发布包保留在 `/tmp/sapphire-20261031T163401Z.tar.gz`。
 
-正式域名使用 `sapphire.u7u7.top`，解析至上述阿里云 ECS；权威 DNS 由 Cloudflare 托管。旧 sslip.io 临时域名迁移后重定向到正式域名。官方 GitHub 安装包仍由 GitHub 下载。未复制上游 OTP、Stripe 或其他私有业务后台；网站不显示其付费计划。
+正式域名使用 `sapphire.u7u7.top`，解析至上述阿里云 ECS；权威 DNS 由 Cloudflare 托管。旧 sslip.io 临时域名迁移后重定向到正式域名。网站安装包主下载使用阿里云 OSS 杭州镜像，保留 GitHub 备用入口；现有客户端应用内更新仍由 GitHub 下载。未复制上游 OTP、Stripe 或其他私有业务后台；网站不显示其付费计划。
+
+
+## 安装包 OSS 镜像
+
+- 专用 Bucket：`sapphire-cn`，地域 `cn-hangzhou`，标准存储；未开 CDN 或传输加速。
+- Bucket ACL 保持 `private`，关闭此 Bucket 的阻止公共访问，仅对已核验的公开发行附件设置对象 ACL `public-read`；匿名用户不能列目录或写入。不要向该 Bucket 上传凭据或私有资料。
+- 固定路径：`https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/<tag>/<filename>`。
+- `content/download-mirrors.json` 只记录经公开下载校验的镜像、原 GitHub 地址、大小和 SHA-256；不含任何访问密钥。
+- `../scripts/mirror-cn-release.py` 使用官方 ossutil 2.x 和 gh。优先读取 OSS 标准环境变量/配置，否则在进程内复用本机 Workbench 的 AK profile；凭据不写入仓库。
+
+每次 GitHub Release 公开且附件上传完成后，在仓库根目录运行（将 tag 和本地附件目录替换为实际值）：
+
+```sh
+python3 scripts/mirror-cn-release.py v3.0-cn.8-preview --asset-directory /path/to/release --stage-only
+python3 scripts/mirror-cn-release.py v3.0-cn.8-preview --asset-directory /path/to/release
+python3 website/scripts/adapt-project.py
+python3 website/scripts/deploy-update.py
+```
+
+`--stage-only` 只私有上传并核对，不改变对象权限或网站链接。发布模式要求 Bucket 已允许公开对象，再把本次发行附件逐一设为公共只读，进行不带凭据的完整下载和 SHA-256 校验，全部通过才写入镜像清单。已有同路径不同内容会拒绝覆盖。没有本地附件时由 gh 下载原包。将镜像清单和更新后的网站来源清单提交到 GitHub。
+
+镜像清单缺少某版时，生成器自动使用该版 GitHub 下载地址；主下载需同时具有 DMG、更新 ZIP 和校验文件。网站专用 `project-releases.json` 可使用镜像，但 **`updates/releases.json` 必须保留 GitHub URL**，因为已发布客户端仍只信任 GitHub 下载域名。回退网站镜像可移除相应 release 的镜像清单条目并重新生成、增量部署，不必删除 OSS 对象或重启服务。

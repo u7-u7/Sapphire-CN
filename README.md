@@ -6,7 +6,9 @@
 
 本项目由 `u7-u7/Sapphire-CN` 独立维护，非上游官方网站或官方中文版；保留 Shariq Charolia 与上游贡献者署名，许可证见 [LICENSE](LICENSE)。
 
-📦 **[下载 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64.dmg)** · [ZIP 备用包](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.8-preview)
+📦 **[下载 DMG](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64.dmg)** · [ZIP 安装包](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.8-preview)
+
+下载优先使用阿里云 OSS 镜像，文件与 GitHub 原包 SHA-256 一致。[GitHub 备用 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64.dmg) · [GitHub 备用 ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/Sapphire-CN-3.0-cn.8-preview-arm64-update.zip)。现有客户端的应用内更新继续使用 GitHub。
 
 **`v3.0-cn.8-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
 
@@ -57,7 +59,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.8-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.8-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt

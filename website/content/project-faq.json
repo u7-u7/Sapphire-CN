@@ -4,6 +4,10 @@
     "answer": "CN8 沿用 CN6、CN7 的团队 462JAMGP66 签名，可从这两个版本的设置 → 关于 → Sapphire 更新获取。CN4 及更早版本、CN5 临时签名版需先退出并备份原应用，再手动安装一次 CN8 完成团队迁移。如 Helper 连接失败，请重新配置辅助服务及检查后台运行权限。本版仍未公证。"
   },
   {
+    "question": "下载源是阿里云 OSS 还是 GitHub？",
+    "answer": "网站主下载使用阿里云 OSS 杭州镜像，安装包与 GitHub Releases 原附件逐文件核对大小和 SHA-256。下载页提供 GitHub 备用 DMG 和 ZIP，并提供校验文件。现有客户端的应用内更新继续使用 GitHub，不因网站镜像切换而改变。"
+  },
+  {
     "question": "Codex 已登录，为什么 AI 额度仍提示未找到 CLI？",
     "answer": "旧版本未覆盖桌面应用新版内置 CLI 路径。CN8 已兼容系统和用户 Applications 目录中的 Codex / ChatGPT 内置 CLI，保留独立安装、Homebrew、nvm 和 PATH 查找方式，用户目录动态获取。更新后需有有效的订阅登录凭据，再按页面提示刷新；没有登录、服务限流或刷新冷却时不会伪造额度。Claude 的登录凭据独立，不能用 Codex 登录替代。"
   },
