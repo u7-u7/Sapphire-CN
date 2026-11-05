@@ -254,6 +254,7 @@ class LiveActivityManager: ObservableObject {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Sapphire", category: "LiveActivityManager")
     private var hasStarted = false
     private var dismissalTimer: Timer?
+    private var notificationPresentationSession: (app: String, startedAt: Date)?
     private var cancellables = Set<AnyCancellable>()
     typealias ActivityCandidate = (ActivityType, LiveActivityContent, TimeInterval?)
 
@@ -614,9 +615,6 @@ class LiveActivityManager: ObservableObject {
             $isScreenLocked.removeDuplicates().mapToVoid(),
             $currentNearDropPayload.removeDuplicates().mapToVoid(),
             $currentGeminiPayload.removeDuplicates().mapToVoid(),
-            notificationManager.$latestNotification
-                .removeDuplicates()
-                .mapToVoid(),
             ContinuityManager.shared.notificationBridge.$latest
                 .removeDuplicates()
                 .mapToVoid(),
@@ -690,6 +688,17 @@ class LiveActivityManager: ObservableObject {
                 .throttle(for: .milliseconds(500), scheduler: RunLoop.main, latest: true)
                 .eraseToAnyPublisher(),
         ]
+
+        // 新通知不能等待普通活动的 debounce 静默窗口或后台的 2 秒节流。
+        notificationManager.$latestNotification
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.lastEvalTime = 0
+                self.evaluateAndDisplayActivity(allowImmediateDismiss: true)
+            }
+            .store(in: &cancellables)
 
         Publishers.MergeMany(stateChangeTriggers)
             .debounce(for: .milliseconds(50), scheduler: RunLoop.main)
@@ -1149,6 +1158,9 @@ class LiveActivityManager: ObservableObject {
         self.activityContent = content
 
         self.contentUpdateID = UUID()
+        #if DEBUG
+        if type == .notification { logger.debug("Notification presentation updated") }
+        #endif
         if oldType != type || oldShape != notchShapeSignature {
             lastEvalTime = 0
         }
@@ -1158,20 +1170,28 @@ class LiveActivityManager: ObservableObject {
         }
         updateTickerRefreshTimer()
 
-        if let duration = duration {
-            self.dismissalTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    guard let self, self.currentActivity == type,
-                          self.activityContent.id == content.id else { return }
-                    self.dismissalTimer = nil
-                    self.handleActivityDismissal(for: type)
-                    self.currentActivity = .none
-                    self.activityContent = .none
-                    if type == .music { Task { await self.musicWidget.setMusicLiveActivityActive(false) } }
+        if let duration {
+            scheduleActivityDismissal(type: type, content: content, after: duration)
+        }
+    }
 
-                    self.lastEvalTime = 0
-                    self.evaluateAndDisplayActivity()
+    private func scheduleActivityDismissal(type: ActivityType, content: LiveActivityContent, after duration: TimeInterval) {
+        dismissalTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, self.currentActivity == type,
+                      self.activityContent.id == content.id else { return }
+                self.dismissalTimer = nil
+                // 输入回复时保留消息及接收人，不能因超时丢失草稿或切到另一条消息。
+                if type == .notification && self.notificationManager.isEditingNotification {
+                    self.scheduleActivityDismissal(type: type, content: content, after: 1)
+                    return
                 }
+                self.handleActivityDismissal(for: type)
+                self.currentActivity = .none
+                self.activityContent = .none
+                if type == .music { Task { await self.musicWidget.setMusicLiveActivityActive(false) } }
+                self.lastEvalTime = 0
+                self.evaluateAndDisplayActivity()
             }
         }
     }
@@ -1200,16 +1220,16 @@ class LiveActivityManager: ObservableObject {
             }
             if let notification = notificationManager.latestNotification,
                let code = notification.verificationCode,
-               activityContent.id == AnyHashable("notif-\(notification.id)") {
+               activityContent.id == AnyHashable("notif-\(notification.presentationID)") {
                 SmartInboxMonitor.shared.consumeOTP(code)
-                notificationManager.dismissNotification(id: notification.id)
+                notificationManager.dismissNotification(id: notification.presentationID)
             }
         case .notification:
             if let id = self.activityContent.id {
                 dismissedNotifications[id] = Date().addingTimeInterval(300)
                 if let notification = notificationManager.latestNotification,
-                   id == AnyHashable(notification.id) {
-                    notificationManager.dismissNotification(id: notification.id)
+                   id == AnyHashable(notification.presentationID) {
+                    notificationManager.dismissNotification(id: notification.presentationID)
                 }
             }
             clearNotificationState()
@@ -2003,15 +2023,15 @@ class LiveActivityManager: ObservableObject {
         guard let notification = notificationManager.latestNotification else {
             return nil
         }
-        let isCurrentNotification = currentActivity == .notification && activityContent.id == AnyHashable(notification.id)
+        let isCurrentNotification = currentActivity == .notification && activityContent.id == AnyHashable(notification.presentationID)
         if !isCurrentNotification && Date().timeIntervalSince(notification.date) > 120 {
-            notificationManager.dismissNotification(id: notification.id)
+            notificationManager.dismissNotification(id: notification.presentationID)
             return nil
         }
         if notification.verificationCode != nil, settingsModel.settings.otpLiveActivityEnabled {
             return nil
         }
-        if let until = dismissedNotifications[notification.id], until > Date() {
+        if let until = dismissedNotifications[AnyHashable(notification.presentationID)], until > Date() {
             return nil
         }
         let hoverBinding = Binding<Bool>(
@@ -2022,10 +2042,18 @@ class LiveActivityManager: ObservableObject {
             payload: notification,
             isHovered: hoverBinding
         )
+        let now = Date()
+        if currentActivity != .notification || notificationPresentationSession?.app != notification.appIdentifier {
+            notificationPresentationSession = (notification.appIdentifier, now)
+        }
+        let duration = NotificationPresentationPolicy.duration(
+            startedAt: notificationPresentationSession?.startedAt ?? now, now: now,
+            hasPendingApps: notificationManager.hasPendingNotifications
+        )
         return (
             .notification,
-            .full(view: AnyView(fullView), id: notification.id),
-            15.0
+            .full(view: AnyView(fullView), id: notification.presentationID),
+            duration
         )
     }
 
@@ -2047,12 +2075,12 @@ class LiveActivityManager: ObservableObject {
         notificationManager.start()
         if let notification = notificationManager.latestNotification,
            let code = notification.verificationCode {
-            let eventID = "notif-\(notification.id)"
+            let eventID = "notif-\(notification.presentationID)"
             let isCurrentEvent = currentActivity == .otp && activityContent.id == AnyHashable(eventID)
             // 当前弹窗保持到关闭/超时；已消费或过期的旧通知不能重新变成候选。
             if !isCurrentEvent && (SmartInboxMonitor.shared.hasConsumedOTP(code)
                 || Date().timeIntervalSince(notification.date) > 300) {
-                notificationManager.dismissNotification(id: notification.id)
+                notificationManager.dismissNotification(id: notification.presentationID)
                 return nil
             }
             SmartInboxMonitor.shared.consumeOTP(code)

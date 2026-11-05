@@ -3,7 +3,14 @@ import Foundation
 
 @main
 struct VerifyNotificationDelivery {
-    struct Event: Identifiable { let id: Int }
+    struct Event: Identifiable, Equatable { let id: Int }
+    struct Message: Identifiable, Equatable {
+        let id: Int
+        let app: String
+        let body: String
+        let presentationID = UUID()
+
+    }
 
     static func main() throws {
         precondition(NotificationForegroundPolicy.isSourceAppActive(sourceIdentifier: "com.tencent.xinWeChat", activeIdentifier: "com.tencent.xinWeChat"))
@@ -67,6 +74,37 @@ struct VerifyNotificationDelivery {
         single.enqueue(Event(id: 2))
         precondition(single.first?.id == 1)
 
+        var messages = NotificationDeliveryQueue<Message>(groupingBy: { $0.app })
+        let firstMessage = Message(id: 1, app: "A", body: "first")
+        let secondMessage = Message(id: 2, app: "A", body: "second")
+        messages.enqueue(firstMessage)
+        messages.enqueue(Message(id: 10, app: "B", body: "B first"))
+        messages.enqueue(secondMessage)
+        precondition(messages.first?.body == "second", "Same-app burst updates current popup immediately")
+        precondition(messages.items.map(\.app) == ["A", "B"], "Other apps keep their turn")
+        messages.enqueue(Message(id: 11, app: "B", body: "B latest"))
+        precondition(messages.items.count == 2 && messages.items[1].body == "B latest")
+        let updatedMessage = Message(id: 2, app: "A", body: "edited body")
+        messages.enqueue(updatedMessage)
+        precondition(messages.first?.body == "edited body", "Same record ID can change body")
+        messages.dismiss(where: { $0.presentationID == secondMessage.presentationID })
+        precondition(messages.first?.presentationID == updatedMessage.presentationID, "An old callback cannot close a new revision of the same record")
+        messages.enqueue(updatedMessage)
+        precondition(messages.first?.presentationID == updatedMessage.presentationID, "Publishing the same snapshot cannot reset the display timer")
+        messages.dismiss(where: { $0.presentationID == updatedMessage.presentationID })
+        precondition(messages.first?.body == "B latest")
+
+        var protected = NotificationDeliveryQueue<Message>(groupingBy: { $0.app })
+        protected.enqueue(firstMessage)
+        protected.enqueue(secondMessage, replacingCurrent: false)
+        protected.enqueue(Message(id: 3, app: "A", body: "latest while typing"), replacingCurrent: false)
+        precondition(protected.first?.presentationID == firstMessage.presentationID && protected.items.count == 2)
+        protected.enqueue(Message(id: 1, app: "A", body: "first"), replacingCurrent: false)
+        precondition(protected.items[1].body == "first", "A return to previous content must replace the pending update")
+        protected.enqueue(secondMessage, replacingCurrent: false)
+        protected.coalesceCurrentGroup()
+        precondition(protected.first?.presentationID == secondMessage.presentationID && protected.items.count == 1)
+
         let start = Date(timeIntervalSinceReferenceDate: 1_000)
         var cursor = NotificationDeliveryCursor(now: start)
         let now = start.addingTimeInterval(10)
@@ -77,6 +115,15 @@ struct VerifyNotificationDelivery {
         precondition(cursor.accept(id: 1, deliveredAt: 1_006, now: now), "Out-of-order record IDs cannot lose delivery")
         precondition(!cursor.accept(id: 3, deliveredAt: 1_030, now: now), "Reject future records")
         precondition(!cursor.accept(id: 4, deliveredAt: 1_005, now: start.addingTimeInterval(200)), "Drop stale pending delivery")
-        print("PASS: foreground app and helper suppression, generic app parsing, malformed records, FIFO, deduplication, delayed dismissal, overflow, filters, delivery timing")
+        let originalRecord = SystemNotificationRecord(appIdentifier: "A", title: "Title", body: "first")
+        let updatedRecord = SystemNotificationRecord(appIdentifier: "A", title: "Title", body: "second")
+        var contentCursor = NotificationDeliveryCursor(now: start)
+        precondition(contentCursor.accept(id: 1, deliveredAt: 1_005, now: now, content: originalRecord))
+        precondition(contentCursor.accept(id: 1, deliveredAt: 1_005, now: now, content: updatedRecord), "An unchanged timestamp cannot hide updated message content")
+        precondition(!contentCursor.accept(id: 1, deliveredAt: 1_005, now: now, content: updatedRecord))
+        precondition(NotificationPresentationPolicy.duration(startedAt: start, now: now, hasPendingApps: false) == 6)
+        precondition(NotificationPresentationPolicy.duration(startedAt: start, now: now, hasPendingApps: true) == 2)
+        precondition(NotificationPresentationPolicy.duration(startedAt: start, now: start.addingTimeInterval(20), hasPendingApps: true) == 0.1)
+        print("PASS: burst coalescing, same-record revisions, stale callbacks, reply protection, timer policy, foreground suppression, parsing, FIFO, overflow and delivery timing")
     }
 }

@@ -86,7 +86,6 @@ final class PassthroughHostingView<Content: View>: NSHostingView<Content> {
 }
 
 @MainActor
-@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate, MainAppDelegate, NSWindowDelegate {
     private static var isRunningUnitTests: Bool {
         ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
@@ -241,6 +240,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         guard !Self.isRunningUnitTests else { return }
+        if NotificationWindowRecovery.runAgentIfRequested() { return }
+        notificationManager.recoverStaleNotificationWindows()
         GlobalEventTap.shared.installTrustAwareness()
         AccessibilityTrustMonitor.shared.start()
 
@@ -1143,7 +1144,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         return false
     }
 
+    private var awaitingNotificationRestoration = false
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard !NotificationWindowRecovery.isAgentProcess, isMainAppRunning else { return .terminateNow }
+        guard !awaitingNotificationRestoration else { return .terminateLater }
+        awaitingNotificationRestoration = true
+        Task { @MainActor in
+            await notificationManager.shutdownRealtime()
+            sender.reply(toApplicationShouldTerminate: true)
+        }
+        return .terminateLater
+    }
+
     func applicationWillTerminate(_ aNotification: Notification) {
+        guard !NotificationWindowRecovery.isAgentProcess else { return }
         aiUsageSettingsCancellable?.cancel()
         aiUsageSettingsCancellable = nil
         AIUsageService.shared.stop()

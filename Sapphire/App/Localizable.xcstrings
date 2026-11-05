@@ -1,6 +1,136 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Realtime notification takeover (local test)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实时通知接管（本地测试）"
+          }
+        }
+      }
+    },
+    "Use Accessibility to take over system banners. Recovery must be ready before a banner is hidden.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过辅助功能接管系统横幅，恢复看护准备好后才会隐藏原生提醒。"
+          }
+        }
+      }
+    },
+    "Keep Desktop temporary banners enabled for apps you want to take over. Sapphire does not change macOS notification settings. Focus and screen-sharing silence are respected; unknown banners stay native.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请为需要接管的应用开启系统“桌面”临时横幅。Sapphire 不自动改系统通知开关；遵从专注和共享屏幕静音，无法识别的横幅保留原生。"
+          }
+        }
+      }
+    },
+    "Disable Takeover and Restore Native": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭接管并恢复原生通知"
+          }
+        }
+      }
+    },
+    "Realtime mode requires system Desktop banners. Database-only mode can use Notification Center without Desktop banners.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实时模式需要系统生成“桌面”横幅；传统数据库模式可以只开启通知中心。"
+          }
+        }
+      }
+    },
+    "Realtime takeover is off.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实时接管已关闭。"
+          }
+        }
+      }
+    },
+    "Preparing notification recovery before takeover…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在准备恢复看护，准备好后才开始接管…"
+          }
+        }
+      }
+    },
+    "Realtime takeover is ready. System Focus and screen-sharing silence still apply.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实时接管已就绪；系统专注和共享屏幕静音仍然有效。"
+          }
+        }
+      }
+    },
+    "Allow Accessibility for Sapphire before enabling realtime takeover.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先为 Sapphire 开启辅助功能访问，再启用实时接管。"
+          }
+        }
+      }
+    },
+    "Recovery is unavailable. Native notifications are preserved.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复看护不可用，保留系统原生提醒。"
+          }
+        }
+      }
+    },
+    "Takeover stopped and native notifications were restored. Retry when ready.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接管已停止，原生通知已恢复，可重新连接。"
+          }
+        }
+      }
+    },
+    "Native restoration is incomplete. Keep Sapphire open and retry restoration.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分原生通知尚未复位，请保留 Sapphire 运行并重试恢复。"
+          }
+        }
+      }
+    },
+    "Some banners remain native because their source or layout could not be verified.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "部分横幅的来源或布局无法确认，已保留原生显示。"
+          }
+        }
+      }
+    },
     "Notifications from the app you are currently using are skipped. Switching to an app also clears its queued notifications.": {
       "localizations": {
         "zh-Hans": {

@@ -1528,6 +1528,7 @@ struct Settings: Codable, Equatable {
     var bluetoothUnlockUseScreensaver: Bool = false
     var bluetoothUnlockTurnOffScreenOnLock: Bool = true
     var masterNotificationsEnabled: Bool = true
+    var notificationRealtimeEnabled: Bool = false
     var iMessageNotificationsEnabled: Bool = true
     var airDropNotificationsEnabled: Bool = true
     var faceTimeNotificationsEnabled: Bool = true

@@ -1548,7 +1548,7 @@ struct NotificationLiveActivityView: View {
             }
             .onTapGesture {
                 NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                notificationManager.dismissNotification(id: payload.id)
+                notificationManager.dismissNotification(id: payload.presentationID)
             }
 
             if isFetchingAttachment {
@@ -1581,7 +1581,7 @@ struct NotificationLiveActivityView: View {
         .padding(.bottom, 12)
         .frame(width: 400)
         .frame(minHeight: 120)
-        .task(id: payload.id) {
+        .task(id: payload.presentationID) {
             self.contactImage = await iMessageManager.fetchContactImage(forName: payload.title)
             attachment = nil; isFetchingAttachment = false; audioPlaybackState = .idle
             guard payload.hasAudioAttachment || payload.hasImageAttachment else { return }
@@ -1594,11 +1594,15 @@ struct NotificationLiveActivityView: View {
         }
         .onChange(of: isHovered) { _, newIsHovered in if !newIsHovered { isTextFieldFocused = false } }
         .onChange(of: isTextFieldFocused) { _, isFocused in
+            notificationManager.setNotificationEditing(isFocused, id: payload.presentationID)
             if let appDelegate = NSApp.delegate as? AppDelegate {
                 if isFocused { appDelegate.makeNotchWindowFocusable() } else { appDelegate.revertNotchWindowFocus() }
             }
         }
-        .onDisappear { isHovered = false }
+        .onDisappear {
+            isHovered = false
+            notificationManager.setNotificationEditing(false, id: payload.presentationID)
+        }
     }
 
     @ViewBuilder
@@ -1634,7 +1638,7 @@ struct NotificationLiveActivityView: View {
             }
             .onTapGesture {
                 NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                notificationManager.dismissNotification(id: payload.id)
+                notificationManager.dismissNotification(id: payload.presentationID)
             }
 
             actionButtons
@@ -1649,7 +1653,7 @@ struct NotificationLiveActivityView: View {
     private var actionButtons: some View {
         HStack {
             standardActionButton(title: "Dismiss", systemName: "xmark") {
-                notificationManager.dismissNotification(id: payload.id)
+                notificationManager.dismissNotification(id: payload.presentationID)
             }
 
             Spacer()
@@ -1660,7 +1664,7 @@ struct NotificationLiveActivityView: View {
                     withAnimation(.spring) { didCopyCode = true }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         withAnimation(.spring) { didCopyCode = false }
-                        notificationManager.dismissNotification(id: payload.id)
+                        notificationManager.dismissNotification(id: payload.presentationID)
                     }
                 }) {
                     Label(
@@ -1681,12 +1685,12 @@ struct NotificationLiveActivityView: View {
             if payload.appIdentifier == "com.apple.sharingd" {
                 standardActionButton(title: "Show", systemName: "folder", isPrimary: true) {
                     if let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first { NSWorkspace.shared.open(url) }
-                    notificationManager.dismissNotification(id: payload.id)
+                    notificationManager.dismissNotification(id: payload.presentationID)
                 }
             } else {
                 standardActionButton(title: "Open", systemName: "arrow.up.forward.app", isPrimary: true) {
                     NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                    notificationManager.dismissNotification(id: payload.id)
+                    notificationManager.dismissNotification(id: payload.presentationID)
                 }
             }
         }
@@ -1696,7 +1700,7 @@ struct NotificationLiveActivityView: View {
         let msg = replyText.trimmingCharacters(in: .whitespacesAndNewlines); guard !msg.isEmpty else { return }
         iMessageManager.sendMessage(msg, to: payload.title)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            replyText = ""; isTextFieldFocused = false; notificationManager.dismissNotification(id: payload.id)
+            replyText = ""; isTextFieldFocused = false; notificationManager.dismissNotification(id: payload.presentationID)
         }
     }
 

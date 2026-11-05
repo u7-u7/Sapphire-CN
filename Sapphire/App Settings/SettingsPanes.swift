@@ -126,7 +126,8 @@ struct LockedSettingsSectionView: View {
 struct RequiredPermissionsView: View {
     @ObservedObject private var permissionsManager = PermissionsManager.shared
     let section: SettingsSection
-    private var requiredPermissions: [PermissionItem] { permissionsManager.allPermissions.filter { section.requiredPermissions.contains($0.type) } }
+    var typesOverride: [PermissionType]? = nil
+    private var requiredPermissions: [PermissionItem] { permissionsManager.allPermissions.filter { (typesOverride ?? section.requiredPermissions).contains($0.type) } }
     private var missingPermissions: [PermissionItem] { requiredPermissions.filter { permissionsManager.status(for: $0.type) != .granted } }
     var body: some View {
         if !requiredPermissions.isEmpty {
@@ -5024,9 +5025,35 @@ struct NotificationsSettingsView: View {
 
                 InfoContainer(text: "Mirror new system notifications from any enabled app in the notch. Custom app dialogs are not system notifications. Native banners keep their existing settings.", iconName: "bell.badge", color: .blue)
 
+                VStack(alignment: .leading, spacing: 12) {
+                    ToggleRow(
+                        title: "Realtime notification takeover (local test)",
+                        description: "Use Accessibility to take over system banners. Recovery must be ready before a banner is hidden.",
+                        isOn: $settings.settings.notificationRealtimeEnabled
+                    )
+                    Text(LocalizedStringKey(notificationManager.realtimeStatus.message))
+                        .font(.callout)
+                    if settings.settings.notificationRealtimeEnabled {
+                        Text("Keep Desktop temporary banners enabled for apps you want to take over. Sapphire does not change macOS notification settings. Focus and screen-sharing silence are respected; unknown banners stay native.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        HStack {
+                            Button("Retry Connection") { notificationManager.retryConnection() }
+                            Button("Accessibility") { PermissionsManager.shared.requestPermission(.accessibility) }
+                            Button("Disable Takeover and Restore Native") {
+                                settings.settings.notificationRealtimeEnabled = false
+                            }
+                        }
+                    }
+                }
+                .padding(20)
+                .modifier(SettingsContainerModifier())
+
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Notifications from the app you are currently using are skipped. Switching to an app also clears its queued notifications.")
-                    Text("For island-only alerts, keep Allow Notifications and Notification Center enabled in macOS, and turn off Desktop for the apps you want to mirror. This setting remains in effect when Sapphire quits.")
+                    Text(LocalizedStringKey(settings.settings.notificationRealtimeEnabled
+                         ? "Realtime mode requires system Desktop banners. Database-only mode can use Notification Center without Desktop banners."
+                         : "For island-only alerts, keep Allow Notifications and Notification Center enabled in macOS, and turn off Desktop for the apps you want to mirror. This setting remains in effect when Sapphire quits."))
                         .foregroundStyle(.secondary)
                     Button("Open macOS Notification Settings") {
                         if let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") {
@@ -5039,11 +5066,13 @@ struct NotificationsSettingsView: View {
                 .modifier(SettingsContainerModifier())
 
                 VStack(alignment: .leading, spacing: 12) {
-                    Text(LocalizedStringKey(notificationManager.monitoringStatus.message))
-                        .font(.callout)
+                    if !settings.settings.notificationRealtimeEnabled {
+                        Text(LocalizedStringKey(notificationManager.monitoringStatus.message))
+                            .font(.callout)
+                    }
                     HStack {
                         Button("Retry Connection") { notificationManager.retryConnection() }
-                        if notificationManager.monitoringStatus != .monitoring {
+                        if !settings.settings.notificationRealtimeEnabled, notificationManager.monitoringStatus != .monitoring {
                             Button("Full Disk Access") {
                                 PermissionsManager.shared.requestPermission(.fullDiskAccess)
                             }
@@ -5200,7 +5229,7 @@ struct NotificationsSettingsView: View {
                 .opacity(settings.settings.masterNotificationsEnabled ? 1.0 : 0.5)
                 .animation(.easeInOut, value: settings.settings.masterNotificationsEnabled)
 
-                RequiredPermissionsView(section: .notifications)
+                RequiredPermissionsView(section: .notifications, typesOverride: settings.settings.notificationRealtimeEnabled ? [.accessibility] : nil)
             }
             .onAppear { notificationManager.start() }
             .padding(25)

@@ -145,6 +145,10 @@ xcrun swiftc -swift-version 5 -parse-as-library \
 
 实机验收应覆盖：不同应用的普通通知、连续通知、OTP 去重、单条关闭与超时、关闭通知总开关、授权失败后恢复、系统通知数据库重建、锁屏及全屏。原生横幅保持系统设置；系统静默策略与隐藏预览策略需要单独验证。应用自绘弹窗不属于此监听范围。通过离线回归及编译检查不等于已经通过上述实机验收。
 
+连续消息修复采用按应用合并：同应用的新消息刷新当前弹窗并重新计时，其他应用各保留最新一条。普通提醒为 6 秒，有其他应用等待时限制同一应用连续占用至 12 秒。iMessage 输入回复期间保留当前消息，结束输入后刷新最新消息。去重同时比较正文及投递时间，关闭和超时按展示版本匹配，避免旧回调误关闭新内容。
+
+健康连接的补偿检查为 1 秒，权限或连接失败时退避重试；保留数据库、WAL 和目录监听，事件合并为 50ms。新通知使用独立活动订阅。实际到达时间仍受 macOS 通知落盘与主线程负载影响，不能把该检查间隔解释为端到端延迟保证。Debug 诊断仅记录延迟、队列长度和展示状态更新，不记录来源、标题、正文或验证码。
+
 来源应用正在前台时，其通知不会入队；切回该应用时，当前展示及排队中的同来源通知会清除，离开后不会补播。判断使用 `NSWorkspace` 的实时前台应用，支持相同 bundle identifier 和应用包内的通知助手。
 
 需要只显示灵动岛提醒时，在 macOS“系统设置 → 通知 → 对应应用”关闭“桌面”，保持“允许通知”和“通知中心”开启。此设置由 macOS 按应用保存，退出 Sapphire 后仍然生效；新安装的应用需要单独配置。不要用关闭通知总开关、全局勿扰或现有 FocusNotificationSuppressor 代替：后者还会关闭通知中心及锁屏展示，超出隐藏右侧横幅的范围。
@@ -213,3 +217,32 @@ CN9 主应用 build 9，签名团队继续为 `462JAMGP66`。镜像路径必须�
 ### CN10 系统通知上岛
 
 CN10 主应用 build 为 10，发行标识为 `3.0-cn.10-preview`，沿用团队 `462JAMGP66` 的证书与 CN9 各组件的权限声明，按既有流程由内向外签名。更新清单继续使用 OSS 优先、GitHub 回退。安装包不包含本机测试偏好设置，不自动修改其他用户的完全磁盘访问权限或原生通知横幅。功能、权限、已验证范围及限制见 [CN10 发行记录](releases/3.0-cn.10-preview.md)。
+
+### CN11 本地实时接管验证
+
+CN11 暂不发布。实时模式初始关闭，设置页单独开启；来源应用需保留 macOS 桌面临时横幅。只有来源、布局和恢复看护均可验证时才移走原生浮层，其他情况保留原生。实时模式不从通知数据库补弹被专注或共享策略静音的消息，传统数据库模式仍可用。
+
+本地测试包需额外嵌入 `Contents/MacOS/SapphireNotificationRecovery`，使用主程序同团队、同 identifier 的有效签名；不能与 root Helper 混用。该同用户进程仅执行受约束的通知窗口移动及恢复。原坐标以 0600 窗口元数据日志保存，不保存通知正文。缺少看护或握手失败时不接管。
+
+编译后用签名有效的同团队应用作权限声明参考，输出目录必须尚不存在：
+
+```sh
+python3 scripts/package-notification-local.py \
+  --built-app /tmp/SapphireCNLocalizationBuild/Build/Products/Debug/Sapphire.app \
+  --reference-app /Applications/Sapphire.app \
+  --output /tmp/SapphireCN11Local \
+  --identity '你的有效签名身份'
+```
+
+纯模型及恢复协议检查：
+
+```sh
+swiftc -swift-version 5 Sapphire/Services/Miscellaneous/NotificationRealtimeModel.swift scripts/verify-notification-realtime.swift -o /tmp/verify-notification-realtime
+/tmp/verify-notification-realtime
+swiftc -swift-version 5 -D NOTIFICATION_RECOVERY_TESTING Sapphire/Services/Miscellaneous/NotificationWindowRecovery.swift scripts/verify-notification-recovery.swift -o /tmp/verify-notification-recovery
+/tmp/verify-notification-recovery
+```
+
+Debug 验收入口只生成本应用的受控通知及脱敏 AX 样本，支持正常复位、父进程强杀或暂停、看护强杀及双方退出后的冷启动恢复。直接从终端执行会使用终端的 TCC 归属；真实授权检查应从 LaunchServices 启动。一次性测试请求放在当前用户临时目录的 `SapphireCN11TestLaunch-UID.json`（0600），内容为 `{"--test-session":"UUID","--scenario":"inspect"}`；60 秒内启动时消费，不适用于 Release。样本和元数据位于 `SapphireCN11SelfTests/UUID`。共享屏幕允许通知仅可在明确临时授权后更改，结束立即恢复。
+
+主程序死亡或主线程心跳超时后由看护恢复；看护死亡由主程序恢复。若整个进程组都被杀，需下次启动按日志恢复，无法即时复位。辅助功能撤回或通知中心无响应时保留记录并重试，设置页显示恢复未完成。真实跨应用、未知布局、通知中心展开、多屏和休眠验收完成前，不应默认开启或进入公开更新清单。

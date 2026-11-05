@@ -14,7 +14,7 @@ enum NotificationForegroundPolicy {
 }
 
 /// macOS 通知记录的兼容边界。仅解析通知正文，不访问源应用的聊天数据。
-struct SystemNotificationRecord {
+struct SystemNotificationRecord: Equatable {
     let appIdentifier: String
     let title: String
     let body: String
@@ -34,8 +34,12 @@ struct SystemNotificationRecord {
 
 /// 投递时间可以在插入数据库后才补齐，不能只靠 rec_id 跳过已扫描的行。
 struct NotificationDeliveryCursor {
+    private struct Revision: Equatable {
+        let deliveredAt: TimeInterval
+        let content: SystemNotificationRecord?
+    }
     private var startedAt: TimeInterval
-    private var deliveredRecords: [Int64: TimeInterval] = [:]
+    private var deliveredRecords: [Int64: Revision] = [:]
     private let maximumAge: TimeInterval = 120
 
     init(now: Date = Date()) { startedAt = now.timeIntervalSinceReferenceDate }
@@ -44,28 +48,43 @@ struct NotificationDeliveryCursor {
         max(startedAt, now.timeIntervalSinceReferenceDate - maximumAge)
     }
 
-    mutating func accept(id: Int64, deliveredAt: TimeInterval, now: Date) -> Bool {
+    mutating func accept(id: Int64, deliveredAt: TimeInterval, now: Date, content: SystemNotificationRecord? = nil) -> Bool {
         let earliest = cutoff(now: now)
-        deliveredRecords = deliveredRecords.filter { $0.value >= earliest }
+        deliveredRecords = deliveredRecords.filter { $0.value.deliveredAt >= earliest }
+        let revision = Revision(deliveredAt: deliveredAt, content: content)
         guard deliveredAt > 0, deliveredAt >= earliest,
               deliveredAt <= now.timeIntervalSinceReferenceDate + 5,
-              deliveredRecords[id] != deliveredAt else { return false }
-        deliveredRecords[id] = deliveredAt
+              deliveredRecords[id] != revision else { return false }
+        deliveredRecords[id] = revision
         return true
     }
 }
 
-/// 保持当前展示项稳定，避免一次数据库写入中的后续通知覆盖队首。
-struct NotificationDeliveryQueue<Element: Identifiable> where Element.ID: Hashable {
+/// 同应用合并到最新消息，不同应用保留原来的排队顺序。
+struct NotificationDeliveryQueue<Element: Identifiable & Equatable> where Element.ID: Hashable {
     private(set) var items: [Element] = []
     private let capacity: Int
+    private let groupingKey: ((Element) -> String)?
 
-    init(capacity: Int = 100) { self.capacity = max(1, capacity) }
+    init(capacity: Int = 100, groupingBy: ((Element) -> String)? = nil) {
+        self.capacity = max(1, capacity)
+        self.groupingKey = groupingBy
+    }
 
     var first: Element? { items.first }
 
-    mutating func enqueue(_ element: Element) {
-        guard !items.contains(where: { $0.id == element.id }) else { return }
+    mutating func enqueue(_ element: Element, replacingCurrent: Bool = true) {
+        let replacement = items.indices.first { index in
+            guard replacingCurrent || index != 0 else { return false }
+            if let groupingKey { return groupingKey(items[index]) == groupingKey(element) }
+            return items[index].id == element.id
+        }
+        if let replacement {
+            guard items[replacement] != element else { return }
+            items[replacement] = element
+            return
+        }
+        guard first != element else { return }
         // 保留正在阅读的首项；突发洪峰时丢弃最旧的待展示项。
         if items.count == capacity {
             guard capacity > 1 else { return }
@@ -74,13 +93,35 @@ struct NotificationDeliveryQueue<Element: Identifiable> where Element.ID: Hashab
         items.append(element)
     }
 
+    mutating func coalesceCurrentGroup() {
+        guard let groupingKey, let first,
+              let next = items.dropFirst().last(where: { groupingKey($0) == groupingKey(first) }) else { return }
+        items.removeAll { groupingKey($0) == groupingKey(first) }
+        items.insert(next, at: 0)
+    }
+
     mutating func dismiss(id: Element.ID) {
-        // 旧视图的延迟回调不能关闭已经切换到的新通知。
-        guard first?.id == id else { return }
+        dismiss(where: { $0.id == id })
+    }
+
+    mutating func dismiss(where matches: (Element) -> Bool) {
+        // 旧视图的延迟回调必须匹配展示版本，不能关闭同记录的新正文。
+        guard let first, matches(first) else { return }
         items.removeFirst()
     }
 
     mutating func retain(where predicate: (Element) -> Bool) {
         items.removeAll { !predicate($0) }
+    }
+}
+
+enum NotificationPresentationPolicy {
+    static let displayDuration: TimeInterval = 6
+    static let maximumContinuousDuration: TimeInterval = 12
+
+    static func duration(startedAt: Date, now: Date, hasPendingApps: Bool) -> TimeInterval {
+        guard hasPendingApps else { return displayDuration }
+        // 同应用连续刷新时也为其他应用留出展示机会，避免无限延长计时器。
+        return max(0.1, min(displayDuration, maximumContinuousDuration - now.timeIntervalSince(startedAt)))
     }
 }
