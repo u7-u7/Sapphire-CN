@@ -220,7 +220,7 @@ CN10 主应用 build 为 10，发行标识为 `3.0-cn.10-preview`，沿用团队
 
 ### CN11 本地实时接管验证
 
-CN11 暂不发布。实时模式初始关闭，设置页单独开启；来源应用需保留 macOS 桌面临时横幅。只有来源、布局和恢复看护均可验证时才移走原生浮层，其他情况保留原生。实时模式不从通知数据库补弹被专注或共享策略静音的消息，传统数据库模式仍可用。
+CN11 按用户后续指令发布为开发预览，验证边界见 [CN11 发行记录](releases/3.0-cn.11-preview.md)。实时模式初始关闭，设置页单独开启；来源应用需保留 macOS 桌面临时横幅。只有来源、布局和恢复看护均可验证时才移走原生浮层，其他情况保留原生。实时模式不从通知数据库补弹被专注或共享策略静音的消息，传统数据库模式仍可用。
 
 本地测试包需额外嵌入 `Contents/MacOS/SapphireNotificationRecovery`，使用主程序同团队、同 identifier 的有效签名；不能与 root Helper 混用。该同用户进程仅执行受约束的通知窗口移动及恢复。原坐标以 0600 窗口元数据日志保存，不保存通知正文。缺少看护或握手失败时不接管。
 
@@ -243,6 +243,6 @@ swiftc -swift-version 5 -D NOTIFICATION_RECOVERY_TESTING Sapphire/Services/Misce
 /tmp/verify-notification-recovery
 ```
 
-Debug 验收入口只生成本应用的受控通知及脱敏 AX 样本，支持正常复位、父进程强杀或暂停、看护强杀及双方退出后的冷启动恢复。直接从终端执行会使用终端的 TCC 归属；真实授权检查应从 LaunchServices 启动。一次性测试请求放在当前用户临时目录的 `SapphireCN11TestLaunch-UID.json`（0600），内容为 `{"--test-session":"UUID","--scenario":"inspect"}`；60 秒内启动时消费，不适用于 Release。样本和元数据位于 `SapphireCN11SelfTests/UUID`。共享屏幕允许通知仅可在明确临时授权后更改，结束立即恢复。
+公开构建不启用受控诊断入口。需专门验收时额外传入 `SWIFT_ACTIVE_COMPILATION_CONDITIONS="DEBUG CN11_NOTIFICATION_DIAGNOSTICS"`。该 Debug 验收入口只生成本应用的受控通知及脱敏 AX 样本，支持正常复位、父进程强杀或暂停、看护强杀及双方退出后的冷启动恢复。直接从终端执行会使用终端的 TCC 归属；真实授权检查应从 LaunchServices 启动。一次性测试请求放在当前用户临时目录的 `SapphireCN11TestLaunch-UID.json`（0600），内容为 `{"--test-session":"UUID","--scenario":"inspect"}`；60 秒内启动时消费，不适用于 Release。样本和元数据位于 `SapphireCN11SelfTests/UUID`。共享屏幕允许通知仅可在明确临时授权后更改，结束立即恢复。
 
 主程序死亡或主线程心跳超时后由看护恢复；看护死亡由主程序恢复。若整个进程组都被杀，需下次启动按日志恢复，无法即时复位。辅助功能撤回或通知中心无响应时保留记录并重试，设置页显示恢复未完成。真实跨应用、未知布局、通知中心展开、多屏和休眠验收完成前，不应默认开启或进入公开更新清单。

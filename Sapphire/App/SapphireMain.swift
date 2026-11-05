@@ -14,7 +14,7 @@ struct SapphireMain {
             return
         }
         if URL(fileURLWithPath: CommandLine.arguments[0]).lastPathComponent == "SapphireNotificationRecovery" { return }
-        #if DEBUG
+        #if DEBUG && CN11_NOTIFICATION_DIAGNOSTICS
         if NotificationRealtimeDiagnostics.runIfRequested() { return }
         #endif
         _ = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)

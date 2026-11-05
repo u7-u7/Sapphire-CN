@@ -6,15 +6,15 @@
 
 本项目由 `u7-u7/Sapphire-CN` 独立维护，非上游官方网站或官方中文版；保留 Shariq Charolia 与上游贡献者署名，许可证见 [LICENSE](LICENSE)。
 
-📦 **[下载 DMG](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.10-preview/Sapphire-CN-3.0-cn.10-preview-arm64.dmg)** · [ZIP 安装包](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.10-preview/Sapphire-CN-3.0-cn.10-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.10-preview)
+📦 **[下载 DMG](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.11-preview/Sapphire-CN-3.0-cn.11-preview-arm64.dmg)** · [ZIP 安装包](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.11-preview/Sapphire-CN-3.0-cn.11-preview-arm64-update.zip) · [发布说明与校验文件](https://github.com/u7-u7/Sapphire-CN/releases/tag/v3.0-cn.11-preview)
 
-下载优先使用阿里云 OSS 镜像，文件与 GitHub 原包 SHA-256 一致。[GitHub 备用 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.10-preview/Sapphire-CN-3.0-cn.10-preview-arm64.dmg) · [GitHub 备用 ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.10-preview/Sapphire-CN-3.0-cn.10-preview-arm64-update.zip)。CN9 起应用内检查和下载更新优先使用 OSS，失败时回退 GitHub。CN6–CN8 升级 CN10 这一次仍走 GitHub，CN9 优先使用 OSS，也可从镜像手动安装。
+下载优先使用阿里云 OSS 镜像，文件与 GitHub 原包 SHA-256 一致。[GitHub 备用 DMG](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.11-preview/Sapphire-CN-3.0-cn.11-preview-arm64.dmg) · [GitHub 备用 ZIP](https://github.com/u7-u7/Sapphire-CN/releases/download/v3.0-cn.11-preview/Sapphire-CN-3.0-cn.11-preview-arm64-update.zip)。CN9 起应用内检查和下载更新优先使用 OSS，失败时回退 GitHub。CN6–CN8 升级 CN11 这一次仍走 GitHub，CN9–CN10 优先使用 OSS，也可从镜像手动安装。
 
-**`v3.0-cn.10-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
+**`v3.0-cn.11-preview` · Apple 芯片 arm64 · 项目最低 macOS 14.6 · 无需 Xcode**
 
-🛠️ CN10 新增系统通知上岛、前台应用免打扰、连续通知排队与连接状态；保留 OSS 优先更新和 GitHub 回退。通知需完全磁盘访问权限，详见[本版说明](docs/releases/3.0-cn.10-preview.md)。
+🛠️ CN11 将同应用连续通知合并刷新，单次展示 6 秒，有其他应用等待时连续占用最多 12 秒；新增默认关闭的实验性实时接管入口，传统通知记录模式仍可使用。真实横幅接管与隐藏期间崩溃后的坐标恢复尚未验收，详见[本版说明](docs/releases/3.0-cn.11-preview.md)。
 
-> **升级方式**：CN6、CN7、CN8、CN9 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN10。CN4 及更早版本、CN5 临时签名版用户需要先退出并备份原应用，再手动安装一次 CN10，迁移到团队 `462JAMGP66`；如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。
+> **升级方式**：CN6–CN10 用户可通过“设置 → 关于 → Sapphire 更新”获取 CN11。CN4 及更早版本、CN5 临时签名版用户需要先退出并备份原应用，再手动安装一次 CN11，迁移到团队 `462JAMGP66`；如 Helper 连接失败，请重新配置辅助服务并检查后台运行权限。
 
 > 📦 通过 DMG 直接安装，无需 App Store。当前为 Apple Development 签名、未公证的开发预览；首次如被拦截，可按下方教程在「隐私与安全性」手动允许。其他 Mac 与整机重启尚未验收。上游原版安装包不含本分支功能。
 
@@ -25,7 +25,7 @@
 | --- | --- |
 | 📊 AI 额度 | Codex、Claude 订阅额度、同步状态与服务端重置时间 |
 | 💰 平台余额 | DeepSeek、Sub2API、NewAPI、自定义 JSON 接口 |
-| 🔔 通知上岛 | 通用系统通知、前台免打扰、连续消息排队 |
+| 🔔 通知上岛 | 前台免打扰、同应用连续消息合并；实验性实时接管默认关闭 |
 | 🧩 刘海组件 | 播放信息、日历、组件排序 |
 | 🖥️ 桌面工具 | 窗口管理、文件托盘、剪贴板、护眼、电池管理 |
 | 🇨🇳 中文界面 | 主要界面与权限说明汉化，少量提示仍为英文 |
@@ -38,11 +38,13 @@
 
 ## 通知上岛
 
-在“设置 → 通知”查看连接状态。需要为 Sapphire 开启完全磁盘访问权限；旧配置可点击“显示所有应用通知”。正在使用来源应用时不重复提醒，切回后清除该应用排队消息。
+在“设置 → 通知”查看连接状态；旧配置可点击“显示所有应用通知”。正在使用来源应用时不重复提醒，切回后清除该应用排队消息。同应用新消息立即刷新当前提醒并重新计时，单次展示 6 秒；有其他应用等待时，当前应用连续展示最多 12 秒后让出位置。
 
-如需隐藏右侧原生横幅：在 macOS“系统设置 → 通知 → 对应应用”取消“桌面”，保留“允许通知”和“通知中心”。退出 Sapphire 后该系统设置仍会保持，新应用需单独设置。安装包不自动授予权限或修改这些通知开关。
+传统通知记录模式仍可使用，需要为 Sapphire 开启完全磁盘访问权限，只读取 macOS 已有通知记录，系统写入记录可能造成延迟。如只想在岛上提醒，可在 macOS“系统设置 → 通知 → 对应应用”取消“桌面”，保留“允许通知”和“通知中心”。退出 Sapphire 后该系统设置仍会保持，新应用需单独设置。
 
-当前已验证范围与限制见[CN10 发布说明](docs/releases/3.0-cn.10-preview.md)。
+CN11 的实时接管为实验功能，默认关闭。开启时需辅助功能权限，并为来源应用保留原生“桌面”横幅；系统专注模式和屏幕共享静音策略仍然有效，实时模式不会从通知数据库补弹被系统静音的正文。无法确定来源、内容不完整或存在歧义时保留原生横幅；接管失败时恢复原生展示。安装包不自动授予权限或修改系统通知开关。
+
+**真实横幅接管、隐藏期间崩溃后的窗口坐标恢复尚未验收，不能视为稳定功能。** 详细验证范围与限制见[CN11 发布说明](docs/releases/3.0-cn.11-preview.md)。
 
 ## 安装包安装
 
@@ -52,7 +54,7 @@
 4. **切换中文**：「系统设置 → 通用 → 语言与地区 → 应用程序」添加 Sapphire，选择「简体中文」并重启应用。
 5. **打开面板**：按住 **⌘ Command 点击刘海**，点击 ⚙️ 进入设置；默认未开启悬停展开。
 
-安装者无需开发者会员或自行编译。应用显示 `3.0-cn.10-preview`，系统版本为 `3.0 (10)`，发布标签为 `v3.0-cn.10-preview`。
+安装者无需开发者会员或自行编译。应用显示 `3.0-cn.11-preview`，系统版本为 `3.0 (11)`，发布标签为 `v3.0-cn.11-preview`。
 
 ### 首次打开被系统拦截
 
@@ -68,7 +70,7 @@
 
 ### 校验下载文件
 
-将安装包与 [SHA256SUMS.txt](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.10-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
+将安装包与 [SHA256SUMS.txt](https://sapphire-cn.oss-cn-hangzhou.aliyuncs.com/releases/v3.0-cn.11-preview/SHA256SUMS.txt) 放在同一目录，在该目录运行：
 
 ```sh
 shasum -a 256 -c SHA256SUMS.txt
@@ -176,9 +178,9 @@ Claude Code 当前使用 DeepSeek 时会自动识别，也可手动配置。Code
 
 ## 更新与卸载
 
-「设置 → 关于 → Sapphire 更新」只接收本仓库的公开版本和预发布。CN9 起优先从阿里云 OSS 检查并下载安装包，连接或 HTTP 失败时回退 GitHub；SHA-256、归档、版本和同团队签名校验保持启用。CN6–CN8 升级 CN10 时，旧客户端仍从 GitHub 下载一次。
+「设置 → 关于 → Sapphire 更新」只接收本仓库的公开版本和预发布。CN9 起优先从阿里云 OSS 检查并下载安装包，连接或 HTTP 失败时回退 GitHub；SHA-256、归档、版本和同团队签名校验保持启用。CN6–CN8 升级 CN11 时，旧客户端仍从 GitHub 下载一次。
 
-**CN6–CN9 → CN10 支持应用内更新。** CN4 及更早版本、CN5 临时签名版用户仍需手动安装一次 CN10，迁移更新源与签名团队。完成迁移后，后续同一新团队签名版本可在应用内更新。
+**CN6–CN10 → CN11 支持应用内更新。** CN4 及更早版本、CN5 临时签名版用户仍需手动安装一次 CN11，迁移更新源与签名团队。完成迁移后，后续同一新团队签名版本可在应用内更新。
 
 应用内下载使用仅包含完整应用的 `-update.zip`；下载后仍需本人点击「安装并重新启动」。自动检查、后台下载和更新通知可在「关于」按需配置。
 

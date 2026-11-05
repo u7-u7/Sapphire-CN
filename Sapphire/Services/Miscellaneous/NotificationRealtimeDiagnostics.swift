@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG && CN11_NOTIFICATION_DIAGNOSTICS
 import AppKit
 import UserNotifications
 import Darwin
