@@ -5013,6 +5013,7 @@ fileprivate struct AppPickerView: View {
 
 struct NotificationsSettingsView: View {
     @EnvironmentObject var settings: SettingsEditingSession
+    @ObservedObject private var notificationManager = NotificationManager.shared
 
     var body: some View {
         ScrollView {
@@ -5021,7 +5022,51 @@ struct NotificationsSettingsView: View {
                     .font(.largeTitle.bold())
                     .padding(.bottom)
 
-                InfoContainer(text: "All notifications and focus features are in development.", iconName: "info.circle.fill", color: .yellow)
+                InfoContainer(text: "Mirror new system notifications from any enabled app in the notch. Custom app dialogs are not system notifications. Native banners keep their existing settings.", iconName: "bell.badge", color: .blue)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Notifications from the app you are currently using are skipped. Switching to an app also clears its queued notifications.")
+                    Text("For island-only alerts, keep Allow Notifications and Notification Center enabled in macOS, and turn off Desktop for the apps you want to mirror. This setting remains in effect when Sapphire quits.")
+                        .foregroundStyle(.secondary)
+                    Button("Open macOS Notification Settings") {
+                        if let url = URL(string: "x-apple.systempreferences:com.apple.Notifications-Settings.extension") {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                }
+                .font(.callout)
+                .padding(20)
+                .modifier(SettingsContainerModifier())
+
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(LocalizedStringKey(notificationManager.monitoringStatus.message))
+                        .font(.callout)
+                    HStack {
+                        Button("Retry Connection") { notificationManager.retryConnection() }
+                        if notificationManager.monitoringStatus != .monitoring {
+                            Button("Full Disk Access") {
+                                PermissionsManager.shared.requestPermission(.fullDiskAccess)
+                            }
+                        }
+                        Spacer()
+                        Button("Show All App Notifications") {
+                            settings.settings.masterNotificationsEnabled = true
+                            settings.settings.onlyShowVerificationCodeNotifications = false
+                            settings.settings.systemNotificationsEnabled = true
+                            settings.settings.iMessageNotificationsEnabled = true
+                            settings.settings.airDropNotificationsEnabled = true
+                            settings.settings.faceTimeNotificationsEnabled = true
+                            settings.settings.appNotificationStates = [:]
+                        }
+                    }
+                    if settings.settings.onlyShowVerificationCodeNotifications {
+                        Text("Only verification codes are enabled. Other app notifications are currently filtered out.")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                }
+                .padding(20)
+                .modifier(SettingsContainerModifier())
 
                 VStack(spacing: 0) {
                     HStack {
@@ -5157,6 +5202,7 @@ struct NotificationsSettingsView: View {
 
                 RequiredPermissionsView(section: .notifications)
             }
+            .onAppear { notificationManager.start() }
             .padding(25)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }

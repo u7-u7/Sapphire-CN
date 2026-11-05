@@ -25,6 +25,13 @@ enum SapphireStandardMenu {
         mainMenu.addItem(appMenuItem)
         let appMenu = NSMenu()
         appMenuItem.submenu = appMenu
+        let settingsItem = appMenu.addItem(
+            withTitle: NSLocalizedString("Settings", comment: "Application menu action"),
+            action: #selector(AppDelegate.openSettingsWindow),
+            keyEquivalent: ","
+        )
+        settingsItem.target = NSApp.delegate
+        appMenu.addItem(.separator())
         appMenu.addItem(
             withTitle: NSLocalizedString("Quit Sapphire", comment: "Application menu action"),
             action: #selector(NSApplication.terminate(_:)),

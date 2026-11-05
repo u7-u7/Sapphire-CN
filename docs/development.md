@@ -130,6 +130,25 @@ Apple 建议嵌套代码由内向外完成签名。工程已有相应构建步�
 
 ## 开发与验证
 
+### 系统通知上岛
+
+通知监听复用系统通知数据库，覆盖所有应用的系统通知，不需要逐个应用开发适配器。需要 Sapphire 的“完全磁盘访问权限”，应用自身发送通知的权限不能替代该权限。通知设置页显示连接状态，并提供“重新连接”和“显示所有应用通知”。旧安装保留原有验证码过滤设置，需要通过该按钮显式切换到全应用范围。
+
+离线回归仅使用合成记录，不读取个人通知：
+
+```sh
+xcrun swiftc -swift-version 5 -parse-as-library \
+  Sapphire/Services/Miscellaneous/NotificationDelivery.swift \
+  scripts/verify-notification-delivery.swift -o /tmp/verify-notification-delivery
+/tmp/verify-notification-delivery
+```
+
+实机验收应覆盖：不同应用的普通通知、连续通知、OTP 去重、单条关闭与超时、关闭通知总开关、授权失败后恢复、系统通知数据库重建、锁屏及全屏。原生横幅保持系统设置；系统静默策略与隐藏预览策略需要单独验证。应用自绘弹窗不属于此监听范围。通过离线回归及编译检查不等于已经通过上述实机验收。
+
+来源应用正在前台时，其通知不会入队；切回该应用时，当前展示及排队中的同来源通知会清除，离开后不会补播。判断使用 `NSWorkspace` 的实时前台应用，支持相同 bundle identifier 和应用包内的通知助手。
+
+需要只显示灵动岛提醒时，在 macOS“系统设置 → 通知 → 对应应用”关闭“桌面”，保持“允许通知”和“通知中心”开启。此设置由 macOS 按应用保存，退出 Sapphire 后仍然生效；新安装的应用需要单独配置。不要用关闭通知总开关、全局勿扰或现有 FocusNotificationSuppressor 代替：后者还会关闭通知中心及锁屏展示，超出隐藏右侧横幅的范围。
+
 ### Helper 连接边界检查
 
 在仓库目录运行：
@@ -189,3 +208,8 @@ CN8 主应用 build 为 8，继续使用团队 `462JAMGP66`。CLI 发现覆盖�
 CN9 主应用 build 9，签名团队继续为 `462JAMGP66`。镜像路径必须匹配同一 CN 标签和文件名，仅信任专用 Bucket；旧字段 `browser_download_url` 保留 GitHub URL，新增 `mirror_download_url` 指向经摘要核验的镜像。网络/HTTP 失败可回退 GitHub 一次，取消或校验失败不静默换源。
 
 公开 GitHub Release 并上传附件后，先运行 `scripts/mirror-cn-release.py <tag>` 核验公开镜像，再运行 `scripts/update-cn-release-feed.py <tag>` 生成兼容清单，最后运行 `scripts/mirror-cn-release.py <tag> --publish-feed-only` 发布 OSS 清单；提交并推送 GitHub 清单，重新生成和部署网站。运行 `python3 scripts/verify-update-source.py` 可离线验证 URL 策略、旧清单兼容、回退与取消状态。发行记录见 [CN9](releases/3.0-cn.9-preview.md)。
+
+
+### CN10 系统通知上岛
+
+CN10 主应用 build 为 10，发行标识为 `3.0-cn.10-preview`，沿用团队 `462JAMGP66` 的证书与 CN9 各组件的权限声明，按既有流程由内向外签名。更新清单继续使用 OSS 优先、GitHub 回退。安装包不包含本机测试偏好设置，不自动修改其他用户的完全磁盘访问权限或原生通知横幅。功能、权限、已验证范围及限制见 [CN10 发行记录](releases/3.0-cn.10-preview.md)。

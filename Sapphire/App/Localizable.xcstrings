@@ -1,6 +1,136 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Notifications from the app you are currently using are skipped. Switching to an app also clears its queued notifications.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在使用哪个应用，就不再弹出它的岛上通知。切回该应用时，也会清除它尚未展示的通知。"
+          }
+        }
+      }
+    },
+    "For island-only alerts, keep Allow Notifications and Notification Center enabled in macOS, and turn off Desktop for the apps you want to mirror. This setting remains in effect when Sapphire quits.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如需仅在灵动岛提醒，请在 macOS 中保留“允许通知”和“通知中心”，关闭相应应用的“桌面”提醒。退出 Sapphire 后，此系统设置仍然生效。"
+          }
+        }
+      }
+    },
+    "Open macOS Notification Settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 macOS 通知设置"
+          }
+        }
+      }
+    },
+    "Notification mirroring is off.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知上岛已关闭。"
+          }
+        }
+      }
+    },
+    "Connecting to system notifications…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在连接系统通知…"
+          }
+        }
+      }
+    },
+    "Listening for new notifications from all enabled apps.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在监听所有已启用应用的新通知。"
+          }
+        }
+      }
+    },
+    "The system notification database is not available on this macOS version.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前 macOS 的系统通知数据库不可用。"
+          }
+        }
+      }
+    },
+    "Allow Full Disk Access for Sapphire, then retry. A restart may be required.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请为 Sapphire 开启“完全磁盘访问权限”后重试，必要时重新启动应用。"
+          }
+        }
+      }
+    },
+    "Cannot read system notifications. Retry or check macOS compatibility.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法读取系统通知，请重试或检查 macOS 兼容性。"
+          }
+        }
+      }
+    },
+    "Mirror new system notifications from any enabled app in the notch. Custom app dialogs are not system notifications. Native banners keep their existing settings.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将所有已启用应用的新系统通知显示到灵动岛。应用自绘对话框不属于系统通知，原生通知横幅沿用现有设置。"
+          }
+        }
+      }
+    },
+    "Retry Connection": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重新连接"
+          }
+        }
+      }
+    },
+    "Show All App Notifications": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示所有应用通知"
+          }
+        }
+      }
+    },
+    "Only verification codes are enabled. Other app notifications are currently filtered out.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前仅显示验证码，其他应用通知已被过滤。"
+          }
+        }
+      }
+    },
     "Wind": {
       "localizations": {
         "zh-Hans": {

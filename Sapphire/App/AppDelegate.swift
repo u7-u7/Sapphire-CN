@@ -1589,7 +1589,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
 
     // MARK: - Settings Window
 
-    func openSettingsWindow() {
+    @objc func openSettingsWindow() {
         if let window = settingsWindow {
             UtilityWindowPresenter.presentSettingsWindow(window)
             return

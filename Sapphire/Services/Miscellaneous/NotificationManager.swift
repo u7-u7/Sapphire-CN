@@ -39,7 +39,11 @@ struct NotificationPayload: Identifiable, Equatable {
         case "com.apple.iChat", "com.apple.MobileSMS": return "Messages"
         case "com.apple.facetime": return "FaceTime"
         case "com.apple.sharingd": return "AirDrop"
-        default: return appIdentifier.split(separator: ".").last.map(String.init) ?? "Notification"
+        default:
+            if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appIdentifier) {
+                return FileManager.default.displayName(atPath: url.path).replacingOccurrences(of: ".app", with: "")
+            }
+            return appIdentifier.split(separator: ".").last.map(String.init) ?? "Notification"
         }
     }
 
@@ -194,185 +198,261 @@ class iMessageActionManager {
     }
 }
 
+enum NotificationMonitoringStatus: Equatable {
+    case stopped, connecting, monitoring, databaseUnavailable, accessRequired, failed
+
+    var message: String {
+        switch self {
+        case .stopped: return "Notification mirroring is off."
+        case .connecting: return "Connecting to system notifications…"
+        case .monitoring: return "Listening for new notifications from all enabled apps."
+        case .databaseUnavailable: return "The system notification database is not available on this macOS version."
+        case .accessRequired: return "Allow Full Disk Access for Sapphire, then retry. A restart may be required."
+        case .failed: return "Cannot read system notifications. Retry or check macOS compatibility."
+        }
+    }
+}
+
 class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
 
-    @Published var latestNotification: NotificationPayload?
-    private var frequency: TimeInterval = 5.0
-    private var isSilent: Bool = true
+    @Published private(set) var latestNotification: NotificationPayload?
+    @Published private(set) var monitoringStatus: NotificationMonitoringStatus = .stopped
+    private let frequency: TimeInterval
     private var dbPath: String?
+    private var databaseFileNumber: UInt64?
     private var dbConnection: Connection?
     private var walSource: DispatchSourceFileSystemObject?
     private var walDirectorySource: DispatchSourceFileSystemObject?
     private var pendingWALCheck: DispatchWorkItem?
-    private var lastNotificationId: Int64 = 0
-    private var lastNotificationDate: Double = 0.0
+    private var pollTimer: AnyCancellable?
+    private var cancellables = Set<AnyCancellable>()
+    private var deliveryQueue = NotificationDeliveryQueue<NotificationPayload>()
+    private var deliveryCursor = NotificationDeliveryCursor()
     private let settingsModel = SettingsModel.shared
     private var isStarted = false
-    init(frequency: TimeInterval = 5.0, silent: Bool = true) { self.frequency = frequency; self.isSilent = silent; setupDatabaseConnection() }
+
+    init(frequency: TimeInterval = 5.0, silent: Bool = true) {
+        self.frequency = max(1, frequency)
+        NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.refreshConnection() }
+            .store(in: &cancellables)
+        NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didActivateApplicationNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.publishQueueHead() }
+            .store(in: &cancellables)
+        settingsModel.$settings
+            .removeDuplicates { old, new in
+                old.masterNotificationsEnabled == new.masterNotificationsEnabled
+                    && old.onlyShowVerificationCodeNotifications == new.onlyShowVerificationCodeNotifications
+                    && old.systemNotificationsEnabled == new.systemNotificationsEnabled
+                    && old.appNotificationStates == new.appNotificationStates
+                    && old.iMessageNotificationsEnabled == new.iMessageNotificationsEnabled
+                    && old.airDropNotificationsEnabled == new.airDropNotificationsEnabled
+                    && old.faceTimeNotificationsEnabled == new.faceTimeNotificationsEnabled
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.applyNotificationSettings() }
+            .store(in: &cancellables)
+    }
+
     deinit {
         walSource?.cancel()
         walDirectorySource?.cancel()
-    }
-    func start() {
-        guard !isStarted, dbConnection != nil else { return }
-        isStarted = true
-        check()
-        watchWriteAheadLog()
+        pendingWALCheck?.cancel()
     }
 
-    private func watchWriteAheadLog() {
+    func start() {
+        guard !isStarted else { return }
+        isStarted = true
+        refreshConnection()
+        // 文件监听保证及时性；低频检查补偿 WAL 重建、授权变化和漏事件。
+        pollTimer = Timer.publish(every: frequency, on: .main, in: .common).autoconnect()
+            .sink { [weak self] _ in self?.refreshConnection() }
+    }
+
+    func retryConnection() {
+        disconnect()
+        start()
+        refreshConnection()
+    }
+
+    private func applyNotificationSettings() {
+        guard isStarted else { return }
+        deliveryQueue.retain { self.shouldShowNotification($0) }
+        publishQueueHead()
+        refreshConnection()
+    }
+
+    private func refreshConnection() {
+        guard isStarted else { return }
+        guard settingsModel.settings.masterNotificationsEnabled else {
+            disconnect()
+            monitoringStatus = .stopped
+            return
+        }
+        if let dbPath {
+            do {
+                let attributes = try FileManager.default.attributesOfItem(atPath: dbPath)
+                if (attributes[.systemFileNumber] as? NSNumber)?.uint64Value != databaseFileNumber { disconnect() }
+            } catch { handleDatabaseError(error) }
+        }
+        if dbConnection == nil { setupDatabaseConnection() }
+        if dbConnection != nil { check() }
+    }
+
+    private func disconnect() {
         walSource?.cancel()
         walSource = nil
         walDirectorySource?.cancel()
         walDirectorySource = nil
-        guard isStarted, let dbPath else { return }
-
-        let fd = open(dbPath + "-wal", O_EVTONLY)
-        guard fd >= 0 else {
-            watchDatabaseDirectory(for: dbPath)
-            return
-        }
-
-        let source = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: fd,
-            eventMask: [.write, .extend, .delete, .rename, .revoke],
-            queue: .main
-        )
-        source.setEventHandler { [weak self, weak source] in
-            guard let self, let source else { return }
-            let replaced = !source.data.isDisjoint(with: [.delete, .rename, .revoke])
-            self.scheduleCheck()
-            if replaced { self.watchWriteAheadLog() }
-        }
-        source.setCancelHandler { close(fd) }
-        source.resume()
-        walSource = source
+        pendingWALCheck?.cancel()
+        pendingWALCheck = nil
+        dbConnection = nil
+        dbPath = nil
+        databaseFileNumber = nil
     }
 
-    private func watchDatabaseDirectory(for dbPath: String) {
-        let directoryPath = (dbPath as NSString).deletingLastPathComponent
-        let fd = open(directoryPath, O_EVTONLY)
-        guard fd >= 0 else { return }
+    private func watchDatabaseFiles() {
+        walSource?.cancel()
+        walSource = nil
+        walDirectorySource?.cancel()
+        walDirectorySource = nil
+        guard let dbPath else { return }
+        walSource = watch(path: dbPath + "-wal")
+        walDirectorySource = watch(path: (dbPath as NSString).deletingLastPathComponent)
+    }
 
+    private func watch(path: String) -> DispatchSourceFileSystemObject? {
+        let fd = open(path, O_EVTONLY)
+        guard fd >= 0 else { return nil }
         let source = DispatchSource.makeFileSystemObjectSource(
-            fileDescriptor: fd,
-            eventMask: [.write, .delete, .rename, .revoke],
-            queue: .main
+            fileDescriptor: fd, eventMask: [.write, .extend, .delete, .rename, .revoke], queue: .main
         )
-        source.setEventHandler { [weak self] in
-            self?.scheduleCheck()
-            self?.watchWriteAheadLog()
-        }
+        source.setEventHandler { [weak self] in self?.scheduleCheck() }
         source.setCancelHandler { close(fd) }
         source.resume()
-        walDirectorySource = source
+        return source
     }
 
     private func scheduleCheck() {
         guard pendingWALCheck == nil else { return }
         let work = DispatchWorkItem { [weak self] in
-            self?.pendingWALCheck = nil
-            self?.check()
+            guard let self else { return }
+            self.pendingWALCheck = nil
+            self.refreshConnection()
+            self.watchDatabaseFiles()
         }
         pendingWALCheck = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: work)
     }
-    func dismissLatestNotification() { DispatchQueue.main.async { self.latestNotification = nil } }
-    private func setupDatabaseConnection() {
-        let fileManager = FileManager.default, homeDirectory = NSHomeDirectory(), sequoiaPath = "\(homeDirectory)/Library/Group Containers/group.com.apple.usernoted/db2/db"
-        if fileManager.fileExists(atPath: sequoiaPath) { self.dbPath = sequoiaPath } else {
-            do {
-                let darwinUserDir = try subprocess(path: "/usr/bin/getconf", args: ["DARWIN_USER_DIR"]).trimmingCharacters(in: .whitespacesAndNewlines)
-                let primaryLegacyPath = "\(darwinUserDir)com.apple.NotificationCenter/db2/db", fallbackLegacyPath = "\(darwinUserDir)com.apple.notificationcenter/db2/db"
-                if fileManager.fileExists(atPath: primaryLegacyPath) { self.dbPath = primaryLegacyPath } else if fileManager.fileExists(atPath: fallbackLegacyPath) { self.dbPath = fallbackLegacyPath }
-            } catch {}
-        }
-        guard let validPath = self.dbPath else { return }
-        do { dbConnection = try Connection(validPath, readonly: true); if let lastRecord = getLastNotificationFromDB() { self.lastNotificationId = lastRecord.id; self.lastNotificationDate = lastRecord.date } } catch { print("Error setting up database connection to \(validPath): \(error)") }
+
+    func dismissNotification(id: String) {
+        deliveryQueue.dismiss(id: id)
+        publishQueueHead()
     }
-    @objc private func check() {
+
+    private func publishQueueHead() {
+        // 队列等候过久时不补播陈旧提醒，正在展示的通知由活动计时器关闭。
+        let currentID = latestNotification?.id
+        deliveryQueue.retain {
+            self.shouldShowNotification($0) && ($0.id == currentID || Date().timeIntervalSince($0.date) < 120)
+        }
+        if latestNotification != deliveryQueue.first { latestNotification = deliveryQueue.first }
+    }
+
+    private func databaseCandidates() -> [String] {
+        let home = NSHomeDirectory()
+        var paths = ["\(home)/Library/Group Containers/group.com.apple.usernoted/db2/db"]
+        guard let result = ProcessRunner.runSync(executablePath: "/usr/bin/getconf", arguments: ["DARWIN_USER_DIR"], timeout: 10),
+              !result.stdout.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return paths
+        }
+        let directory = result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        paths += ["\(directory)com.apple.NotificationCenter/db2/db", "\(directory)com.apple.notificationcenter/db2/db"]
+        return paths
+    }
+
+    private func setupDatabaseConnection() {
+        monitoringStatus = .connecting
         do {
-            guard let db = dbConnection else { return }
-            let recordTable = Table("record"), recId = Expression<Int64>("rec_id"), deliveredDate = Expression<Double?>("delivered_date"), requestDate = Expression<Double?>("request_date"), data = Expression<Data>("data")
-            let query = recordTable.select(recId, data, deliveredDate, requestDate).where(recId > lastNotificationId && (deliveredDate ?? requestDate) >= lastNotificationDate).order(recId.desc)
-            var notificationsToPublish: [NotificationPayload] = []
-            var newestScannedID = lastNotificationId
-            var newestScannedDate = lastNotificationDate
+            guard let path = databaseCandidates().first(where: { FileManager.default.fileExists(atPath: $0) }) else {
+                monitoringStatus = .databaseUnavailable
+                return
+            }
+            let connection = try Connection(path, readonly: true)
+            // 初次连接和权限恢复时只展示之后的新消息，避免把历史通知重新弹出来。
+            let record = Table("record"), recId = Expression<Int64>("rec_id")
+            _ = try connection.pluck(record.select(recId, Expression<Double?>("delivered_date"), Expression<Data>("data")).limit(1))
+            deliveryCursor = NotificationDeliveryCursor()
+            let attributes = try FileManager.default.attributesOfItem(atPath: path)
+            databaseFileNumber = (attributes[.systemFileNumber] as? NSNumber)?.uint64Value
+            dbPath = path
+            dbConnection = connection
+            monitoringStatus = .monitoring
+            watchDatabaseFiles()
+        } catch { handleDatabaseError(error) }
+    }
+
+    private func handleDatabaseError(_ error: Error) {
+        disconnect()
+        let description = String(describing: error).lowercased()
+        let accessDenied = ["authorization", "not authorized", "permission", "unable to open"].contains { description.contains($0) }
+        monitoringStatus = accessDenied ? .accessRequired : .failed
+        // 不记录通知正文或数据库行，避免把私人消息写入诊断日志。
+        print("[NotificationManager] Database unavailable (accessRequired=\(accessDenied)): \(error)")
+    }
+
+    private func check() {
+        guard let db = dbConnection else { return }
+        do {
+            let record = Table("record"), recId = Expression<Int64>("rec_id")
+            let deliveredDate = Expression<Double?>("delivered_date"), data = Expression<Data>("data")
+            let now = Date()
+            // 重查最近投递窗口，兼容先插入、后更新 delivered_date 的系统通知。
+            let query = record.select(recId, data, deliveredDate)
+                .where(deliveredDate >= deliveryCursor.cutoff(now: now))
+                .order(deliveredDate.asc, recId.asc)
             for row in try db.prepare(query) {
                 let rowID = row[recId]
-                let rowDate = row[deliveredDate] ?? row[requestDate] ?? 0
-                if rowID > newestScannedID {
-                    newestScannedID = rowID
-                    newestScannedDate = rowDate
-                }
-                if let notification = parseNotification(from: row[data], id: rowID, dateValue: rowDate) {
-                    if _shouldShowNotification(for: notification) { notificationsToPublish.append(notification) }
-                }
+                guard let delivered = row[deliveredDate],
+                      let record = try? SystemNotificationRecord.decode(row[data]),
+                      deliveryCursor.accept(id: rowID, deliveredAt: delivered, now: now) else { continue }
+                let payload = NotificationPayload(
+                    id: String(rowID), appIdentifier: record.appIdentifier, title: record.title, body: record.body,
+                    date: Date(timeIntervalSinceReferenceDate: delivered), appIcon: getAppIcon(for: record.appIdentifier)
+                )
+                if shouldShowNotification(payload) { deliveryQueue.enqueue(payload) }
             }
-            if newestScannedID > lastNotificationId {
-                lastNotificationId = newestScannedID
-                lastNotificationDate = newestScannedDate
-            }
-            for notification in notificationsToPublish.reversed() {
-                self.latestNotification = notification
-                if let code = notification.verificationCode {
-                    let source = notification.appName
-                    let title = notification.title
-                    let body = notification.body
-                    Task { @MainActor in
-                        SmartInboxMonitor.shared.presentOTP(
-                            code: code,
-                            source: source,
-                            title: title,
-                            body: body
-                        )
-                    }
-                }
-            }
-        } catch { print("Failed to check for notifications: \(error)") }
+            publishQueueHead()
+            monitoringStatus = .monitoring
+        } catch { handleDatabaseError(error) }
     }
-    private func _shouldShowNotification(for payload: NotificationPayload) -> Bool {
+
+    private func shouldShowNotification(_ payload: NotificationPayload) -> Bool {
         let settings = settingsModel.settings
-        var isInitiallyAllowed: Bool
-        if !settings.masterNotificationsEnabled { isInitiallyAllowed = false } else {
-            switch payload.appIdentifier {
-            case "com.apple.MobileSMS", "com.apple.iChat": isInitiallyAllowed = settings.iMessageNotificationsEnabled
-            case "com.apple.sharingd": isInitiallyAllowed = settings.airDropNotificationsEnabled
-            case "com.apple.facetime": isInitiallyAllowed = settings.faceTimeNotificationsEnabled
-            default:
-                if let isEnabled = settings.appNotificationStates[payload.appIdentifier] { isInitiallyAllowed = isEnabled }
-                else if payload.appIdentifier.starts(with: "com.apple.") { isInitiallyAllowed = settings.systemNotificationsEnabled }
-                else { isInitiallyAllowed = true }
-            }
+        guard settings.masterNotificationsEnabled else { return false }
+        // 使用实时前台应用；ActiveAppMonitor 会忽略 Sapphire 自身，可能保留上一个应用。
+        let activeApp = NSWorkspace.shared.frontmostApplication
+        guard !NotificationForegroundPolicy.isSourceAppActive(
+            sourceIdentifier: payload.appIdentifier, activeIdentifier: activeApp?.bundleIdentifier,
+            sourceURL: NSWorkspace.shared.urlForApplication(withBundleIdentifier: payload.appIdentifier),
+            activeURL: activeApp?.bundleURL
+        ) else { return false }
+        let enabled: Bool
+        switch payload.appIdentifier {
+        case "com.apple.MobileSMS", "com.apple.iChat": enabled = settings.iMessageNotificationsEnabled
+        case "com.apple.sharingd": enabled = settings.airDropNotificationsEnabled
+        case "com.apple.facetime": enabled = settings.faceTimeNotificationsEnabled
+        default:
+            enabled = settings.appNotificationStates[payload.appIdentifier]
+                ?? (!payload.appIdentifier.hasPrefix("com.apple.") || settings.systemNotificationsEnabled)
         }
-        if !isInitiallyAllowed { return false }
-        if settings.onlyShowVerificationCodeNotifications { return payload.verificationCode != nil }
-        return true
+        return enabled && (!settings.onlyShowVerificationCodeNotifications || payload.verificationCode != nil)
     }
-    private func parseNotification(from rawPlist: Data, id: Int64, dateValue: Double) -> NotificationPayload? {
-        do {
-            guard let plist = try PropertyListSerialization.propertyList(from: rawPlist, options: [], format: nil) as? [String: Any],
-                  let appIdentifier = plist["app"] as? String,
-                  let request = plist["req"] as? [String: Any] else { return nil }
-            let title = request["titl"] as? String ?? "", subtitle = request["subt"] as? String ?? "", body = request["body"] as? String ?? ""
-            let combinedBody = subtitle.isEmpty ? body : "\(subtitle)—\(body)", date = Date(timeIntervalSinceReferenceDate: dateValue), appIcon = getAppIcon(for: appIdentifier)
-            return NotificationPayload(id: String(id), appIdentifier: appIdentifier, title: title, body: combinedBody, date: date, appIcon: appIcon)
-        } catch { return nil }
-    }
-    private func getAppIcon(for identifier: String) -> NSImage? { NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier).map { NSWorkspace.shared.icon(forFile: $0.path) } }
-    private func getLastNotificationFromDB() -> (id: Int64, date: Double)? {
-        guard let db = dbConnection else { return nil }
-        do {
-            let record = Table("record"), recId = Expression<Int64>("rec_id"), deliveredDate = Expression<Double?>("delivered_date"), requestDate = Expression<Double?>("request_date")
-            if let lastRow = try db.pluck(record.order(recId.desc)) { return (try lastRow.get(recId), try lastRow.get(deliveredDate) ?? lastRow.get(requestDate) ?? 0.0) }
-        } catch {}
-        return nil
-    }
-    private func subprocess(path: String, args: [String]) throws -> String {
-        guard let result = ProcessRunner.runSync(executablePath: path, arguments: args, timeout: 10) else {
-            throw CocoaError(.fileReadUnknown)
-        }
-        return result.stdout
+
+    private func getAppIcon(for identifier: String) -> NSImage? {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier).map { NSWorkspace.shared.icon(forFile: $0.path) }
     }
 }

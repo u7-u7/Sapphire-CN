@@ -1202,10 +1202,15 @@ class LiveActivityManager: ObservableObject {
                let code = notification.verificationCode,
                activityContent.id == AnyHashable("notif-\(notification.id)") {
                 SmartInboxMonitor.shared.consumeOTP(code)
+                notificationManager.dismissNotification(id: notification.id)
             }
         case .notification:
             if let id = self.activityContent.id {
                 dismissedNotifications[id] = Date().addingTimeInterval(300)
+                if let notification = notificationManager.latestNotification,
+                   id == AnyHashable(notification.id) {
+                    notificationManager.dismissNotification(id: notification.id)
+                }
             }
             clearNotificationState()
         case .continuityNotification:
@@ -1998,6 +2003,11 @@ class LiveActivityManager: ObservableObject {
         guard let notification = notificationManager.latestNotification else {
             return nil
         }
+        let isCurrentNotification = currentActivity == .notification && activityContent.id == AnyHashable(notification.id)
+        if !isCurrentNotification && Date().timeIntervalSince(notification.date) > 120 {
+            notificationManager.dismissNotification(id: notification.id)
+            return nil
+        }
         if notification.verificationCode != nil, settingsModel.settings.otpLiveActivityEnabled {
             return nil
         }
@@ -2042,6 +2052,7 @@ class LiveActivityManager: ObservableObject {
             // 当前弹窗保持到关闭/超时；已消费或过期的旧通知不能重新变成候选。
             if !isCurrentEvent && (SmartInboxMonitor.shared.hasConsumedOTP(code)
                 || Date().timeIntervalSince(notification.date) > 300) {
+                notificationManager.dismissNotification(id: notification.id)
                 return nil
             }
             SmartInboxMonitor.shared.consumeOTP(code)

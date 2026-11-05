@@ -1533,7 +1533,7 @@ struct Settings: Codable, Equatable {
     var faceTimeNotificationsEnabled: Bool = true
     var systemNotificationsEnabled: Bool = true
     var appNotificationStates: [String: Bool] = [:]
-    var onlyShowVerificationCodeNotifications: Bool = true
+    var onlyShowVerificationCodeNotifications: Bool = false
     var showCopyButtonForVerificationCodes: Bool = true
     var smartInboxEnabled: Bool = true
     var mailOTPDetectionEnabled: Bool = true
@@ -3168,7 +3168,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     var requiredPermissions: [PermissionType] {
         switch self {
         case .systemEnhance, .hud, .music, .snapZones, .appearance, .dockLayouts, .mediaOptimizer: return [.accessibility]
-        case .notifications: return [.notifications]
+        case .notifications: return [.fullDiskAccess]
         case .weather: return [.location]
         case .calendar: return [.calendar, .reminders]
         case .bluetooth, .bluetoothUnlock: return [.bluetooth, .accessibility]

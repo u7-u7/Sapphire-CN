@@ -1548,7 +1548,7 @@ struct NotificationLiveActivityView: View {
             }
             .onTapGesture {
                 NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                notificationManager.dismissLatestNotification()
+                notificationManager.dismissNotification(id: payload.id)
             }
 
             if isFetchingAttachment {
@@ -1634,7 +1634,7 @@ struct NotificationLiveActivityView: View {
             }
             .onTapGesture {
                 NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                notificationManager.dismissLatestNotification()
+                notificationManager.dismissNotification(id: payload.id)
             }
 
             actionButtons
@@ -1649,7 +1649,7 @@ struct NotificationLiveActivityView: View {
     private var actionButtons: some View {
         HStack {
             standardActionButton(title: "Dismiss", systemName: "xmark") {
-                notificationManager.dismissLatestNotification()
+                notificationManager.dismissNotification(id: payload.id)
             }
 
             Spacer()
@@ -1660,10 +1660,7 @@ struct NotificationLiveActivityView: View {
                     withAnimation(.spring) { didCopyCode = true }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         withAnimation(.spring) { didCopyCode = false }
-                        notificationManager.dismissLatestNotification()
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        notificationManager.dismissLatestNotification()
+                        notificationManager.dismissNotification(id: payload.id)
                     }
                 }) {
                     Label(
@@ -1684,12 +1681,12 @@ struct NotificationLiveActivityView: View {
             if payload.appIdentifier == "com.apple.sharingd" {
                 standardActionButton(title: "Show", systemName: "folder", isPrimary: true) {
                     if let url = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first { NSWorkspace.shared.open(url) }
-                    notificationManager.dismissLatestNotification()
+                    notificationManager.dismissNotification(id: payload.id)
                 }
             } else {
                 standardActionButton(title: "Open", systemName: "arrow.up.forward.app", isPrimary: true) {
                     NSWorkspace.shared.launchApplication(withBundleIdentifier: payload.appIdentifier, options: [], additionalEventParamDescriptor: nil, launchIdentifier: nil)
-                    notificationManager.dismissLatestNotification()
+                    notificationManager.dismissNotification(id: payload.id)
                 }
             }
         }
@@ -1699,7 +1696,7 @@ struct NotificationLiveActivityView: View {
         let msg = replyText.trimmingCharacters(in: .whitespacesAndNewlines); guard !msg.isEmpty else { return }
         iMessageManager.sendMessage(msg, to: payload.title)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            replyText = ""; isTextFieldFocused = false; notificationManager.dismissLatestNotification()
+            replyText = ""; isTextFieldFocused = false; notificationManager.dismissNotification(id: payload.id)
         }
     }
 

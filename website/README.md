@@ -8,7 +8,7 @@
 
 - `../README.md`：功能范围、安装方法、权限与兼容性。
 - `../updates/releases.json`：CN6 起使用新团队 462JAMGP66 签名更新通道；不使用可能遗漏预发布的 GitHub latest 下载地址。
-- 主下载切换 CN9；首页、下载页、FAQ 和更新记录说明 OSS 优先更新、GitHub 回退，CN6/CN7/CN8 升级本次仍走 GitHub，旧团队/临时签名版本需手动迁移一次。CN5 临时签名测试版保留在 GitHub 历史发布，不加入应用内更新清单。
+- 主下载切换 CN10；首页、下载页、FAQ 和更新记录说明 OSS 优先更新、GitHub 回退，CN9 优先使用 OSS，CN6/CN7/CN8 升级 CN10 本次仍走 GitHub，旧团队/临时签名版本需手动迁移一次。CN5 临时签名测试版保留在 GitHub 历史发布，不加入应用内更新清单。
 - `../docs/images/`：真实刘海与剪贴板截图；界面读数仅作示例。
 - `content/project-faq.json`：根据当前项目整理的 FAQ。
 - `templates/`：原站公开 HTML、CSS 与 JavaScript 视觉模板。
@@ -45,10 +45,10 @@
 每次 GitHub Release 公开且附件上传完成后，在仓库根目录运行（将 tag 和本地附件目录替换为实际值）：
 
 ```sh
-python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --asset-directory /path/to/release --stage-only
-python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --asset-directory /path/to/release
-python3 scripts/update-cn-release-feed.py v3.0-cn.9-preview
-python3 scripts/mirror-cn-release.py v3.0-cn.9-preview --publish-feed-only
+python3 scripts/mirror-cn-release.py v3.0-cn.10-preview --asset-directory /path/to/release --stage-only
+python3 scripts/mirror-cn-release.py v3.0-cn.10-preview --asset-directory /path/to/release
+python3 scripts/update-cn-release-feed.py v3.0-cn.10-preview
+python3 scripts/mirror-cn-release.py v3.0-cn.10-preview --publish-feed-only
 # 提交并推送兼容清单与镜像清单到 GitHub，再生成、增量部署网站
 python3 website/scripts/adapt-project.py
 python3 website/scripts/deploy-update.py
